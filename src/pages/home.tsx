@@ -1,4 +1,4 @@
-function home() {
+export default function Home() {
   return (
     <div>
       {/* Bagian Header */}
