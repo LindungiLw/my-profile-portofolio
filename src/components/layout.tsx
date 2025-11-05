@@ -6,9 +6,12 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
+const navItems = [{ name: "Home", path: "/" }];
+
 export default function Layout({ children }: LayoutProps) {
   return (
     <div className="bg-[#021526] min-h-screen overflow-x-hidden ">
+      {/* Header */}
       <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -23,11 +26,29 @@ export default function Layout({ children }: LayoutProps) {
               className="cursor-pointer"
             >
               <p className="not-italic">
-                <span className="text-[#6eacda]">LINDUNGI</span>
+                <span className="text-[#6eacda] tracking-widest">
+                  LINDUNGI{" "}
+                </span>
                 <span className="text-white">LAOWO</span>
               </p>
             </motion.div>
           </Link>
+
+          {/* Navigation */}
+          <nav className=" ">
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Link key={item.path} to={item.path}>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="relative"
+                  ></motion.div>
+                </Link>
+              );
+            })}
+          </nav>
         </div>
       </motion.header>
 
