@@ -18,9 +18,13 @@ export const Navigation = () => {
   useEffect(() => {
     setIsMobileMenuOpen(false);
     window.scrollTo(0, 0);
-  });
+  }, [location.pathname]);
 
   const menuItems = [{ name: "Home", path: "/" }];
+
+  const isActive = (path: string) => {
+    return location.pathname === path;
+  };
 
   return (
     <motion.nav
@@ -45,10 +49,20 @@ export const Navigation = () => {
 
           <div>
             {menuItems.map((item, index) => (
-              <Link key={index} to={item.path}>
-                <motion.div></motion.div>
+              <Link key={index} to={item.path} className="relative group">
+                <motion.div
+                  className={`px-4 py-2 transition-colors text-sm cursor-pointer rounded-lg`}
+                >
+                  {item.name}
+                </motion.div>
+                {!isActive(item.path) && (
+                  <motion.div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#6EACDA]" />
+                )}
               </Link>
             ))}
+            <motion.div>
+              <motion.div></motion.div>
+            </motion.div>
           </div>
         </div>
       </div>
