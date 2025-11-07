@@ -60,7 +60,56 @@ export const HolographicOverlay = ({
       />
 
       {/*  */}
-      {[...Array(10)].map((_, i) =>(}
+      {[...Array(10)].map((_, i) => (
+        <motion.div
+          key={`pixel-${i}`}
+          className="absolute w-1 bg-gradient-to-b from-[#6EACDA] to-transparent"
+          style={{
+            left: `${10 + i * 9}%`,
+            height: "100px",
+            opacity: 0.2,
+          }}
+          animate={{
+            y: ["-100px", "100vh"],
+          }}
+          transition={{
+            duration: 2 + Math.random() * 2,
+            delay: i * 0.3,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+        />
+      ))}
+
+      {/*  */}
+      <div
+        className="absolute inset-0 opacity-5"
+        style={{
+          background:
+            "radial-gradient(circe at center, transparent 60%, #6EACDA 100%)",
+          filter: "blur(1px)",
+        }}
+      />
+
+      {/*  */}
+      <div
+        className="absolute inset-0 opacity-5"
+        style={{
+          backgroundImage: ` 
+         linear-gradient(rgba(110, 172, 218, 0.3) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(110, 172, 218, 0.3) 1px, transparent 1px)`,
+          backgroundSize: "20px 20px",
+        }}
+      />
+
+      {/*  */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "radial-gradiant(circle at center, transparent 50% , #6EACDA 100%)",
+        }}
+      />
     </div>
   );
 };
