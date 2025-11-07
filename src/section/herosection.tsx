@@ -1,7 +1,14 @@
-import { motion } from "motion/react";
+import { motion, useTransform, useMotionValue } from "motion/react";
 import { Sparkles } from "lucide-react";
+import personalProfile from "../assets/personal-profile.png";
 
 export const HeroSection = () => {
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const rotateX = useTransform(mouseY, [-300, 300], [10, -10]);
+  const rotateY = useTransform(mouseX, [-300, 300], [-10, 10]);
+
   return (
     <section className="relative min-h-screen bg-[#021526]">
       <div className="container mx-auto px-6 py-8">
@@ -55,6 +62,22 @@ export const HeroSection = () => {
                 <motion.div></motion.div>
               </motion.div>
             </div>
+          </motion.div>
+
+          <motion.div
+            className="relative w-[350px] h-[350px] md:w-[450px] md:h-[450px] rounded-full overflow-hidden border-4 border-[#6EACDA] shadow-2xl cursor-pointer"
+            style={{
+              rotateX,
+              rotateY,
+              transformStyle: "preserve-3d",
+            }}
+          >
+            <img
+              src={personalProfile}
+              alt="HeroImage"
+              className="w-full h-full object-cover"
+            />
+            <motion.div className="absolute inset-0 bg-gradient-to-t from-[#6EACDA]/20 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
           </motion.div>
         </div>
       </div>
