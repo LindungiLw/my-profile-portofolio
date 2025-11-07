@@ -1,5 +1,6 @@
 import { motion, useTransform, useMotionValue } from "motion/react";
 import { Sparkles } from "lucide-react";
+import { HolographicOverlay } from "../background-animation/holographic-overlay";
 import personalProfile from "../assets/personal-profile.png";
 
 export const HeroSection = () => {
@@ -11,6 +12,8 @@ export const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen bg-[#021526]">
+      <HolographicOverlay />
+
       <div className="container mx-auto px-6 py-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-150px)]">
           <motion.div
@@ -78,6 +81,14 @@ export const HeroSection = () => {
               className="w-full h-full object-cover"
             />
             <motion.div className="absolute inset-0 bg-gradient-to-t from-[#6EACDA]/20 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
+
+            {/* Multiple Rings */}
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+            >
+              <div className="w-full h-full border-2 border-dotted border-[#E2E2B6] opacity-20 rounded-full" />
+            </motion.div>
           </motion.div>
         </div>
       </div>
