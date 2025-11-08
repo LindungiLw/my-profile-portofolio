@@ -67,6 +67,14 @@ export const HeroSection = () => {
             </div>
           </motion.div>
 
+          {/*  */}
+          <motion.div
+            className="relative flex justify-center lg:justify-end"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          />
+
           <motion.div
             className="relative w-[350px] h-[350px] md:w-[450px] md:h-[450px] rounded-full overflow-hidden border-4 border-[#6EACDA] shadow-2xl cursor-pointer"
             style={{
@@ -74,6 +82,8 @@ export const HeroSection = () => {
               rotateY,
               transformStyle: "preserve-3d",
             }}
+            whileHover={{ scale: 1.05 }}
+            transition={{ type: "spring", stiffness: 300 }}
           >
             <img
               src={personalProfile}
@@ -84,8 +94,17 @@ export const HeroSection = () => {
 
             {/* Multiple Rings */}
             <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute top-1/2 left-1/2 w-[380px] h-[380px] md:w-[480px] md:h-[480px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+            >
+              <div className="w-full h-full border-2 border-dashed border-[#6EACDA] opacity-30 rounded-full" />
+            </motion.div>
+
+            <motion.div
               animate={{ rotate: -360 }}
               transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+              className="absolute top-1/2 left-1/2 w-[400px] h-[400px] md:w-[500px] md:h-[500px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
             >
               <div className="w-full h-full border-2 border-dotted border-[#E2E2B6] opacity-20 rounded-full" />
             </motion.div>
