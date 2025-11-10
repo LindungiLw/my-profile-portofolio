@@ -10,6 +10,11 @@ export const HeroSection = () => {
   const rotateX = useTransform(mouseY, [-300, 300], [10, -10]);
   const rotateY = useTransform(mouseX, [-300, 300], [-10, 10]);
 
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    mouseX.set(e.clientX);
+    mouseY.set(e.clientY);
+  };
+
   return (
     <section className="relative min-h-screen bg-[#021526] text-white overflow-hidden pt-20">
       <HolographicOverlay />
@@ -73,47 +78,53 @@ export const HeroSection = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-          />
-
-          {/*  */}
-          <motion.div
-            className="absolute -top-8 -right-8 w-full border-4 border-[#03346E] rounded-full"
-            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
-          />
-
-          <motion.div className="absolute -bottom-8 -left-8 w-32 h-32 bg[#03346E] rounded-full" />
-          <motion.div
-            className="relative w-[350px] h-[350px] md:w-[450px] md:h-[450px] rounded-full overflow-hidden border-4 border-[#6EACDA] shadow-2xl cursor-pointer"
-            style={{
-              rotateX,
-              rotateY,
-              transformStyle: "preserve-3d",
-            }}
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
           >
-            <img
-              src={personalProfile}
-              alt="HeroImage"
-              className="w-full h-full object-cover"
-            />
-            <motion.div className="absolute inset-0 bg-gradient-to-t from-[#6EACDA]/20 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
+            <motion.div className="relative" onMouseMove={handleMouseMove}>
+              {/*  */}
+              <motion.div
+                className="absolute -top-8 -right-8 w-full border-4 border-[#03346E] rounded-full"
+                animate={{}}
+                transition={{ duration: 1 }}
+              />
 
-            {/* Multiple Rings */}
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute top-1/2 left-1/2 w-[380px] h-[380px] md:w-[480px] md:h-[480px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-            >
-              <div className="w-full h-full border-2 border-dashed border-[#6EACDA] opacity-30 rounded-full" />
-            </motion.div>
+              <motion.div
+                className="absolute -bottom-8 -left-8 w-32 h-32 bg[#03346E] opacity-30 rounded-full"
+                animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              />
+              <motion.div
+                className="relative w-[350px] h-[350px] md:w-[450px] md:h-[450px] rounded-full overflow-hidden border-4 border-[#6EACDA] shadow-2xl cursor-pointer"
+                style={{
+                  rotateX,
+                  rotateY,
+                  transformStyle: "preserve-3d",
+                }}
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <img
+                  src={personalProfile}
+                  alt="HeroImage"
+                  className="w-full h-full object-cover"
+                />
+                <motion.div className="absolute inset-0 bg-gradient-to-t from-[#6EACDA]/20 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
+              </motion.div>
+              {/* Multiple Rings */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute top-1/2 left-1/2 w-[380px] h-[380px] md:w-[480px] md:h-[480px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+              >
+                <div className="w-full h-full border-2 border-dashed border-[#6EACDA] opacity-30 rounded-full" />
+              </motion.div>
 
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-              className="absolute top-1/2 left-1/2 w-[400px] h-[400px] md:w-[500px] md:h-[500px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
-            >
-              <div className="w-full h-full border-2 border-dotted border-[#E2E2B6] opacity-20 rounded-full" />
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+                className="absolute top-1/2 left-1/2 w-[400px] h-[400px] md:w-[500px] md:h-[500px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+              >
+                <div className="w-full h-full border-2 border-dotted border-[#E2E2B6] opacity-20 rounded-full" />
+              </motion.div>
             </motion.div>
           </motion.div>
         </div>
