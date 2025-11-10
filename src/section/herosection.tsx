@@ -11,7 +11,7 @@ export const HeroSection = () => {
   const rotateY = useTransform(mouseX, [-300, 300], [-10, 10]);
 
   return (
-    <section className="relative min-h-screen bg-[#021526]">
+    <section className="relative min-h-screen bg-[#021526] text-white overflow-hidden pt-20">
       <HolographicOverlay />
 
       <div className="container mx-auto px-6 py-8">
@@ -59,9 +59,9 @@ export const HeroSection = () => {
                 ))}
               </motion.h1>
 
-              <motion.div>
+              <motion.div className="flex items-center gap-3">
                 <motion.div></motion.div>
-
+                <span>Web Designer</span>
                 <motion.div></motion.div>
               </motion.div>
             </div>
@@ -75,6 +75,13 @@ export const HeroSection = () => {
             transition={{ duration: 0.8, delay: 0.4 }}
           />
 
+          {/*  */}
+          <motion.div
+            className="absolute -top-8 -right-8 w-full border-4 border-[#03346E] rounded-full"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          />
+
+          <motion.div className="absolute -bottom-8 -left-8 w-32 h-32 bg[#03346E] rounded-full" />
           <motion.div
             className="relative w-[350px] h-[350px] md:w-[450px] md:h-[450px] rounded-full overflow-hidden border-4 border-[#6EACDA] shadow-2xl cursor-pointer"
             style={{
