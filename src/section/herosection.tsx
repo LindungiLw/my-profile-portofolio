@@ -2,6 +2,7 @@ import { motion, useTransform, useMotionValue } from "motion/react";
 import { Sparkles } from "lucide-react";
 import { HolographicOverlay } from "../background-animation/holographic-overlay";
 import personalProfile from "../assets/personal-profile.png";
+import { useState } from "react";
 
 export const HeroSection = () => {
   const mouseX = useMotionValue(0);
@@ -9,6 +10,8 @@ export const HeroSection = () => {
 
   const rotateX = useTransform(mouseY, [-300, 300], [10, -10]);
   const rotateY = useTransform(mouseX, [-300, 300], [-10, 10]);
+
+  const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     mouseX.set(e.clientX);
@@ -79,11 +82,21 @@ export const HeroSection = () => {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <motion.div className="relative" onMouseMove={handleMouseMove}>
-              {/*  */}
+            <motion.div
+              className="relative"
+              onMouseMove={handleMouseMove}
+              onMouseEnter={() => setIsHovered(true)}
+              style={{
+                transformStyle = "preserve-3d",
+              }}
+            >
+              {/* Decoration shapes behind photo */}
               <motion.div
                 className="absolute -top-8 -right-8 w-full border-4 border-[#03346E] rounded-full"
-                animate={{}}
+                animate={{
+                  rotate: isHovered ? 360 : 0,
+                  scale: isHovered ? 1.05 : 1,
+                }}
                 transition={{ duration: 1 }}
               />
 
@@ -109,6 +122,7 @@ export const HeroSection = () => {
                 />
                 <motion.div className="absolute inset-0 bg-gradient-to-t from-[#6EACDA]/20 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
               </motion.div>
+
               {/* Multiple Rings */}
               <motion.div
                 animate={{ rotate: 360 }}
@@ -124,6 +138,21 @@ export const HeroSection = () => {
                 className="absolute top-1/2 left-1/2 w-[400px] h-[400px] md:w-[500px] md:h-[500px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
               >
                 <div className="w-full h-full border-2 border-dotted border-[#E2E2B6] opacity-20 rounded-full" />
+              </motion.div>
+
+              {/* Floating badges */}
+              <motion.div
+                className="absolute bottom-10 -left-5 bg-[#03346E] text-[#E2E2B6] px-4 py-2 rounded-full shadow-lg border-2 border-[#6EACDA]"
+                animate={{
+                  x: [0, 10, 0],
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <span>UI/UX Designer</span>
               </motion.div>
             </motion.div>
           </motion.div>
