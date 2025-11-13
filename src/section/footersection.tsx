@@ -30,6 +30,28 @@ export const FooterSection = () => {
             <h4 className="text-lg text-white mb-4" style={{ fontWeight: 600 }}>
               Review
             </h4>
+            <ul>
+              <li>
+                <a href="#about" className="text-[#E2E2B6] ">
+                  About Me
+                </a>
+              </li>
+              <li>
+                <a href="#about" className="text-[#E2E2B6] ">
+                  Projects
+                </a>
+              </li>
+              <li>
+                <a href="#about" className="text-[#E2E2B6] ">
+                  Skills
+                </a>
+              </li>
+              <li>
+                <a href="#about" className="text-[#E2E2B6] ">
+                  Contact
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
