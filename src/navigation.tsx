@@ -20,18 +20,26 @@ export const Navigation = () => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  const menuItems = [{ name: "Home", path: "/" }];
+  const menuItems = [
+    { name: "Home", path: "/" },
+    { name: "About", path: "/about" },
+  ];
 
   const isActive = (path: string) => {
     return location.pathname === path;
   };
 
   return (
+    // background navbar
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled || location.pathname !== "/"
+          ? "bg-[#021526]/95 backdrop-blur-md shadow-lg border-b-2 border-[#03346E]"
+          : "bg-transparent"
+      }
       `}
     >
       <div className="container mx-auto px-6 py-4">
@@ -51,19 +59,32 @@ export const Navigation = () => {
             {menuItems.map((item, index) => (
               <Link key={index} to={item.path} className="relative group">
                 <motion.div
-                  className={`px-4 py-2 transition-colors text-sm cursor-pointer rounded-lg`}
+                  className={`px-4 py-2 transition-colors text-sm cursor-pointer rounded-lg ${
+                    isActive(item.path)
+                      ? "text-[#6EACDA] bg-[#03346E]"
+                      : "text-[#E2E2B6] hover: text-[#6EACDA]"
+                  }`}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                 >
                   {item.name}
                 </motion.div>
                 {!isActive(item.path) && (
-                  <motion.div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#6EACDA]" />
+                  <motion.div
+                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#6EACDA]"
+                    initial={{ scaleX: 0 }}
+                    whileHover={{ scaleX: 1 }}
+                    transition={{ duration: 0.3 }}
+                  />
                 )}
               </Link>
             ))}
-            <motion.div>
+            <motion.div whileHover={{ scale: 1.05 }}>
               <motion.div></motion.div>
             </motion.div>
           </div>
+
+          <button></button>
         </div>
       </div>
     </motion.nav>

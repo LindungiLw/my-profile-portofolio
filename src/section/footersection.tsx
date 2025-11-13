@@ -53,6 +53,12 @@ export const FooterSection = () => {
               </li>
             </ul>
           </div>
+
+          {/*  */}
+          <motion.div>
+            <h4>Connect With Me</h4>
+            <div></div>
+          </motion.div>
         </div>
       </div>
     </footer>
