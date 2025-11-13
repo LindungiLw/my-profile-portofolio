@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import { HeroSection } from "../section/herosection";
+import { FooterSection } from "../section/footersection";
 
 export default function Home() {
   return (
@@ -27,6 +28,7 @@ export default function Home() {
           </motion.div>
         </div>
       </section>
+      <FooterSection />
     </div>
   );
 }

@@ -14,8 +14,11 @@ export const HeroSection = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    mouseX.set(e.clientX);
-    mouseY.set(e.clientY);
+    const rect = e.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    mouseX.set(e.clientX - centerX);
+    mouseY.set(e.clientY - centerY);
   };
 
   return (
@@ -86,8 +89,10 @@ export const HeroSection = () => {
               className="relative"
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
               style={{
-                transformStyle = "preserve-3d",
+                transformStyle: "preserve-3d",
+                perspective: 1000,
               }}
             >
               {/* Decoration shapes behind photo */}
@@ -142,9 +147,9 @@ export const HeroSection = () => {
 
               {/* Floating badges */}
               <motion.div
-                className="absolute bottom-10 -left-5 bg-[#03346E] text-[#E2E2B6] px-4 py-2 rounded-full shadow-lg border-2 border-[#6EACDA]"
+                className="absolute top-0 right-0 bg-[#6EACDA] text-[#E2E2B6] px-4 py-2 rounded-full shadow-lg"
                 animate={{
-                  x: [0, 10, 0],
+                  y: [0, -10, 0],
                 }}
                 transition={{
                   duration: 2,
@@ -152,7 +157,21 @@ export const HeroSection = () => {
                   ease: "easeInOut",
                 }}
               >
-                <span>UI/UX Designer</span>
+                <span className="text-sm"> Available for Hire</span>
+              </motion.div>
+
+              <motion.div
+                className="absolute bottom-10 -left-5 bg-[#03346E] text-[#E2E2B6] px-4 py-2 rounded-full shadow-lg border-2 border-[#6EACDA]"
+                animate={{
+                  x: [0, -10, 0],
+                }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <span className="text-sm">UI/UX Designer</span>
               </motion.div>
             </motion.div>
           </motion.div>
