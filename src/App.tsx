@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import ScrollProgress from "./components/scrollprogress";
 import Home from "./pages/homepage";
 import { Navigation } from "./navigation";
-import { FooterSection } from "./section/footersection";
 
 export default function App() {
   return (

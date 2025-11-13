@@ -7,12 +7,32 @@ export const FooterSection = () => {
         className="absolute inset-0 opacity-5"
         animate={{
           background: [
-            "linear-gradient(0deg, rgba(110, 172, 218, 0.03) 0px, transparent 5px, transparent 8px, rgba(110, 172, 218, 0.03) 4px)",
-            "linear-gradient(90deg, transparent 0%, rgba(110, 172, 218, 0.03) 50%, transparent 100%)",
-            "linear-gradient(0deg, rgba(110, 172, 218, 0.03) 0px, transparent 5px, transparent 8px, rgba(110, 172, 218, 0.03) 4px)",
+            "radial-gradient(circle at 0% 0%), #6EACDA 0%, transparent 50%)",
+            "radial-gradient(circle at 100% 100%, #6EACDA 0%, transparent 50%)",
+            "radial-gradient(circle at 0% 100%, #6EACDA 0%, transparent 50%)",
           ],
         }}
+        transition={{ duration: 10, repeat: Infinity }}
       />
+      <div>
+        <div className="grid md:grid-cols-3">
+          <motion.div>
+            <h3 className="text-xl text-white mb-4" style={{ fontWeight: 600 }}>
+              <span className="text-[#6EACDA">RAHMA &nbsp; LAOWO</span>
+            </h3>
+            <p className="text-[#E2E2B6] text-sm leading-relaxed">
+              UI/UX Designer & Frontend Developer
+            </p>
+          </motion.div>
+
+          {/*  */}
+          <div>
+            <h4 className="text-lg text-white mb-4" style={{ fontWeight: 600 }}>
+              Review
+            </h4>
+          </div>
+        </div>
+      </div>
     </footer>
   );
 };
