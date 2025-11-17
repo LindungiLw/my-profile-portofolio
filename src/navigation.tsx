@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { Button } from "./section/button";
 
 export const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -55,6 +56,7 @@ export const Navigation = () => {
             </motion.div>
           </Link>
 
+          {/* Desktop Menu Settings */}
           <div>
             {menuItems.map((item, index) => (
               <Link key={index} to={item.path} className="relative group">
@@ -79,12 +81,15 @@ export const Navigation = () => {
                 )}
               </Link>
             ))}
-            <motion.div whileHover={{ scale: 1.05 }}>
-              <motion.div></motion.div>
-            </motion.div>
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            ></motion.div>
           </div>
-
-          <button></button>
+          <Button className="bg-[#03346E] hover:bg-[#6EACDA] hover:text-[#021526] text-white transition-all duration-300 ml-2 gap-2 group">
+            <motion.div></motion.div>
+            CV
+          </Button>
         </div>
       </div>
     </motion.nav>
