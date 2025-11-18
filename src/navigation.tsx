@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./section/button";
+import { Download, Menu, X } from "lucide-react";
 
 export const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -81,15 +82,24 @@ export const Navigation = () => {
                 )}
               </Link>
             ))}
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            ></motion.div>
+            {/* <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button className="bg-[#03346E] hover:bg-[#6EACDA] hover:text-[#021526] text-white transition-all duration-300 ml-2 gap-2 group">
+                <motion.div>
+                  <Download className="w-4 h-4" />
+                </motion.div>
+                CV
+              </Button>
+            </motion.div> */}
           </div>
-          <Button className="bg-[#03346E] hover:bg-[#6EACDA] hover:text-[#021526] text-white transition-all duration-300 ml-2 gap-2 group">
-            <motion.div></motion.div>
-            CV
-          </Button>
+
+          {/* Mobile Menu Button*/}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="lg:hidden text-white p-2"
+            aria-label="Toggle menu"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </div>
     </motion.nav>
