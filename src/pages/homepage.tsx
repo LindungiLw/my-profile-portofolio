@@ -1,8 +1,14 @@
 import { motion } from "motion/react";
 import { HeroSection } from "../section/herosection";
 import { FooterSection } from "../section/footersection";
+import { Link } from "react-router-dom";
 
 export default function Home() {
+  const highlights = [
+    {
+      link: "/experiences",
+    },
+  ];
   return (
     <div>
       <HeroSection />
@@ -26,6 +32,20 @@ export default function Home() {
               Jangan Menyerah Dulu ya Pasti Bisa
             </p>
           </motion.div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            {highlights.map((item, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <Link to={item.link}></Link>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
       <FooterSection />
