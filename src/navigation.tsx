@@ -58,7 +58,7 @@ export const Navigation = () => {
           </Link>
 
           {/* Desktop Menu Settings */}
-          <div>
+          <div className="hidden lg:flex items-center gap-2">
             {menuItems.map((item, index) => (
               <Link key={index} to={item.path} className="relative group">
                 <motion.div
