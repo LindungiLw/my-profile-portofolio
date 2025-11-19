@@ -1,14 +1,30 @@
-import { Instagram } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import { motion } from "motion/react";
+import { FiInstagram } from "react-icons/fi";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 
 const socials = [
   {
-    icon: Instagram,
+    icon: FiInstagram,
+    link: "https://www.instagram.com/lindungi05/?__pwa=1",
+  },
+
+  {
+    icon: FaGithub,
+    link: "https://www.instagram.com/lindungi05/?__pwa=1",
+  },
+
+  {
+    icon: FaLinkedin,
     link: "https://www.instagram.com/lindungi05/?__pwa=1",
   },
 ];
 
 export const FooterSection = () => {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <footer className="bg-[#021526] border-t-2 border-[#03346E] py-12 px-6 relative overflow-hidden">
       <motion.div
@@ -88,7 +104,53 @@ export const FooterSection = () => {
             </div>
           </motion.div>
         </div>
+
+        {/* Copyright */}
+        <motion.div
+          className="pt-8 border-t border-[#03346E]"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          <p className="text-[#E2E2B6] text-sm text-center flex items-center justify-center gao-2">
+            © 2025 Rahma Lindungi Laowo. Made with{" "}
+            <motion.span
+              animate={{
+                scale: [1, 1.2, 1],
+              }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                repeatDelay: 1,
+              }}
+            >
+              ❤
+            </motion.span>{" "}
+            and passion.
+          </p>
+        </motion.div>
       </div>
+
+      {/* Scroll to Top Button */}
+      <motion.button
+        onClick={scrollToTop}
+        className="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-[#6EACDA] text-[#021526] flex items-center justify-center shadow-lg hover:bg-[#E2E2B6] transition-colors z-50"
+        initial={{ opacity: 0, y: 100 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: false }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        aria-label="Scroll to top"
+      >
+        <motion.div
+          animate={{
+            y: [0, -3, 0],
+          }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <ArrowUp className="w-6 h-6" />
+        </motion.div>
+      </motion.button>
     </footer>
   );
 };
