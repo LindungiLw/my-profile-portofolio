@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { HeroSection } from "../section/herosection";
 import { FooterSection } from "../section/footersection";
 import { Link } from "react-router-dom";
+//import { Card } from "../components/card";
 
 export default function Home() {
   const highlights = [
