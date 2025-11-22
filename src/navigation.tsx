@@ -89,7 +89,9 @@ export const Navigation = () => {
                 </motion.div>
                 CV
               </Button>
-            </motion.div> */}
+            </motion.div> 
+            */}
+
           </div>
 
           {/* Mobile Menu Button*/}
