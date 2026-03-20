@@ -40,19 +40,19 @@ export const Navigation = () => {
         transition={{ duration: 0.6 }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? "bg-[#021526]/95 backdrop-blur-md shadow-lg border-b-2 border-[#03346E]"
+            ? "bg-secondary-foreground/95 backdrop-blur-md shadow-lg border-b-2 border-primary"
             : "bg-transparent"
         }`}
       >
         <div className="container mx-auto px-6 py-4">
-          <div className="flex item-center justify-between">
+          <div className="flex items-center justify-between">
             <div onClick={() => handleNavClick("#home")}>
               <motion.div
                 className="text-x1 md:text-2xl text-white cursor-pointer"
                 style={{ fontWeight: 700 }}
                 whileHover={{ scale: 1.05 }}
               >
-                <span className="text-[#6EACDA]">RAHMA</span>
+                <span className="text-secondary">RAHMA</span>
                 <span>&nbsp;LAOWO</span>
               </motion.div>
             </div>
@@ -66,7 +66,7 @@ export const Navigation = () => {
                   className="relative group cursor-pointer"
                 >
                   <motion.div
-                    className="px-4 py-2 transition-colors text-sm cursor-pointer rounded-lg text-[#E2E2B6] hover:text-[#6EACDA] "
+                    className="px-4 py-2 transition-colors text-sm cursor-pointer rounded-lg text-[#E2E2B6] hover:text-secondary"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
@@ -80,8 +80,8 @@ export const Navigation = () => {
                 whileTap={{ scale: 0.95 }}
               >
                 <Button
-                  className="bg-[#03346E] hover:bg-[#6EACDA] hover:text-[#021526] text-white transition-all duration-300 ml-2 gap-2 group"
-                  // size="sm"
+                  className="bg-primary hover:bg-secondary hover:text-secondary-foreground text-white transition-all duration-300 ml-2 gap-2 group"
+                  size="sm"
                 >
                   <motion.div
                     animate={{ y: [0, -2, 0] }}
@@ -112,7 +112,7 @@ export const Navigation = () => {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 lg:hidden bg-[#021526] pt-20"
+            className="fixed inset-0 z-40 lg:hidden bg-secondary-foreground pt-20"
           >
             <div className="container mx-auto px-6 py-8">
               <div className="flex flex-col gap-4">
@@ -120,11 +120,16 @@ export const Navigation = () => {
                   <div
                     key={index}
                     onClick={() => handleNavClick(item.path)}
-                    className="text-2xl transition-colors py-3 border-b border-[#03346E] cursor-pointer text-[#E2E2B6] hover:text-[#6EACDA]"
+                    className="text-2xl transition-colors py-3 border-b border-primary cursor-pointer text-secondary-foreground hover:text-secondary"
                   >
                     {item.name}
                   </div>
                 ))}
+
+                <Button className="bg-primary hover:bg-secondary hover:text-secondary-foreground text-white transition-all duration-300 mt-4 gap-2">
+                  <Download className="w-5 h-5" />
+                  Download CV
+                </Button>
               </div>
             </div>
           </motion.div>

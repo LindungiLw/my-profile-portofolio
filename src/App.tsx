@@ -3,7 +3,7 @@ import { Navigation } from "./navigation";
 
 export default function App() {
   return (
-    <div className="min-h-screen bg[#021526] scroll-smooth">
+    <div className="min-h-screen bg-primary scroll-smooth">
       <ScrollProgress />
       <Navigation />
     </div>
