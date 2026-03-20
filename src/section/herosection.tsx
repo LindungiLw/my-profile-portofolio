@@ -22,7 +22,7 @@ export const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen bg-[#021526] text-white overflow-hidden pt-20">
+    <section className="relative min-h-screen bg-secondary-foreground text-foreground overflow-hidden pt-20">
       <HolographicOverlay />
 
       <div className="container mx-auto px-6 py-8">
@@ -44,14 +44,15 @@ export const HeroSection = () => {
                   animate={{ rotate: [0, 360] }}
                   transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                 >
-                  {/* icon */}
-                  <Sparkles className="w-5 h-5 text-[#6EACDA]" />
+                  <Sparkles className="w-5 h-5 text-secondary" />
                 </motion.div>
-                <p className="text-[#6EACDA] tracking-wider">HELLO I'M</p>
+                <p className="text-secondary tracking-wider font-medium">
+                  HELLO I'M
+                </p>
               </motion.div>
 
               <motion.h1
-                className="text-4xl md:text-6xl lg:text-7xl text-white"
+                className="text-4xl md:text-6xl lg:text-7xl"
                 style={{ fontWeight: 700 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -60,7 +61,7 @@ export const HeroSection = () => {
                 {["Rahma", "Lindungi", "Laowo"].map((word, i) => (
                   <motion.span
                     key={i}
-                    className={i === 0 ? "text-[#6EACDA]" : ""}
+                    className={i === 0 ? "text-secondary" : ""}
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.6 + i * 0.1 }}
@@ -72,13 +73,14 @@ export const HeroSection = () => {
 
               <motion.div className="flex items-center gap-3">
                 <motion.div></motion.div>
-                <span>Web Designer</span>
+                <span className="text-xl text-primary-foreground/80">
+                  UI/UX Designer & Info Systems Student
+                </span>
                 <motion.div></motion.div>
               </motion.div>
             </div>
           </motion.div>
 
-          {/*  */}
           <motion.div
             className="relative flex justify-center lg:justify-end"
             initial={{ opacity: 0, scale: 0.8 }}
@@ -95,9 +97,8 @@ export const HeroSection = () => {
                 perspective: 1000,
               }}
             >
-              {/* Decoration shapes behind photo */}
               <motion.div
-                className="absolute -top-8 -right-8 w-full border-4 border-[#03346E] rounded-full"
+                className="absolute -top-8 -right-8 w-full border-4 border-primary rounded-full"
                 animate={{
                   rotate: isHovered ? 360 : 0,
                   scale: isHovered ? 1.05 : 1,
@@ -106,12 +107,12 @@ export const HeroSection = () => {
               />
 
               <motion.div
-                className="absolute -bottom-8 -left-8 w-32 h-32 bg[#03346E] opacity-30 rounded-full"
+                className="absolute -bottom-8 -left-8 w-32 h-32 bg-primary opacity-30 rounded-full"
                 animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
                 transition={{ duration: 3, repeat: Infinity }}
               />
               <motion.div
-                className="relative w-[350px] h-[350px] md:w-[450px] md:h-[450px] rounded-full overflow-hidden border-4 border-[#6EACDA] shadow-2xl cursor-pointer"
+                className="relative w-[350px] h-[350px] md:w-[450px] md:h-[450px] rounded-full overflow-hidden border-4 border-secondary shadow-2xl cursor-pointer"
                 style={{
                   rotateX,
                   rotateY,
@@ -125,7 +126,7 @@ export const HeroSection = () => {
                   alt="HeroImage"
                   className="w-full h-full object-cover"
                 />
-                <motion.div className="absolute inset-0 bg-gradient-to-t from-[#6EACDA]/20 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
+                <motion.div className="absolute inset-0 bg-linear-to-t from-secondary/20 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
               </motion.div>
 
               {/* Multiple Rings */}
@@ -134,7 +135,7 @@ export const HeroSection = () => {
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 className="absolute top-1/2 left-1/2 w-[380px] h-[380px] md:w-[480px] md:h-[480px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
               >
-                <div className="w-full h-full border-2 border-dashed border-[#6EACDA] opacity-30 rounded-full" />
+                <div className="w-full h-full border-2 border-dashed border-secondary opacity-30 rounded-full" />
               </motion.div>
 
               <motion.div
@@ -142,12 +143,12 @@ export const HeroSection = () => {
                 transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
                 className="absolute top-1/2 left-1/2 w-[400px] h-[400px] md:w-[500px] md:h-[500px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"
               >
-                <div className="w-full h-full border-2 border-dotted border-[#E2E2B6] opacity-20 rounded-full" />
+                <div className="w-full h-full border-2 border-dotted border-foreground opacity-20 rounded-full" />
               </motion.div>
 
               {/* Floating badges */}
               <motion.div
-                className="absolute top-0 right-0 bg-[#6EACDA] text-[#E2E2B6] px-4 py-2 rounded-full shadow-lg"
+                className="absolute top-0 right-0 bg-secondary text-secondary-foreground font-medium px-4 py-2 rounded-full shadow-lg z-10"
                 animate={{
                   y: [0, -10, 0],
                 }}
@@ -161,7 +162,7 @@ export const HeroSection = () => {
               </motion.div>
 
               <motion.div
-                className="absolute bottom-10 -left-5 bg-[#03346E] text-[#E2E2B6] px-4 py-2 rounded-full shadow-lg border-2 border-[#6EACDA]"
+                className="absolute bottom-10 -left-5 bg-primary text-primary-foreground font-medium px-4 py-2 rounded-full shadow-lg border-2 border-secondary z-10"
                 animate={{
                   x: [0, -10, 0],
                 }}
@@ -171,7 +172,7 @@ export const HeroSection = () => {
                   ease: "easeInOut",
                 }}
               >
-                <span className="text-sm">UI/UX Designer</span>
+                <span className="text-sm">Freelance UI/UX</span>
               </motion.div>
             </motion.div>
           </motion.div>

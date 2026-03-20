@@ -8,12 +8,12 @@ export const HolographicOverlay = ({
   intensity = 0.3,
 }: HolographicOverlayProps) => {
   return (
-    <div className="absolute inset-0 overflaw-hidden pointeer">
+    <div className="absolute inset-0 overflaw-hidden pointer-events-none">
       <motion.div
         className="absolute inset-0"
         style={{
           backgroundImage:
-            "repeating-linear-gradient(0deg, rgba(110, 172, 218, 0.03) 0px, transparent 5px, transparent 8px, rgba(110, 172, 218, 0.03) 4px)",
+            "repeating-linear-gradient(0deg, rgba(110, 172, 218, 0.03) 0px, transparent 2px, transparent 4px, rgba(110, 172, 218, 0.03) 4px)",
           opacity: intensity,
         }}
         animate={{
@@ -29,10 +29,13 @@ export const HolographicOverlay = ({
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(90deg, transparent 0%, rgba(110, 172, 218, 0.03) 50%, transparent 100%)",
+            "linear-gradient(90deg, transparent 0%, rgba(110, 172, 218, 0.05) 50%, transparent 100%)",
           transform: "skewX(-10deg)",
         }}
-        animate={{ x: ["-100%", "200%"], opacity: [0, intensity, 0] }}
+        animate={{
+          x: ["-100%", "200%"],
+          opacity: [0, intensity, 0],
+        }}
         transition={{
           duration: 3,
           repeat: Infinity,
@@ -41,15 +44,15 @@ export const HolographicOverlay = ({
         }}
       />
 
-      {/*  */}
+      {/*  Color shift overlay */}
       <motion.div
         className="absolute inset-0 mix-blend-color-dodge"
         animate={{
           background: [
-            "radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1), transparent 60%)",
-            "radial-gradient(circle at 80% 50%, rgba(255, 255, 255, 0.1), transparent 60%)",
-            "radial-gradient(circle at 50% 80%, rgba(255, 255, 255, 0.1), transparent 60%)",
-            "radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1), transparent 60%)",
+            "radial-gradient(circle at 20% 50%, rgba(110, 172, 218, 0.1), transparent 50%)",
+            "radial-gradient(circle at 80% 50%, rgba(256, 226, 182, 0.1), transparent 50%)",
+            "radial-gradient(circle at 50% 80%, rgba(3, 52, 110, 0.1), transparent 50%)",
+            "radial-gradient(circle at 20% 50%, rgba(110, 172, 218, 0.1), transparent 50%)",
           ],
         }}
         transition={{
@@ -59,11 +62,11 @@ export const HolographicOverlay = ({
         }}
       />
 
-      {/*  */}
+      {/* Pixel rain */}
       {[...Array(10)].map((_, i) => (
         <motion.div
           key={`pixel-${i}`}
-          className="absolute w-1 bg-gradient-to-b from-[#6EACDA] to-transparent"
+          className="absolute w-1 bg-gradient-to-b from-color-secondary to-transparent"
           style={{
             left: `${10 + i * 9}%`,
             height: "100px",
@@ -81,17 +84,17 @@ export const HolographicOverlay = ({
         />
       ))}
 
-      {/*  */}
+      {/* Chromatic aberration */}
       <div
-        className="absolute inset-0 opacity-5"
+        className="absolute inset-0 mix-blend-screen"
         style={{
           background:
-            "radial-gradient(circe at center, transparent 60%, #6EACDA 100%)",
+            "radial-gradient(circe at center, transparent 60%, rgba(110, 172, 218, 0.2) 100%)",
           filter: "blur(1px)",
         }}
       />
 
-      {/*  */}
+      {/* Grid overlay  */}
       <div
         className="absolute inset-0 opacity-5"
         style={{
@@ -102,12 +105,12 @@ export const HolographicOverlay = ({
         }}
       />
 
-      {/*  */}
+      {/* Vignette effect */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradiant(circle at center, transparent 50% , #6EACDA 100%)",
+            "radial-gradiant(circle at center, transparent 50% , rgba(2, 21, 38, 0.4) 100%)",
         }}
       />
     </div>
