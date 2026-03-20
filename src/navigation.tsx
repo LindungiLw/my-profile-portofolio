@@ -1,6 +1,5 @@
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
 import { Button } from "./section/button";
 import { Download, Menu, X } from "lucide-react";
 
@@ -100,11 +99,37 @@ export const Navigation = () => {
               className="lg:hidden text-white p-2"
               aria-label="Toggle menu"
             >
-              (isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />)
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
       </motion.nav>
+
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: "100%" }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: "100%" }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-40 lg:hidden bg-[#021526] pt-20"
+          >
+            <div className="container mx-auto px-6 py-8">
+              <div className="flex flex-col gap-4">
+                {menuItems.map((item, index) => (
+                  <div
+                    key={index}
+                    onClick={() => handleNavClick(item.path)}
+                    className="text-2xl transition-colors py-3 border-b border-[#03346E] cursor-pointer text-[#E2E2B6] hover:text-[#6EACDA]"
+                  >
+                    {item.name}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };
