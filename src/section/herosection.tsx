@@ -23,7 +23,7 @@ export const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen bg-secondary-foreground text-foreground overflow-hidden pt-20">
-      <HolographicOverlay />
+      <HolographicOverlay intensity={0.25} />
 
       <div className="container mx-auto px-6 py-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-150px)]">
