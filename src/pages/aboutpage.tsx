@@ -99,12 +99,6 @@ export const AboutPage = () => {
           </motion.div>
         </div>
 
-        {/* Skills Stats */}
-        <motion.div>
-          {Skills.map((skill, index) => (
-            <Card></Card>
-          ))}
-        </motion.div>
         <FooterSection />
       </div>
     </section>
