@@ -4,6 +4,8 @@ import personalProfile from "../assets/personal-profile.png";
 import { useState } from "react";
 import { HolographicOverlay } from "../background-animation/holographic-overlay";
 import { Depth3DBackground } from "../background-animation/depth-3D-background";
+import { MeshGradient } from "../background-animation/mesh_gradient";
+import { ParticleBackground } from "../background-animation/particle_background";
 
 export const HeroSection = () => {
   const mouseX = useMotionValue(0);
@@ -24,7 +26,9 @@ export const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen bg-secondary-foreground text-foreground overflow-hidden pt-20">
-      <Depth3DBackground />
+      <Depth3DBackground layers={5} />
+      <MeshGradient opacity={0.5} />
+      <ParticleBackground density={40} />
       <HolographicOverlay intensity={0.25} />
 
       <div className="container mx-auto px-6 py-8">
