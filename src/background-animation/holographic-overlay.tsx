@@ -66,7 +66,7 @@ export const HolographicOverlay = ({
       {[...Array(10)].map((_, i) => (
         <motion.div
           key={`pixel-${i}`}
-          className="absolute w-1 bg-gradient-to-b from-color-secondary to-transparent"
+          className="absolute w-1 bg-linear-to-t from-color-secondary to-transparent"
           style={{
             left: `${10 + i * 9}%`,
             height: "100px",

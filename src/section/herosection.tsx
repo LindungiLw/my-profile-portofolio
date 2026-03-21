@@ -1,8 +1,9 @@
 import { motion, useTransform, useMotionValue } from "motion/react";
 import { Sparkles } from "lucide-react";
-import { HolographicOverlay } from "../background-animation/holographic-overlay";
 import personalProfile from "../assets/personal-profile.png";
 import { useState } from "react";
+import { HolographicOverlay } from "../background-animation/holographic-overlay";
+import { Depth3DBackground } from "../background-animation/depth-3D-background";
 
 export const HeroSection = () => {
   const mouseX = useMotionValue(0);
@@ -23,6 +24,7 @@ export const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen bg-secondary-foreground text-foreground overflow-hidden pt-20">
+      <Depth3DBackground />
       <HolographicOverlay intensity={0.25} />
 
       <div className="container mx-auto px-6 py-8">
