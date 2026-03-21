@@ -2,10 +2,12 @@ import { motion, useTransform, useMotionValue } from "motion/react";
 import { Sparkles } from "lucide-react";
 import personalProfile from "../assets/personal-profile.png";
 import { useState } from "react";
-import { HolographicOverlay } from "../background-animation/holographic-overlay";
-import { Depth3DBackground } from "../background-animation/depth-3D-background";
-import { MeshGradient } from "../background-animation/mesh_gradient";
-import { ParticleBackground } from "../background-animation/particle_background";
+import { HolographicOverlay } from "../background-animation/HolographicOverlay";
+import { Depth3DBackground } from "../background-animation/Depth3DBackground";
+import { MeshGradient } from "../background-animation/MeshGradient";
+import { ParticleBackground } from "../background-animation/ParticleBackground";
+import { FloatingShapes } from "../background-animation/FloatingShapes";
+import { HolographicCode } from "../background-animation/HolographicCode";
 
 export const HeroSection = () => {
   const mouseX = useMotionValue(0);
@@ -29,7 +31,9 @@ export const HeroSection = () => {
       <Depth3DBackground layers={5} />
       <MeshGradient opacity={0.5} />
       <ParticleBackground density={40} />
+      <FloatingShapes count={10} />
       <HolographicOverlay intensity={0.25} />
+      <HolographicCode interval={6000} />
 
       <div className="container mx-auto px-6 py-8">
         <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-150px)]">

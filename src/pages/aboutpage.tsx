@@ -1,5 +1,5 @@
 import { User, Home, MapPin, Mail, Phone, Briefcase } from "lucide-react";
-import { FooterSection } from "../section/footersection";
+import { FooterSection } from "../section/FooterSection";
 import { motion } from "motion/react";
 
 export const AboutPage = () => {

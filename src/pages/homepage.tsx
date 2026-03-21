@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
-import { HeroSection } from "../section/herosection";
-import { FooterSection } from "../section/footersection";
+import { HeroSection } from "../section/HeroSection";
+import { FooterSection } from "../section/FooterSection";
 import { Link } from "react-router-dom";
 //import { Card } from "../components/card";
 

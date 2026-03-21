@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState, useEffect } from "react";
-import { Button } from "./section/button";
+import { Button } from "./section/Button";
 import { Download, Menu, X } from "lucide-react";
 
 export const Navigation = () => {
