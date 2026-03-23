@@ -10,6 +10,7 @@ import { FloatingShapes } from "../background-animation/FloatingShapes";
 import { HolographicCode } from "../background-animation/HolographicCode";
 import { Button } from "../components/Button";
 import { ResumeModal } from "../components/ResumeModal";
+import { DynamicWave } from "../background-animation/DynamicWave";
 
 export const HeroSection = () => {
   const mouseX = useMotionValue(0);
@@ -30,7 +31,7 @@ export const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen bg-background text-foreground overflow-hidden pt-20">
+    <section className="relative min-h-screen bg-background text-foreground overflow-hidden pt-20 pb-32">
       {/* BACKGROUND ANIMATION LAYERS */}
       <MeshGradient opacity={0.5} />
       <Depth3DBackground layers={5} />
@@ -303,6 +304,8 @@ export const HeroSection = () => {
           </motion.div>
         </div>
       </div>
+
+      <DynamicWave />
 
       {/* --- MEMANGGIL KOMPONEN MODAL DARI FILE LUAR --- */}
       <ResumeModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />

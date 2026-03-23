@@ -8,9 +8,11 @@ export default function App() {
       <Navigation />
 
       <main>
-        <section id="home">
-          <HeroSection />
-        </section>
+        <div className="relative w-full overflow-hidden">
+          <section id="home">
+            <HeroSection />
+          </section>
+        </div>
       </main>
     </div>
   );
