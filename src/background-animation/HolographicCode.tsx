@@ -3,7 +3,7 @@ import { useState, useEffect, useMemo } from "react";
 
 // --- DAFTAR TEKS KODE (Silakan tambah/ubah sesukamu!) ---
 const CODE_SNIPPETS = [
-  "const userId = 'RAHMA_01';",
+  "Information System",
   "function deployTemplate() {",
   "import { motion } from 'motion';",
   "01010101 11001100 00110011",
