@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
 import { useState, useEffect } from "react";
-import { Button } from "./section/Button";
-import { Download, Menu, X } from "lucide-react";
+import { Button } from "./components/Button";
+import { Mail, Menu, X } from "lucide-react"; // Ikon Download diganti Mail
 
 export const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,13 +15,13 @@ export const Navigation = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // "Contect" dihapus karena sudah diganti jadi tombol utama "Contact Me"
   const menuItems = [
     { name: "Home", path: "#home" },
     { name: "Project", path: "#project" },
     { name: "Skills", path: "#skills" },
     { name: "Experiences", path: "#experiences" },
     { name: "About Me", path: "#about" },
-    { name: "Contect", path: "#contact" },
   ];
 
   const handleNavClick = (path: string) => {
@@ -48,7 +48,7 @@ export const Navigation = () => {
           <div className="flex items-center justify-between">
             <div onClick={() => handleNavClick("#home")}>
               <motion.div
-                className="text-x1 md:text-2xl text-white cursor-pointer"
+                className="text-xl md:text-2xl text-white cursor-pointer"
                 style={{ fontWeight: 700 }}
                 whileHover={{ scale: 1.05 }}
               >
@@ -57,7 +57,7 @@ export const Navigation = () => {
               </motion.div>
             </div>
 
-            {/* Desktop Menu Settings */}
+            {/* --- Desktop Menu Settings --- */}
             <div className="hidden lg:flex items-center gap-2">
               {menuItems.map((item, index) => (
                 <div
@@ -75,25 +75,29 @@ export const Navigation = () => {
                 </div>
               ))}
 
+              {/* Tombol Contact Me (Desktop) */}
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                className="ml-2"
               >
                 <Button
-                  className="bg-primary hover:bg-secondary hover:text-secondary-foreground text-white transition-all duration-300 ml-2 gap-2 group"
+                  onClick={() => handleNavClick("#contact")}
+                  className="bg-primary hover:bg-secondary hover:text-secondary-foreground text-white transition-all duration-300 gap-2 group"
                   size="sm"
                 >
                   <motion.div
                     animate={{ y: [0, -2, 0] }}
                     transition={{ duration: 1.5, repeat: Infinity }}
                   >
-                    <Download className="w-4 h-4" />
+                    <Mail className="w-4 h-4" />
                   </motion.div>
-                  CV
+                  Contact Me
                 </Button>
               </motion.div>
             </div>
 
+            {/* Hamburger Button (Mobile) */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="lg:hidden text-white p-2"
@@ -105,6 +109,7 @@ export const Navigation = () => {
         </div>
       </motion.nav>
 
+      {/* --- Mobile Menu Overlay --- */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -120,15 +125,19 @@ export const Navigation = () => {
                   <div
                     key={index}
                     onClick={() => handleNavClick(item.path)}
-                    className="text-2xl transition-colors py-3 border-b border-primary cursor-pointer text-secondary-foreground hover:text-secondary"
+                    className="text-2xl transition-colors py-3 border-b border-primary cursor-pointer text-secondary hover:text-white font-medium"
                   >
                     {item.name}
                   </div>
                 ))}
 
-                <Button className="bg-primary hover:bg-secondary hover:text-secondary-foreground text-white transition-all duration-300 mt-4 gap-2">
-                  <Download className="w-5 h-5" />
-                  Download CV
+                {/* Tombol Contact Me (Mobile) */}
+                <Button
+                  onClick={() => handleNavClick("#contact")}
+                  className="bg-primary hover:bg-secondary hover:text-secondary-foreground text-white transition-all duration-300 mt-6 gap-2 w-full justify-center py-4 text-lg"
+                >
+                  <Mail className="w-5 h-5" />
+                  Contact Me
                 </Button>
               </div>
             </div>

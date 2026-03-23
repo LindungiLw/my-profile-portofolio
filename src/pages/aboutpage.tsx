@@ -13,43 +13,33 @@ export const AboutPage = () => {
   ];
 
   const Skills = [
-    {
-      name: "HTML",
-      level: "80%",
-    },
-    {
-      name: "CSS",
-      level: "70%",
-    },
-    {
-      name: "Javascript",
-      level: "60%",
-    },
-    {
-      name: "React JS",
-      level: "50%",
-    },
+    { name: "HTML", level: "80%" },
+    { name: "CSS", level: "70%" },
+    { name: "Javascript", level: "60%" },
+    { name: "React JS", level: "50%" },
   ];
 
   return (
-    <section className="py-20 px-6 bg-[#021526] relative overflow-hidden">
+    <section className="py-20 px-6 bg-background relative overflow-hidden">
       <div className="container mx-auto max-w-7xl relative z-10">
         <motion.div>
-          <p className="text-[#6EACDA] tracking-wider mb-2">WHO I AM</p>
+          <p className="text-secondary tracking-wider mb-2 font-semibold">
+            WHO I AM
+          </p>
           <h2
-            className="text-4xl md: text-5xl text-white mb-4"
+            className="text-4xl md:text-5xl text-foreground mb-4"
             style={{ fontWeight: 700 }}
           >
             About My Resume
           </h2>
-          <div className="w-20 h-1 bg-[#6EACDA] mx-auto mt-4" />
+          <div className="w-20 h-1 bg-secondary mt-4 rounded-full" />
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-12 mb-16">
-          {/* Personal Info */}
+        <div className="grid lg:grid-cols-2 gap-12 mb-16 mt-12">
+          {/* --- BAGIAN KIRI: Personal Info --- */}
           <motion.div>
             <h3
-              className="text-2xl text-[#6EACDA] mb-6"
+              className="text-2xl text-secondary mb-6"
               style={{ fontWeight: 600 }}
             >
               Personal Information
@@ -59,17 +49,20 @@ export const AboutPage = () => {
               {personalInfo.map((item, index) => (
                 <motion.div
                   key={index}
-                  className="flex items-center gap-4 p-3 hover:bg-[#03346E]/10 rounded-lg transition-all duration-300 cursor-pointer group"
+                  className="flex items-center gap-4 p-3 hover:bg-primary/30 rounded-xl transition-all duration-300 cursor-pointer group border border-transparent hover:border-secondary/30"
                 >
-                  <motion.div>
-                    <item.icon className="w-5 h-5 text-white group-hover:text-[#021526]" />
+                  <motion.div className="p-3 bg-primary/40 rounded-xl group-hover:bg-secondary transition-colors shadow-sm">
+                    <item.icon className="w-5 h-5 text-secondary group-hover:text-secondary-foreground" />
                   </motion.div>
 
                   <div>
-                    <p className="text-sm text-[#03346E] opacity-80">
+                    <p className="text-sm text-foreground/80 font-medium">
                       {item.label}
                     </p>
-                    <p className="text-[#021526]" style={{ fontWeight: 600 }}>
+                    <p
+                      className="text-foreground text-lg"
+                      style={{ fontWeight: 600 }}
+                    >
                       {item.value}
                     </p>
                   </div>
@@ -78,23 +71,22 @@ export const AboutPage = () => {
             </div>
           </motion.div>
 
-          {/* Workspace Image   */}
-          <motion.div>
-            <motion.div>
-              <motion.div>
-                <img
-                  src="/images/workspace.jpg"
-                  alt="Workspace"
-                  className="w-full h-full object-cover"
-                />
-              </motion.div>
+          {/* --- BAGIAN KANAN: Workspace Image --- */}
+          <motion.div className="relative rounded-2xl overflow-hidden group border border-secondary/20 shadow-2xl h-[400px]">
+            <img
+              src="/images/workspace.jpg"
+              alt="Workspace"
+              className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+            />
 
-              <div className="absolute inset-0 bg-[#03346E] opacity-30 mix-blend-multiply group-hover:opacity-10 transition-opacity" />
-              <motion.div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#021526] to-transparent">
-                <p className="text-[#E2E2B6] text-lg">
-                  Colloraborative workspace
-                </p>
-              </motion.div>
+            {/* Overlay gelap agar gambar menyatu dengan tema */}
+            <div className="absolute inset-0 bg-primary opacity-30 mix-blend-multiply group-hover:opacity-10 transition-opacity" />
+
+            {/* Gradient shadow untuk teks (Aman dari warning) */}
+            <motion.div className="absolute bottom-0 left-0 right-0 p-6 bg-[linear-gradient(to_top,var(--color-background),transparent)]">
+              <p className="text-foreground text-xl font-bold">
+                Collaborative workspace
+              </p>
             </motion.div>
           </motion.div>
         </div>

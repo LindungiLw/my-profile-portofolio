@@ -1,13 +1,5 @@
 import { motion, useTransform, useMotionValue } from "motion/react";
-import {
-  Download,
-  Code,
-  Camera,
-  Award,
-  Instagram,
-  Linkedin,
-  Github,
-} from "lucide-react";
+import { Download, Award, Instagram, Linkedin, Github } from "lucide-react";
 import personalProfile from "../assets/personal-profile.png";
 import { useState } from "react";
 import { HolographicOverlay } from "../background-animation/HolographicOverlay";
@@ -16,7 +8,8 @@ import { MeshGradient } from "../background-animation/MeshGradient";
 import { ParticleBackground } from "../background-animation/ParticleBackground";
 import { FloatingShapes } from "../background-animation/FloatingShapes";
 import { HolographicCode } from "../background-animation/HolographicCode";
-import { Button } from "./Button";
+import { Button } from "../components/Button";
+import { ResumeModal } from "../components/ResumeModal";
 
 export const HeroSection = () => {
   const mouseX = useMotionValue(0);
@@ -26,6 +19,7 @@ export const HeroSection = () => {
   const rotateY = useTransform(mouseX, [-300, 300], [-10, 10]);
 
   const [isHovered, setIsHovered] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -47,7 +41,7 @@ export const HeroSection = () => {
 
       <div className="container mx-auto px-6 py-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[calc(100vh-150px)]">
-          {/* BAGIAN KIRI: TEKS & TOMBOL */}
+          {/* --- BAGIAN KIRI: TEKS & TOMBOL --- */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -87,7 +81,8 @@ export const HeroSection = () => {
                     <span
                       className={
                         word.gradient
-                          ? "bg-gradient-to-r from-secondary via-foreground to-secondary bg-clip-text text-transparent"
+                          ? // DIPERBAIKI: Arbitrary gradient text
+                            "bg-[linear-gradient(to_right,var(--color-secondary),var(--color-foreground),var(--color-secondary))] bg-clip-text text-transparent"
                           : "text-foreground"
                       }
                     >
@@ -98,7 +93,6 @@ export const HeroSection = () => {
               </motion.h1>
             </div>
 
-            {/* Deskripsi */}
             <motion.p
               className="text-foreground text-lg leading-relaxed max-w-xl opacity-90"
               initial={{ opacity: 0, y: 20 }}
@@ -111,7 +105,6 @@ export const HeroSection = () => {
               results.
             </motion.p>
 
-            {/* Tombol Sosial Media */}
             <motion.div
               className="flex gap-4 pt-4"
               initial={{ opacity: 0, y: 20 }}
@@ -134,15 +127,11 @@ export const HeroSection = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 1.2 + social.delay }}
                 >
-                  {/* Efek Hover Background */}
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-br from-secondary to-foreground"
-                    initial={{ opacity: 0 }}
-                    whileHover={{ opacity: 1 }}
+                    // DIPERBAIKI: Arbitrary gradient social hover
+                    className="absolute inset-0 bg-[linear-gradient(to_bottom_right,var(--color-secondary),var(--color-foreground))] opacity-0 group-hover:opacity-100 transition-opacity"
                   />
                   <social.icon className="w-6 h-6 relative z-10 text-foreground group-hover:text-background transition-colors" />
-
-                  {/* Tooltip */}
                   <motion.div
                     className="absolute -top-12 backdrop-blur-xl bg-secondary/90 text-background font-medium px-4 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg"
                     initial={{ y: 10 }}
@@ -154,7 +143,7 @@ export const HeroSection = () => {
               ))}
             </motion.div>
 
-            {/* Tombol Download CV */}
+            {/* --- TOMBOL PEMICU MODAL RESUME --- */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -164,27 +153,29 @@ export const HeroSection = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                <Button className="relative bg-gradient-to-r from-secondary via-foreground to-secondary hover:from-foreground hover:to-secondary text-background px-8 py-6 text-lg gap-2 shadow-2xl group overflow-hidden rounded-2xl border-none">
-                  {/* Efek Kilap (Shine) Animasi */}
+                <Button
+                  onClick={() => setIsModalOpen(true)}
+                  // DIPERBAIKI: Arbitrary gradient button
+                  className="relative bg-[linear-gradient(to_right,var(--color-secondary),var(--color-foreground),var(--color-secondary))] hover:brightness-110 text-background px-8 py-6 text-lg gap-2 shadow-2xl group overflow-hidden rounded-2xl border-none transition-all"
+                >
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
-                    animate={{
-                      x: ["-200%", "200%"],
-                    }}
+                    // DIPERBAIKI: Arbitrary gradient button shine
+                    className="absolute inset-0 bg-[linear-gradient(to_right,transparent,rgba(255,255,255,0.4),transparent)] z-10"
+                    animate={{ x: ["-200%", "200%"] }}
                     transition={{
                       duration: 2,
                       repeat: Infinity,
                       ease: "linear",
                     }}
                   />
-                  <Download className="w-5 h-5 group-hover:animate-bounce relative z-10" />
-                  <span className="relative z-10 font-bold">Download CV</span>
+                  <Download className="w-5 h-5 group-hover:animate-bounce relative z-20" />
+                  <span className="relative z-20 font-bold">Get My Resume</span>
                 </Button>
               </motion.div>
             </motion.div>
           </motion.div>
 
-          {/* BAGIAN KANAN: FOTO 3D & EFEK ORBIT */}
+          {/* --- BAGIAN KANAN: FOTO 3D & EFEK ORBIT --- */}
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -192,7 +183,7 @@ export const HeroSection = () => {
             className="relative flex justify-center lg:justify-end"
           >
             <motion.div
-              className="relative"
+              className="relative flex items-center justify-center"
               onMouseMove={handleMouseMove}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
@@ -201,31 +192,24 @@ export const HeroSection = () => {
                 perspective: 1000,
               }}
             >
-              {/* Cincin Dekorasi Belakang */}
               <motion.div
                 className="absolute border-4 border-primary rounded-full opacity-30 w-[600px] h-[600px] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                style={{
-                  zIndex: -1,
-                }}
+                style={{ zIndex: -1 }}
                 animate={{
                   rotate: isHovered ? 360 : 0,
                   scale: isHovered ? 1.05 : 1,
                 }}
-                transition={{
-                  duration: 8,
-                  repeat: Infinity,
-                  ease: "linear",
-                }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
               />
+
               <motion.div
                 className="absolute -bottom-12 -left-12 w-40 h-40 bg-primary opacity-20 rounded-full"
                 animate={{ scale: [1, 1.3, 1], opacity: [0.2, 0.4, 0.2] }}
                 transition={{ duration: 4, repeat: Infinity }}
               />
 
-              {/* Wadah Foto Utama */}
               <motion.div
-                className="relative w-[350px] h-[350px] md:w-[500px] md:h-[500px] rounded-full p-1.5 shadow-2xl cursor-pointer"
+                className="relative z-10 w-[350px] h-[350px] md:w-[500px] md:h-[500px] rounded-full overflow-hidden border-4 border-secondary shadow-2xl cursor-pointer bg-primary"
                 style={{
                   rotateX,
                   rotateY,
@@ -235,32 +219,17 @@ export const HeroSection = () => {
                 whileHover={{ scale: 1.03 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                {/* 1. Cincin Border Animasi (Paling Belakang) */}
-                <motion.div
-                  className="absolute inset-0 rounded-full bg-gradient-to-tr from-secondary via-foreground to-secondary"
-                  animate={{ rotate: 360 }}
-                  transition={{
-                    duration: 10,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
+                <img
+                  src={personalProfile}
+                  alt="Rahma Lindungi Laowo"
+                  className="w-full h-full object-cover z-10 relative"
                 />
-
-                {/* 2. Container Foto (Di Depan Cincin) */}
-                <div className="relative w-full h-full rounded-full overflow-hidden z-10 bg-background">
-                  <img
-                    src={personalProfile}
-                    alt="Rahma Lindungi Laowo"
-                    className="w-full h-full object-cover"
-                  />
-
-                  {/* Gradient Overlay saat di-hover */}
-                  <motion.div className="absolute inset-0 bg-linear-to-t from-secondary/50 to-transparent opacity-0 hover:opacity-100 transition-opacity" />
-                </div>
-
-                {/* Cincin Border Animasi (Glow) */}
                 <motion.div
-                  className="absolute inset-0 rounded-full"
+                  // DIPERBAIKI: Arbitrary gradient untuk shadow gelap di foto
+                  className="absolute inset-0 bg-[linear-gradient(to_top,rgba(110,172,218,0.4),transparent)] opacity-0 hover:opacity-100 transition-opacity z-20"
+                />
+                <motion.div
+                  className="absolute inset-0 rounded-full z-0"
                   style={{
                     border: "4px solid transparent",
                     backgroundImage:
@@ -268,9 +237,7 @@ export const HeroSection = () => {
                     backgroundOrigin: "border-box",
                     backgroundClip: "padding-box, border-box",
                   }}
-                  animate={{
-                    rotate: 360,
-                  }}
+                  animate={{ rotate: 360 }}
                   transition={{
                     duration: 10,
                     repeat: Infinity,
@@ -279,13 +246,9 @@ export const HeroSection = () => {
                 />
               </motion.div>
 
-              {/* Lencana (Badges) Melayang di Atas Foto */}
               <motion.div
-                className="absolute top-6 -right-6 backdrop-blur-xl bg-secondary/90 text-background px-5 py-3 rounded-2xl shadow-2xl border-2 border-white/20"
-                animate={{
-                  y: [0, -10, 0],
-                  rotate: [0, 2, 0],
-                }}
+                className="absolute top-6 -right-6 backdrop-blur-xl bg-secondary/90 text-background px-5 py-3 rounded-2xl shadow-2xl border-2 border-white/20 z-30"
+                animate={{ y: [0, -10, 0], rotate: [0, 2, 0] }}
                 transition={{
                   duration: 3,
                   repeat: Infinity,
@@ -299,11 +262,8 @@ export const HeroSection = () => {
               </motion.div>
 
               <motion.div
-                className="absolute bottom-12 -left-8 backdrop-blur-xl bg-primary/90 text-foreground px-5 py-3 rounded-2xl shadow-2xl border-2 border-secondary/50"
-                animate={{
-                  x: [0, 10, 0],
-                  rotate: [0, -2, 0],
-                }}
+                className="absolute bottom-12 -left-8 backdrop-blur-xl bg-primary/90 text-foreground px-5 py-3 rounded-2xl shadow-2xl border-2 border-secondary/50 z-30"
+                animate={{ x: [0, 10, 0], rotate: [0, -2, 0] }}
                 transition={{
                   duration: 4,
                   repeat: Infinity,
@@ -316,15 +276,11 @@ export const HeroSection = () => {
                 </span>
               </motion.div>
 
-              {/* Titik Partikel Mengorbit Foto */}
               {[...Array(3)].map((_, i) => (
                 <motion.div
                   key={i}
-                  className="absolute w-3 h-3 rounded-full bg-secondary"
-                  style={{
-                    top: "50%",
-                    left: "50%",
-                  }}
+                  className="absolute w-3 h-3 rounded-full bg-secondary z-0"
+                  style={{ top: "50%", left: "50%" }}
                   animate={{
                     x: [
                       Math.cos((i * 2 * Math.PI) / 3) * 220,
@@ -347,6 +303,9 @@ export const HeroSection = () => {
           </motion.div>
         </div>
       </div>
+
+      {/* --- MEMANGGIL KOMPONEN MODAL DARI FILE LUAR --- */}
+      <ResumeModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </section>
   );
 };
