@@ -3,6 +3,9 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { ProjectCard } from "../components/ProjectCard";
+import { HolographicOverlay } from "../background-animation/HolographicOverlay";
+import { WaveBackground } from "../background-animation/WaveBackground";
+import { GridBackground } from "../background-animation/GridBackground";
 
 export const ProjectsSection = () => {
   const projects = [
@@ -60,8 +63,11 @@ export const ProjectsSection = () => {
   };
 
   return (
-    // DIPERBAIKI: bg-[#03346E] diganti menjadi bg-primary
-    <section className="py-12 md:py-20 px-4 md:px-6 bg-primary relative overflow-hidden">
+    <section className="py-0 md:py-20 px-4 md:px-6 bg-primary relative overflow-hidden">
+      <GridBackground spacing={50} />
+      <WaveBackground />
+      <HolographicOverlay intensity={0.2} />
+
       <div className="container mx-auto max-w-7xl relative z-10">
         {/* Section Header */}
         <motion.div
@@ -69,9 +75,8 @@ export const ProjectsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12 md:mb-16"
+          className="text-center mb-8 md:mb-12"
         >
-          {/* DIPERBAIKI: text-[#6EACDA] diganti menjadi text-secondary */}
           <p className="text-secondary tracking-wider mb-2 text-xs md:text-sm font-semibold">
             PORTFOLIO
           </p>
@@ -82,7 +87,6 @@ export const ProjectsSection = () => {
             My <span className="text-secondary">Projects</span>
           </h2>
 
-          {/* DIPERBAIKI: via-[#6EACDA] diganti menjadi via-secondary */}
           <div
             className="w-20 h-1 mx-auto mt-4 rounded-full"
             style={{
@@ -104,7 +108,6 @@ export const ProjectsSection = () => {
         </div>
       </div>
 
-      {/* DIPERBAIKI: Semua warna HEX di slider diganti dengan var(--color-secondary) */}
       <style>{`
         .projects-slider .slick-dots {
           bottom: -50px;
