@@ -1,4 +1,3 @@
-// src/background-animation/DynamicWave.tsx
 import React from "react";
 
 interface DynamicWaveProps {
@@ -10,13 +9,10 @@ export const DynamicWave: React.FC<DynamicWaveProps> = ({
   fill = "var(--color-primary)",
   opacity = 1,
 }) => {
-  // 💥 TSUNAMI PATH: Angka -40 dan 40 ini yang bikin ombaknya menjulang tinggi!
-  // Sebelumnya santai di angka -18 dan 18.
   const wavePath =
     "M-160 50 c30 0 58-40 88-40 s58 40 88 40 s58-40 88-40 s58 40 88 40 v150 h-352 Z";
 
   return (
-    // CONTAINER LEBIH TINGGI (h-48 md:h-72) agar tsunaminya punya ruang untuk naik
     <div
       className="absolute bottom-0 left-0 w-full overflow-hidden leading-none z-0 pointer-events-none h-48 md:h-72"
       style={{ opacity }}
@@ -42,10 +38,6 @@ export const DynamicWave: React.FC<DynamicWaveProps> = ({
         <defs>
           <path id="tsunami-wave" d={wavePath} />
         </defs>
-
-        {/* ------------------------------------------------------------------ */}
-        {/* TSUNAMI LAYERS: Tumpukan yang lebih dramatis dan cepat */}
-        {/* ------------------------------------------------------------------ */}
 
         {/* Layer 1 (Paling Belakang - Gelombang pertama yang tinggi) */}
         <g

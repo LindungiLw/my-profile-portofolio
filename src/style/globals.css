@@ -16,10 +16,6 @@
   --color-secondary: #6eacda;
   --color-secondary-foreground: #021526;
 
-  /* ------------------------------------------------------------------------
-     2. WARNA BAWAAN SHADCN (Dibiarkan agar tidak error jika pakai komponen UI)
-     ------------------------------------------------------------------------ */
-  --color-card: #e2e2b6;
   --color-card-foreground: #021526;
 
   --color-popover: #021526;
