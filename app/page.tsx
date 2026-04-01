@@ -11,7 +11,7 @@ import { useState, useRef } from "react";
 const BoundingBox = ({
   children,
   className = "",
-  enableDrag = false, // Properti untuk mengaktifkan drag
+  enableDrag = false,
 }: {
   children: React.ReactNode;
   className?: string;
@@ -71,12 +71,10 @@ const BoundingBox = ({
       }
     >
       {children}
-      {/* Titik Sudut (Nodes) */}
       <div className="absolute -top-1 -left-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
       <div className="absolute -top-1 -right-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
       <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
       <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
-      {/* Titik Tengah (Nodes) */}
       <div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
       <div className="absolute top-1/2 -translate-y-1/2 -right-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
     </div>
@@ -85,12 +83,12 @@ const BoundingBox = ({
 
 export default function Home() {
   const [displayText, setDisplayText] = useState("Lindungi");
-  const intervalRef = useRef<NodeJS.Timeout>();
+  const intervalRef = useRef<any>(null);
 
   const triggerGlitch = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     const originalText = "Lindungi";
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*";
+    const letters = "Putri Helen Renata";
     let iteration = 0;
 
     intervalRef.current = setInterval(() => {
@@ -118,7 +116,7 @@ export default function Home() {
 
       <main className="relative z-40">
         <section className="flex min-h-screen items-center justify-center relative w-full max-w-7xl mx-auto px-6">
-          {/* --- DEKORASI TECH STACK (Kiri Bawah) --- */}
+          {/* --- DEKORASI TECH STACK --- */}
           <div className="absolute left-6 md:left-12 bottom-20 flex gap-8 text-[#8892B0] font-bold text-lg md:text-xl leading-snug tracking-tighter mix-blend-screen opacity-80 pointer-events-none z-10">
             <div>
               <p>CSS</p>
@@ -137,9 +135,8 @@ export default function Home() {
             </div>
           </div>
 
-          {/* --- DEKORASI ICON & LABEL (Atas & Kanan) --- */}
           <div className="absolute top-32 right-12 md:right-32 bg-[#FF5722] text-[#0A192F] font-bold text-2xl md:text-4xl px-3 py-1 scale-110 transform rotate-3 shadow-lg pointer-events-none z-10">
-            #24
+            #2026
           </div>
 
           <div className="absolute top-32 left-12 md:left-32 flex gap-3 pointer-events-none z-10">
@@ -180,13 +177,10 @@ export default function Home() {
             </div>
           </div>
 
-          {/* ========================================= */}
-          {/* KOMPOSISI TYPOGRAPHY SENTRAL               */}
-          {/* ========================================= */}
+          {/* --- TYPOGRAPHY SENTRAL --- */}
           <div className="relative flex items-center justify-center w-full max-w-5xl h-[400px] md:h-[500px]">
             {/* 1. Kata: rahma */}
-            {/* WADAH PENGUNCI POSISI DEFAULT (Rahma di Atas Kiri) */}
-            <div className="absolute left-4 md:left-16 -translate-y-16 md:-translate-y-24 z-30">
+            <div className="absolute left-10 md:left-28 -translate-y-12 md:-translate-y-20 z-30">
               <BoundingBox
                 enableDrag={true}
                 className="px-3 py-1.5 cursor-crosshair"
@@ -194,7 +188,6 @@ export default function Home() {
                 <span className="block text-6xl md:text-8xl font-black text-[#E6F1FF] tracking-tighter lowercase pointer-events-none">
                   rahma
                 </span>
-                {/* Kursor Mouse SVG */}
                 <svg
                   className="absolute -bottom-8 -right-4 w-8 h-8 text-[#FF5722] transform -rotate-12 drop-shadow-lg pointer-events-none"
                   viewBox="0 0 24 24"
@@ -209,29 +202,16 @@ export default function Home() {
               </BoundingBox>
             </div>
 
-            {/* 2. Kata: Lindungi (Tetap di tengah sebagai poros) */}
+            {/* 2. Kata: Lindungi */}
             <div
               onMouseEnter={triggerGlitch}
               className="absolute z-40 font-['Dancing_Script',_cursive] text-[120px] md:text-[220px] text-[#FF5722] leading-none transform -rotate-6 drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] cursor-crosshair select-none"
             >
               {displayText}
-              <svg
-                className="absolute top-0 -left-20 w-32 h-32 pointer-events-none opacity-50 z-[-1]"
-                viewBox="0 0 100 100"
-                fill="none"
-                stroke="#8892B0"
-                strokeWidth="1"
-                strokeDasharray="4 4"
-              >
-                <path d="M 0,100 C 20,20 80,80 100,0" />
-                <circle cx="0" cy="100" r="3" fill="#0A192F" stroke="#8892B0" />
-                <circle cx="100" cy="0" r="3" fill="#0A192F" stroke="#8892B0" />
-              </svg>
             </div>
 
-            {/* 3. Kata: laowo */}
-            {/* WADAH PENGUNCI POSISI DEFAULT (Laowo di Bawah Kanan) */}
-            <div className="absolute right-4 md:right-16 translate-y-24 md:translate-y-32 z-30">
+            {/* 3. Kata: laowo - SEKARANG BERDIRI SENDIRI TANPA SUB-TITLE */}
+            <div className="absolute right-10 md:right-28 translate-y-16 md:translate-y-24 z-30">
               <BoundingBox
                 enableDrag={true}
                 className="px-3 py-1.5 cursor-crosshair"
@@ -239,17 +219,22 @@ export default function Home() {
                 <span className="block text-6xl md:text-8xl font-black text-[#E6F1FF] tracking-tighter lowercase pointer-events-none">
                   laowo
                 </span>
+              </BoundingBox>
+            </div>
 
-                {/* 4. Sub-title */}
-                <div className="absolute right-0 md:right-[-20px] bottom-[-60px] md:bottom-[-70px] px-4 py-2 rotate-3 bg-[#0A192F]/90 backdrop-blur-sm z-50 border-[1px] border-[#8892B0]/30 rounded-sm pointer-events-none shadow-xl">
-                  <div className="text-center">
-                    <span className="block text-[#FF5722] font-bold text-xl leading-none">
-                      Software
-                    </span>
-                    <span className="block font-['Dancing_Script',_cursive] text-white text-3xl leading-none -mt-1">
-                      Engineer
-                    </span>
-                  </div>
+            {/* 4. Sub-title: Software Engineer - DIPISAH DAN DITARUH DI TENGAH BAWAH */}
+            <div className="absolute bottom-[-10px] md:bottom-8 left-1/2 -translate-x-1/2 z-50">
+              <BoundingBox
+                enableDrag={true}
+                className="px-4 py-2 rotate-3 bg-[#0A192F]/90 backdrop-blur-sm border-[1px] border-[#8892B0]/30 rounded-sm shadow-xl cursor-crosshair"
+              >
+                <div className="text-center pointer-events-none">
+                  <span className="block text-[#FF5722] font-bold text-xl leading-none">
+                    Software
+                  </span>
+                  <span className="block font-['Dancing_Script',_cursive] text-white text-3xl leading-none -mt-1">
+                    Engineer
+                  </span>
                 </div>
               </BoundingBox>
             </div>
@@ -258,10 +243,10 @@ export default function Home() {
           {/* --- LABEL KANAN BAWAH --- */}
           <div className="absolute right-6 md:right-12 bottom-12 text-right pointer-events-none z-10">
             <p className="font-['Dancing_Script',_cursive] text-3xl text-[#E6F1FF] mb-2 opacity-90">
-              Aesthetic Coder
+              UI/UX & Frontend
             </p>
             <p className="text-[10px] font-bold text-[#8892B0] tracking-widest uppercase">
-              Rahma's Creative Studio
+              Information System Student
             </p>
           </div>
         </section>
