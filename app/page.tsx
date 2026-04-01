@@ -3,173 +3,267 @@
 import { BinaryCursor } from "../components/BinaryCursor";
 import { Navigation } from "../components/Navigation";
 import Link from "next/link";
+import { useState, useRef } from "react";
+
+// ==========================================
+// KOMPONEN KHUSUS: Kotak Seleksi (Bisa Di-Drag)
+// ==========================================
+const BoundingBox = ({
+  children,
+  className = "",
+  enableDrag = false, // Properti untuk mengaktifkan drag
+}: {
+  children: React.ReactNode;
+  className?: string;
+  enableDrag?: boolean;
+}) => {
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const startPos = useRef({ x: 0, y: 0 });
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!enableDrag) return;
+    setIsDragging(true);
+    startPos.current = {
+      x: e.clientX - dragOffset.x,
+      y: e.clientY - dragOffset.y,
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging || !enableDrag) return;
+    setDragOffset({
+      x: e.clientX - startPos.current.x,
+      y: e.clientY - startPos.current.y,
+    });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!enableDrag) return;
+    setIsDragging(false);
+    e.currentTarget.releasePointerCapture(e.pointerId);
+  };
+
+  return (
+    <div
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      className={`relative w-fit h-fit border-[1px] border-[#8892B0] border-dashed group select-none ${
+        enableDrag
+          ? isDragging
+            ? "cursor-grabbing z-50 bg-[#112240]/80 shadow-2xl scale-105"
+            : "cursor-grab hover:bg-[#112240]/50"
+          : ""
+      } ${className}`}
+      style={
+        enableDrag
+          ? {
+              transform: `translate(${dragOffset.x}px, ${dragOffset.y}px)`,
+              touchAction: "none",
+              transition: isDragging
+                ? "none"
+                : "transform 0.1s ease-out, background-color 0.3s",
+            }
+          : {}
+      }
+    >
+      {children}
+      {/* Titik Sudut (Nodes) */}
+      <div className="absolute -top-1 -left-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
+      <div className="absolute -top-1 -right-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
+      <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
+      <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
+      {/* Titik Tengah (Nodes) */}
+      <div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
+      <div className="absolute top-1/2 -translate-y-1/2 -right-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
+    </div>
+  );
+};
 
 export default function Home() {
-  return (
-    <div className="relative min-h-screen font-sans">
-      {/* Efek Biner Latar Belakang */}
-      <BinaryCursor />
+  const [displayText, setDisplayText] = useState("Lindungi");
+  const intervalRef = useRef<NodeJS.Timeout>();
 
-      {/* Navbar di Atas */}
+  const triggerGlitch = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    const originalText = "Lindungi";
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*";
+    let iteration = 0;
+
+    intervalRef.current = setInterval(() => {
+      setDisplayText((prev) =>
+        originalText
+          .split("")
+          .map((letter, i) => {
+            if (i < iteration) return originalText[i];
+            return letters[Math.floor(Math.random() * letters.length)];
+          })
+          .join(""),
+      );
+
+      if (iteration >= originalText.length) {
+        clearInterval(intervalRef.current);
+      }
+      iteration += 1 / 2;
+    }, 40);
+  };
+
+  return (
+    <div className="relative min-h-screen font-sans bg-[#0A192F] overflow-hidden">
+      <BinaryCursor />
       <Navigation />
 
-      {/* Kontainer Utama (Dibikin di tengah / max-w-4xl agar sangat nyaman dibaca) */}
-      <main className="mx-auto max-w-4xl px-6 md:px-12 z-40 relative">
-        {/* ========================================= */}
-        {/* 1. HERO SECTION (Perkenalan Utama)        */}
-        {/* ========================================= */}
-        <section className="flex min-h-screen flex-col justify-center pt-20">
-          <p className="text-[#64FFDA] font-mono mb-5 ml-1">Hi, my name is</p>
-
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-[#E6F1FF] tracking-tight mb-2">
-            Rahma Lindungi Laowo.
-          </h1>
-
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-bold text-[#8892B0] tracking-tight mb-8">
-            I build modern digital experiences.
-          </h2>
-
-          <p className="max-w-xl text-[#8892B0] text-lg leading-relaxed mb-12">
-            Saya seorang Frontend Web Developer yang berfokus pada merancang dan
-            membangun antarmuka pengguna yang responsif, minimalis, dan memiliki
-            performa tinggi di balik layar.
-            <span className="text-[#64FFDA] block mt-4 text-xs font-mono">
-              Initializing binary trail... [OK]
-            </span>
-          </p>
-
-          {/* Social Links */}
-          <ul className="flex items-center gap-6 ml-1">
-            <li>
-              <Link
-                href="https://github.com"
-                target="_blank"
-                className="text-[#8892B0] hover:text-[#64FFDA] hover:-translate-y-1 transform transition-all duration-300"
-              >
-                <span className="sr-only">GitHub</span>
-                <svg
-                  className="h-7 w-7"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-                </svg>
-              </Link>
-            </li>
-            <li>
-              <Link
-                href="https://linkedin.com"
-                target="_blank"
-                className="text-[#8892B0] hover:text-[#64FFDA] hover:-translate-y-1 transform transition-all duration-300"
-              >
-                <span className="sr-only">LinkedIn</span>
-                <svg
-                  className="h-7 w-7"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                </svg>
-              </Link>
-            </li>
-          </ul>
-        </section>
-
-        {/* ========================================= */}
-        {/* 2. ABOUT SECTION                          */}
-        {/* ========================================= */}
-        <section
-          id="about"
-          className="py-24 scroll-mt-24 border-t border-[#172A45]/50"
-        >
-          <div className="flex items-center gap-4 mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-[#E6F1FF]">
-              <span className="text-[#64FFDA] font-mono text-xl md:text-2xl mr-2">
-                01.
-              </span>
-              About Me
-            </h2>
-            <div className="h-[1px] bg-[#233554] w-32 md:w-72"></div>
-          </div>
-
-          <div className="text-[#8892B0] text-lg leading-relaxed space-y-4 max-w-2xl">
-            <p>
-              Perjalanan saya sebagai developer dimulai dari ketertarikan pada
-              bagaimana sebuah desain statis bisa hidup dan berinteraksi di
-              layar.
-            </p>
-            <p>
-              Saat ini, saya banyak menghabiskan waktu merakit komponen
-              antarmuka yang presisi menggunakan ekosistem React, mengeksplorasi
-              animasi halus, dan memastikan kode saya tetap bersih dan mudah
-              dipelihara.
-            </p>
-          </div>
-        </section>
-
-        {/* ========================================= */}
-        {/* 3. EXPERIENCE SECTION                     */}
-        {/* ========================================= */}
-        <section
-          id="experience"
-          className="py-24 scroll-mt-24 border-t border-[#172A45]/50"
-        >
-          <div className="flex items-center gap-4 mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-[#E6F1FF]">
-              <span className="text-[#64FFDA] font-mono text-xl md:text-2xl mr-2">
-                02.
-              </span>
-              Where I've Worked
-            </h2>
-            <div className="h-[1px] bg-[#233554] w-32 md:w-72"></div>
-          </div>
-
-          {/* ========================================= */}
-          {/* Kartu Pengalaman - The Shielding Effect   */}
-          {/* ========================================= */}
-          <div className="group relative rounded-lg p-6 md:p-8 transition-all duration-500 hover:bg-[#112240]/60 border border-transparent hover:shadow-[0_0_30px_rgba(100,255,218,0.05)]">
-            {/* SIKU PELINDUNG (BRACKETS) - Muncul saat di-hover */}
-            <div className="absolute top-0 left-0 w-5 h-5 border-t-2 border-l-2 border-[#64FFDA] opacity-0 -translate-x-4 -translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300 ease-out rounded-tl-sm"></div>
-            <div className="absolute top-0 right-0 w-5 h-5 border-t-2 border-r-2 border-[#64FFDA] opacity-0 translate-x-4 -translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300 ease-out rounded-tr-sm"></div>
-            <div className="absolute bottom-0 left-0 w-5 h-5 border-b-2 border-l-2 border-[#64FFDA] opacity-0 -translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300 ease-out rounded-bl-sm"></div>
-            <div className="absolute bottom-0 right-0 w-5 h-5 border-b-2 border-r-2 border-[#64FFDA] opacity-0 translate-x-4 translate-y-4 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-300 ease-out rounded-br-sm"></div>
-
-            {/* KONTEN KARTU */}
-            <div className="relative z-10">
-              <h3 className="text-xl font-bold text-[#E6F1FF] group-hover:text-[#64FFDA] transition-colors duration-300 flex items-center gap-2">
-                Frontend Software Engineer
-                <span className="text-[#64FFDA] text-sm hidden group-hover:inline-flex animate-pulse">
-                  _
-                </span>
-              </h3>
-              <h4 className="text-lg font-medium text-[#8892B0] mt-1">
-                Tech Solutions Inc.
-              </h4>
-              <p className="font-mono text-sm text-[#64FFDA]/70 mt-2 mb-4">
-                2023 — Present
-              </p>
-
-              <p className="text-[#8892B0] leading-relaxed mb-6">
-                Membangun dan memelihara komponen UI kritis yang digunakan di
-                seluruh aplikasi klien. Fokus pada aksesibilitas, performa
-                rendering, dan arsitektur kode yang scalable serta mengamankan
-                aliran data antarmuka.
-              </p>
-
-              <ul className="flex flex-wrap gap-3">
-                <li className="font-mono text-xs text-[#64FFDA] bg-[#64FFDA]/10 border border-[#64FFDA]/20 px-3 py-1.5 rounded-full transition-colors hover:bg-[#64FFDA]/20 cursor-default">
-                  React
-                </li>
-                <li className="font-mono text-xs text-[#64FFDA] bg-[#64FFDA]/10 border border-[#64FFDA]/20 px-3 py-1.5 rounded-full transition-colors hover:bg-[#64FFDA]/20 cursor-default">
-                  Next.js
-                </li>
-                <li className="font-mono text-xs text-[#64FFDA] bg-[#64FFDA]/10 border border-[#64FFDA]/20 px-3 py-1.5 rounded-full transition-colors hover:bg-[#64FFDA]/20 cursor-default">
-                  TailwindCSS
-                </li>
-              </ul>
+      <main className="relative z-40">
+        <section className="flex min-h-screen items-center justify-center relative w-full max-w-7xl mx-auto px-6">
+          {/* --- DEKORASI TECH STACK (Kiri Bawah) --- */}
+          <div className="absolute left-6 md:left-12 bottom-20 flex gap-8 text-[#8892B0] font-bold text-lg md:text-xl leading-snug tracking-tighter mix-blend-screen opacity-80 pointer-events-none z-10">
+            <div>
+              <p>CSS</p>
+              <p>SAP</p>
+              <p>JS</p>
+              <p className="text-[#E6F1FF]">HTML</p>
+              <p>React</p>
+            </div>
+            <div>
+              <p>Tailwind</p>
+              <p>Dart</p>
+              <p>Flutter</p>
+              <p>Java</p>
+              <p>Python</p>
+              <p className="text-[#E6F1FF]">Next.js</p>
             </div>
           </div>
-          {/* Akhir Kartu Pengalaman */}
+
+          {/* --- DEKORASI ICON & LABEL (Atas & Kanan) --- */}
+          <div className="absolute top-32 right-12 md:right-32 bg-[#FF5722] text-[#0A192F] font-bold text-2xl md:text-4xl px-3 py-1 scale-110 transform rotate-3 shadow-lg pointer-events-none z-10">
+            #24
+          </div>
+
+          <div className="absolute top-32 left-12 md:left-32 flex gap-3 pointer-events-none z-10">
+            <div className="w-12 h-12 bg-[#1E1E1E] rounded-xl flex items-center justify-center border border-[#333]">
+              <svg
+                className="w-6 h-6"
+                viewBox="0 0 38 57"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M19 28.5C19 33.7467 14.7467 38 9.5 38C4.25329 38 0 33.7467 0 28.5C0 23.2533 4.25329 19 9.5 19H19V28.5Z"
+                  fill="#0ACF83"
+                />
+                <path
+                  d="M0 47.5C0 52.7467 4.25329 57 9.5 57C14.7467 57 19 52.7467 19 47.5V38H9.5C4.25329 38 0 42.2533 0 47.5Z"
+                  fill="#1ABCFE"
+                />
+                <path
+                  d="M38 9.5C38 14.7467 33.7467 19 28.5 19H19V0H28.5C33.7467 0 38 4.25329 38 9.5Z"
+                  fill="#F24E1E"
+                />
+                <path
+                  d="M0 9.5C0 14.7467 4.25329 19 9.5 19H19V0H9.5C4.25329 0 0 4.25329 0 9.5Z"
+                  fill="#A259FF"
+                />
+              </svg>
+            </div>
+            <div className="w-12 h-12 bg-[#1E1E1E] rounded-xl flex items-center justify-center border border-[#333]">
+              <svg
+                className="w-8 h-8 text-[#61DAFB]"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 22.75C6.15 22.75 1.25 18.05 1.25 12C1.25 5.95 6.15 1.25 12 1.25C17.85 1.25 22.75 5.95 22.75 12C22.75 18.05 17.85 22.75 12 22.75ZM12 2.75C6.9 2.75 2.75 6.9 2.75 12C2.75 17.1 6.9 21.25 12 21.25C17.1 21.25 21.25 17.1 21.25 12C21.25 6.9 17.1 2.75 12 2.75Z" />
+                <circle cx="12" cy="12" r="2" />
+              </svg>
+            </div>
+          </div>
+
+          {/* ========================================= */}
+          {/* KOMPOSISI TYPOGRAPHY SENTRAL               */}
+          {/* ========================================= */}
+          <div className="relative flex items-center justify-center w-full max-w-5xl h-[400px] md:h-[500px]">
+            {/* 1. Kata: rahma */}
+            {/* WADAH PENGUNCI POSISI DEFAULT (Rahma di Atas Kiri) */}
+            <div className="absolute left-4 md:left-16 -translate-y-16 md:-translate-y-24 z-30">
+              <BoundingBox
+                enableDrag={true}
+                className="px-3 py-1.5 cursor-crosshair"
+              >
+                <span className="block text-6xl md:text-8xl font-black text-[#E6F1FF] tracking-tighter lowercase pointer-events-none">
+                  rahma
+                </span>
+                {/* Kursor Mouse SVG */}
+                <svg
+                  className="absolute -bottom-8 -right-4 w-8 h-8 text-[#FF5722] transform -rotate-12 drop-shadow-lg pointer-events-none"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M7 2l12 11.2l-5.8.5l3.3 7.3l-2.2.9l-3.2-7.4l-4.4 4.5V2z"
+                    stroke="white"
+                    strokeWidth="1"
+                  />
+                </svg>
+              </BoundingBox>
+            </div>
+
+            {/* 2. Kata: Lindungi (Tetap di tengah sebagai poros) */}
+            <div
+              onMouseEnter={triggerGlitch}
+              className="absolute z-40 font-['Dancing_Script',_cursive] text-[120px] md:text-[220px] text-[#FF5722] leading-none transform -rotate-6 drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] cursor-crosshair select-none"
+            >
+              {displayText}
+              <svg
+                className="absolute top-0 -left-20 w-32 h-32 pointer-events-none opacity-50 z-[-1]"
+                viewBox="0 0 100 100"
+                fill="none"
+                stroke="#8892B0"
+                strokeWidth="1"
+                strokeDasharray="4 4"
+              >
+                <path d="M 0,100 C 20,20 80,80 100,0" />
+                <circle cx="0" cy="100" r="3" fill="#0A192F" stroke="#8892B0" />
+                <circle cx="100" cy="0" r="3" fill="#0A192F" stroke="#8892B0" />
+              </svg>
+            </div>
+
+            {/* 3. Kata: laowo */}
+            {/* WADAH PENGUNCI POSISI DEFAULT (Laowo di Bawah Kanan) */}
+            <div className="absolute right-4 md:right-16 translate-y-24 md:translate-y-32 z-30">
+              <BoundingBox
+                enableDrag={true}
+                className="px-3 py-1.5 cursor-crosshair"
+              >
+                <span className="block text-6xl md:text-8xl font-black text-[#E6F1FF] tracking-tighter lowercase pointer-events-none">
+                  laowo
+                </span>
+
+                {/* 4. Sub-title */}
+                <div className="absolute right-0 md:right-[-20px] bottom-[-60px] md:bottom-[-70px] px-4 py-2 rotate-3 bg-[#0A192F]/90 backdrop-blur-sm z-50 border-[1px] border-[#8892B0]/30 rounded-sm pointer-events-none shadow-xl">
+                  <div className="text-center">
+                    <span className="block text-[#FF5722] font-bold text-xl leading-none">
+                      Software
+                    </span>
+                    <span className="block font-['Dancing_Script',_cursive] text-white text-3xl leading-none -mt-1">
+                      Engineer
+                    </span>
+                  </div>
+                </div>
+              </BoundingBox>
+            </div>
+          </div>
+
+          {/* --- LABEL KANAN BAWAH --- */}
+          <div className="absolute right-6 md:right-12 bottom-12 text-right pointer-events-none z-10">
+            <p className="font-['Dancing_Script',_cursive] text-3xl text-[#E6F1FF] mb-2 opacity-90">
+              Aesthetic Coder
+            </p>
+            <p className="text-[10px] font-bold text-[#8892B0] tracking-widest uppercase">
+              Rahma's Creative Studio
+            </p>
+          </div>
         </section>
       </main>
     </div>
