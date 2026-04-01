@@ -4,6 +4,7 @@ import { BinaryCursor } from "../components/BinaryCursor";
 import { Navigation } from "../components/Navigation";
 import Link from "next/link";
 import { useState, useRef } from "react";
+import { About } from "../components/About";
 
 // ==========================================
 // KOMPONEN KHUSUS: Kotak Seleksi (Bisa Di-Drag)
@@ -230,10 +231,10 @@ export default function Home() {
               >
                 <div className="text-center pointer-events-none">
                   <span className="block text-[#FF5722] font-bold text-xl leading-none">
-                    Software
+                    UI/UX
                   </span>
                   <span className="block font-['Dancing_Script',_cursive] text-white text-3xl leading-none -mt-1">
-                    Engineer
+                    Designer
                   </span>
                 </div>
               </BoundingBox>
@@ -250,6 +251,8 @@ export default function Home() {
             </p>
           </div>
         </section>
+
+        <About />
       </main>
     </div>
   );
