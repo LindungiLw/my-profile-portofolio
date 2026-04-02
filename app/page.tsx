@@ -5,6 +5,7 @@ import { Navigation } from "../components/Navigation";
 import Link from "next/link";
 import { useState, useRef } from "react";
 import { About } from "../components/About";
+import { Projects } from "@/components/Projects";
 
 // ==========================================
 // KOMPONEN KHUSUS: Kotak Seleksi (Bisa Di-Drag)
@@ -253,6 +254,7 @@ export default function Home() {
         </section>
 
         <About />
+        <Projects />
       </main>
     </div>
   );
