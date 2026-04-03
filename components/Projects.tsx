@@ -1,4 +1,3 @@
-// components/Projects.tsx
 "use client";
 
 import React, { Suspense, useMemo } from "react";
@@ -11,11 +10,12 @@ import {
   Text,
   RoundedBox,
   Float,
+  Sparkles,
 } from "@react-three/drei";
 import * as THREE from "three";
 
 // ==============================================================
-// UTILITY: CETAK BENTUK HP (SUDUT MELENGKUNG SEMPURNA)
+// UTILITY: Rounded Rectangle Shape
 // ==============================================================
 const createRoundedRect = (w: number, h: number, r: number) => {
   const shape = new THREE.Shape();
@@ -32,119 +32,126 @@ const createRoundedRect = (w: number, h: number, r: number) => {
 };
 
 // ==============================================================
-// KOMPONEN: TOMBOL SAMPING
+// CONSTANTS — single source of truth for Z positions
+// Body extrudeDepth=0.10, bevel=0.025 each side → total=0.15
+// After center(): flat front face = +0.05, flat back face = -0.05
 // ==============================================================
-const SideButtons = () => {
-  const btnColor = "#1a1a1c";
-  return (
-    <group>
-      {/* Volume Up */}
-      <RoundedBox
-        args={[0.04, 0.35, 0.04]}
-        radius={0.01}
-        smoothness={4}
-        position={[-1.56, 1.0, 0]}
-      >
-        <meshStandardMaterial
-          color={btnColor}
-          roughness={0.3}
-          metalness={0.8}
-        />
-      </RoundedBox>
-      {/* Volume Down */}
-      <RoundedBox
-        args={[0.04, 0.35, 0.04]}
-        radius={0.01}
-        smoothness={4}
-        position={[-1.56, 0.4, 0]}
-      >
-        <meshStandardMaterial
-          color={btnColor}
-          roughness={0.3}
-          metalness={0.8}
-        />
-      </RoundedBox>
-      {/* Action/Mute Button */}
-      <RoundedBox
-        args={[0.04, 0.22, 0.04]}
-        radius={0.01}
-        smoothness={4}
-        position={[-1.56, 1.7, 0]}
-      >
-        <meshStandardMaterial
-          color={btnColor}
-          roughness={0.3}
-          metalness={0.8}
-        />
-      </RoundedBox>
-      {/* Power Button */}
-      <RoundedBox
-        args={[0.04, 0.48, 0.04]}
-        radius={0.01}
-        smoothness={4}
-        position={[1.56, 0.8, 0]}
-      >
-        <meshStandardMaterial
-          color={btnColor}
-          roughness={0.3}
-          metalness={0.8}
-        />
-      </RoundedBox>
-    </group>
-  );
-};
+const Z_FRONT = 0.052; // Just in front of front glass
+const Z_BACK = -0.052; // Just behind back glass (items rendered facing +Z here)
 
 // ==============================================================
-// KOMPONEN: MODUL KAMERA ULTRA-FLUSH (TIDAK SEPERTI BALOK)
+// TOMBOL SAMPING (rata dengan bingkai, tidak menonjol)
 // ==============================================================
-const CameraModule = () => {
-  return (
-    // Posisi di belakang bodi (Z negatif) dan diputar menghadap belakang
-    <group position={[-0.65, 2.05, -0.071]} rotation={[0, Math.PI, 0]}>
-      {/* Base Kamera dibuat sangat tipis (depth 0.02) agar menyatu */}
-      <RoundedBox
-        args={[1.35, 1.35, 0.02]}
-        radius={0.3}
-        smoothness={8}
-        position={[0, 0, 0.01]}
-      >
-        <meshStandardMaterial color="#111114" roughness={0.2} metalness={0.8} />
-      </RoundedBox>
+const SideButtons = () => (
+  <group>
+    {/* Volume Up */}
+    <RoundedBox
+      args={[0.032, 0.32, 0.07]}
+      radius={0.012}
+      smoothness={4}
+      position={[-1.555, 1.0, 0]}
+    >
+      <meshStandardMaterial color="#1a1a1c" roughness={0.2} metalness={0.95} />
+    </RoundedBox>
+    {/* Volume Down */}
+    <RoundedBox
+      args={[0.032, 0.32, 0.07]}
+      radius={0.012}
+      smoothness={4}
+      position={[-1.555, 0.38, 0]}
+    >
+      <meshStandardMaterial color="#1a1a1c" roughness={0.2} metalness={0.95} />
+    </RoundedBox>
+    {/* Mute/Action */}
+    <RoundedBox
+      args={[0.032, 0.2, 0.07]}
+      radius={0.012}
+      smoothness={4}
+      position={[-1.555, 1.68, 0]}
+    >
+      <meshStandardMaterial color="#1a1a1c" roughness={0.2} metalness={0.95} />
+    </RoundedBox>
+    {/* Power */}
+    <RoundedBox
+      args={[0.032, 0.46, 0.07]}
+      radius={0.012}
+      smoothness={4}
+      position={[1.555, 0.8, 0]}
+    >
+      <meshStandardMaterial color="#1a1a1c" roughness={0.2} metalness={0.95} />
+    </RoundedBox>
+  </group>
+);
 
-      {/* 3 Lensa Kamera */}
-      {[
-        { pos: [0.28, 0.28, 0.02], r: 0.28 },
-        { pos: [-0.28, 0.28, 0.02], r: 0.24 },
-        { pos: [0.28, -0.28, 0.02], r: 0.24 },
-      ].map(({ pos, r }, i) => (
-        <group key={i} position={pos as [number, number, number]}>
-          {/* Ring Metal Lensa */}
-          <mesh>
-            <ringGeometry args={[r - 0.04, r + 0.02, 64]} />
+// ==============================================================
+// KAMERA BELAKANG — 100% FLUSH, tidak ada tonjolan
+// Semua elemen adalah flat mesh tepat di permukaan kaca belakang
+// ==============================================================
+const CameraBack = () => {
+  // Rounded square shape untuk housing kamera
+  const housingShape = useMemo(() => createRoundedRect(1.32, 1.32, 0.28), []);
+
+  return (
+    // Posisi tepat di atas permukaan kaca belakang
+    // Tidak ada rotasi! Kita gambar langsung di Z_BACK
+    <group position={[-0.65, 2.05, Z_BACK]}>
+      {/* Housing kamera — flat shape, z-offset sangat kecil */}
+      <mesh position={[0, 0, -0.001]}>
+        <shapeGeometry args={[housingShape]} />
+        <meshStandardMaterial
+          color="#101013"
+          roughness={0.1}
+          metalness={0.9}
+          envMapIntensity={1.5}
+        />
+      </mesh>
+
+      {/* 3 Lensa — flat circles, tidak menonjol */}
+      {(
+        [
+          [-0.28, 0.28, 0.27],
+          [0.28, 0.28, 0.23],
+          [-0.28, -0.28, 0.23],
+        ] as [number, number, number][]
+      ).map(([x, y, r], i) => (
+        <group key={i} position={[x, y, 0]}>
+          {/* Ring metal luar */}
+          <mesh position={[0, 0, -0.002]}>
+            <ringGeometry args={[r - 0.02, r + 0.025, 64]} />
             <meshStandardMaterial
-              color="#2a2a2e"
-              roughness={0.1}
-              metalness={1}
-            />
-          </mesh>
-          {/* Kaca Lensa Hitam */}
-          <mesh position={[0, 0, 0.005]}>
-            <circleGeometry args={[r - 0.04, 64]} />
-            <meshStandardMaterial
-              color="#050508"
+              color="#252528"
               roughness={0.05}
-              metalness={0.8}
+              metalness={1}
               envMapIntensity={2}
             />
           </mesh>
-          {/* Pantulan Lensa (Biru transparan) */}
-          <mesh position={[-r * 0.2, r * 0.2, 0.01]}>
-            <circleGeometry args={[r * 0.15, 32]} />
+          {/* Kaca lensa hitam pekat */}
+          <mesh position={[0, 0, -0.001]}>
+            <circleGeometry args={[r - 0.02, 64]} />
             <meshStandardMaterial
-              color="#4477ff"
+              color="#04040a"
+              roughness={0.02}
+              metalness={0.6}
+              envMapIntensity={3}
+            />
+          </mesh>
+          {/* Inner ring reflektif */}
+          <mesh position={[0, 0, 0]}>
+            <ringGeometry args={[r * 0.55, r * 0.72, 64]} />
+            <meshStandardMaterial
+              color="#1a1a22"
+              roughness={0.05}
+              metalness={1}
+            />
+          </mesh>
+          {/* Highlight refleksi biru-ungu */}
+          <mesh position={[-r * 0.22, r * 0.22, 0.001]}>
+            <circleGeometry args={[r * 0.16, 32]} />
+            <meshStandardMaterial
+              color="#5577ff"
               roughness={0}
               metalness={1}
-              opacity={0.2}
+              opacity={0.22}
               transparent
             />
           </mesh>
@@ -152,85 +159,198 @@ const CameraModule = () => {
       ))}
 
       {/* Flash */}
-      <mesh position={[-0.28, -0.28, 0.02]}>
-        <circleGeometry args={[0.09, 32]} />
-        <meshStandardMaterial
-          color="#ffeba0"
-          roughness={0.3}
-          emissive="#332500"
-        />
-      </mesh>
+      <group position={[0.28, -0.28, 0]}>
+        <mesh>
+          <ringGeometry args={[0.07, 0.1, 32]} />
+          <meshStandardMaterial
+            color="#222222"
+            roughness={0.1}
+            metalness={0.9}
+          />
+        </mesh>
+        <mesh position={[0, 0, 0.001]}>
+          <circleGeometry args={[0.07, 32]} />
+          <meshStandardMaterial
+            color="#ffe4a0"
+            roughness={0.3}
+            metalness={0.2}
+            emissive="#3a2600"
+            emissiveIntensity={0.5}
+          />
+        </mesh>
+      </group>
 
-      {/* Sensor LiDAR */}
-      <mesh position={[0, -0.28, 0.02]}>
-        <circleGeometry args={[0.05, 16]} />
-        <meshStandardMaterial color="#050505" roughness={0.8} />
+      {/* Microphone dot */}
+      <mesh position={[0, -0.28, 0]}>
+        <circleGeometry args={[0.038, 16]} />
+        <meshStandardMaterial color="#080808" roughness={0.8} metalness={0.1} />
       </mesh>
     </group>
   );
 };
 
 // ==============================================================
-// KOMPONEN: LAYAR HP (UI BERSIH TANPA KOTAK HITAM)
+// APPLE LOGO — Presisi tinggi, flat di kaca belakang
 // ==============================================================
-const PhoneScreen = () => {
-  // Layar dibentuk melengkung persis mengikuti bentuk bezel
-  const screenShape = useMemo(() => createRoundedRect(2.95, 6.05, 0.4), []);
+const AppleLogo = () => {
+  const { appleShape, leafShape } = useMemo(() => {
+    // Bentuk Apple lebih simetris dan proporsional
+    const s = new THREE.Shape();
+    const r = 0.38; // radius dasar
+
+    s.moveTo(0, r * 0.8);
+    // Kanan atas
+    s.bezierCurveTo(r * 0.7, r * 0.8, r, r * 0.4, r, 0);
+    // Kanan bawah
+    s.bezierCurveTo(r, -r * 0.55, r * 0.55, -r * 0.9, r * 0.12, -r * 0.9);
+    // Lekukan tengah bawah
+    s.bezierCurveTo(0, -r * 0.9, 0, -r * 0.75, 0, -r * 0.75);
+    s.bezierCurveTo(0, -r * 0.75, 0, -r * 0.9, -r * 0.12, -r * 0.9);
+    // Kiri bawah
+    s.bezierCurveTo(-r * 0.55, -r * 0.9, -r, -r * 0.55, -r, 0);
+    // Kiri atas
+    s.bezierCurveTo(-r, r * 0.4, -r * 0.7, r * 0.8, 0, r * 0.8);
+
+    // "Gigitan" Apple
+    const bite = new THREE.Path();
+    bite.absarc(r * 0.62, r * 0.2, r * 0.32, 0, Math.PI * 2, false);
+    s.holes.push(bite);
+
+    // Daun
+    const leaf = new THREE.Shape();
+    leaf.moveTo(0, r * 0.85);
+    leaf.bezierCurveTo(
+      r * 0.35,
+      r * 0.85,
+      r * 0.4,
+      r * 1.38,
+      r * 0.12,
+      r * 1.38,
+    );
+    leaf.bezierCurveTo(-r * 0.12, r * 1.38, -r * 0.12, r * 0.85, 0, r * 0.85);
+
+    return { appleShape: s, leafShape: leaf };
+  }, []);
 
   return (
-    // Z = 0.071 agar menempel pas di atas kaca depan tanpa z-fighting
-    <group position={[0, 0, 0.071]}>
-      {/* Background Utama Aplikasi (Biru Gelap Mulus) */}
+    // Flat, tepat di kaca belakang, sedikit ke kanan-bawah dari tengah
+    <group position={[0.18, -0.3, Z_BACK - 0.001]} scale={0.58}>
+      <mesh>
+        <shapeGeometry args={[appleShape]} />
+        <meshStandardMaterial
+          color="#888888"
+          roughness={0.08}
+          metalness={0.9}
+          opacity={0.22}
+          transparent
+          envMapIntensity={2}
+        />
+      </mesh>
+      <mesh>
+        <shapeGeometry args={[leafShape]} />
+        <meshStandardMaterial
+          color="#888888"
+          roughness={0.08}
+          metalness={0.9}
+          opacity={0.22}
+          transparent
+          envMapIntensity={2}
+        />
+      </mesh>
+    </group>
+  );
+};
+
+// ==============================================================
+// DYNAMIC ISLAND — FLUSH di kaca depan, tanpa tonjolan
+// ==============================================================
+const DynamicIsland = () => {
+  const islandShape = useMemo(() => createRoundedRect(0.72, 0.2, 0.1), []);
+  return (
+    <mesh position={[0, 2.64, Z_FRONT + 0.001]}>
+      <shapeGeometry args={[islandShape]} />
+      <meshBasicMaterial color="#000000" />
+    </mesh>
+  );
+};
+
+// ==============================================================
+// LAYAR UI — ShapeGeometry mengikuti lekukan bezel
+// ==============================================================
+const PhoneScreen = () => {
+  const screenShape = useMemo(() => createRoundedRect(2.94, 6.04, 0.42), []);
+
+  return (
+    <group position={[0, 0, Z_FRONT]}>
+      {/* Background screen — mengikuti lekukan bodi */}
       <mesh>
         <shapeGeometry args={[screenShape]} />
         <meshBasicMaterial color="#050a18" />
       </mesh>
 
-      {/* DYNAMIC ISLAND */}
-      <RoundedBox
-        args={[0.75, 0.22, 0.01]}
-        radius={0.11}
-        smoothness={8}
-        position={[0, 2.65, 0.001]}
-      >
-        <meshBasicMaterial color="#000000" />
-      </RoundedBox>
+      {/* Header area */}
+      <mesh position={[0, 2.22, 0.001]}>
+        <planeGeometry args={[2.94, 1.35]} />
+        <meshBasicMaterial color="#081328" transparent opacity={0.95} />
+      </mesh>
 
-      {/* STATUS BAR */}
+      {/* Status bar time */}
       <Text
-        position={[-0.95, 2.62, 0.002]}
-        fontSize={0.18}
+        position={[-0.92, 2.62, 0.002]}
+        fontSize={0.185}
         color="#ffffff"
         anchorX="left"
         fontWeight={700}
       >
         9:41
       </Text>
+      {/* Battery/signal icons placeholder */}
+      <Text
+        position={[1.0, 2.62, 0.002]}
+        fontSize={0.13}
+        color="#aaaaaa"
+        anchorX="right"
+      >
+        ▮▮▮ ●
+      </Text>
 
-      {/* Konten UI Aplikasi */}
-      <mesh position={[0, 0.9, 0.001]}>
-        <planeGeometry args={[2.5, 3.0]} />
-        <meshBasicMaterial color="#0f2044" />
+      <DynamicIsland />
+
+      {/* ===== HERO CARD ===== */}
+      <mesh position={[0, 0.88, 0.001]}>
+        <planeGeometry args={[2.5, 3.08]} />
+        <meshBasicMaterial color="#0b1d3e" transparent opacity={0.98} />
       </mesh>
 
-      {/* Avatar */}
-      <mesh position={[0, 1.7, 0.002]}>
-        <circleGeometry args={[0.55, 64]} />
-        <meshBasicMaterial color="#1e3a6e" />
+      {/* Garis aksen atas card */}
+      <mesh position={[0, 2.43, 0.002]}>
+        <planeGeometry args={[2.5, 0.018]} />
+        <meshBasicMaterial color="#38bdf8" />
+      </mesh>
+
+      {/* Avatar circle */}
+      <mesh position={[0, 1.76, 0.002]}>
+        <circleGeometry args={[0.5, 64]} />
+        <meshBasicMaterial color="#0d2550" />
+      </mesh>
+      {/* Avatar ring */}
+      <mesh position={[0, 1.76, 0.003]}>
+        <ringGeometry args={[0.5, 0.545, 64]} />
+        <meshBasicMaterial color="#38bdf8" transparent opacity={0.5} />
       </mesh>
       <Text
-        position={[0, 1.7, 0.003]}
-        fontSize={0.35}
+        position={[0, 1.76, 0.004]}
+        fontSize={0.3}
         color="#38bdf8"
         fontWeight={800}
       >
         RL
       </Text>
 
-      {/* Teks Deskripsi */}
+      {/* Nama project */}
       <Text
-        position={[0, 1.0, 0.002]}
-        fontSize={0.22}
+        position={[0, 1.09, 0.002]}
+        fontSize={0.215}
         color="#f0f9ff"
         anchorX="center"
         fontWeight={700}
@@ -238,30 +358,33 @@ const PhoneScreen = () => {
         Tryotel App
       </Text>
       <Text
-        position={[0, 0.7, 0.002]}
-        fontSize={0.13}
-        color="#64748b"
+        position={[0, 0.78, 0.002]}
+        fontSize={0.105}
+        color="#475569"
         anchorX="center"
+        letterSpacing={0.06}
       >
         MOBILE UI/UX DESIGN
       </Text>
 
-      {/* Garis Pemisah */}
-      <mesh position={[0, 0.5, 0.002]}>
-        <planeGeometry args={[2.0, 0.01]} />
-        <meshBasicMaterial color="#1e3a6e" />
+      {/* Divider */}
+      <mesh position={[0, 0.58, 0.002]}>
+        <planeGeometry args={[2.1, 0.01]} />
+        <meshBasicMaterial color="#1a3260" />
       </mesh>
 
-      {/* Statistik */}
-      {[
-        { x: -0.75, val: "48", label: "Screens" },
-        { x: 0, val: "4.9", label: "Rating" },
-        { x: 0.75, val: "2K+", label: "Users" },
-      ].map(({ x, val, label }) => (
-        <group key={label} position={[x, 0.2, 0.002]}>
+      {/* Stats */}
+      {(
+        [
+          [-0.78, "48", "Screens"],
+          [0, "4.9★", "Rating"],
+          [0.78, "2K+", "Users"],
+        ] as [number, string, string][]
+      ).map(([x, val, label]) => (
+        <group key={label} position={[x, 0.24, 0.002]}>
           <Text
             position={[0, 0.1, 0]}
-            fontSize={0.2}
+            fontSize={0.185}
             color="#38bdf8"
             anchorX="center"
             fontWeight={800}
@@ -270,7 +393,7 @@ const PhoneScreen = () => {
           </Text>
           <Text
             position={[0, -0.1, 0]}
-            fontSize={0.1}
+            fontSize={0.09}
             color="#475569"
             anchorX="center"
           >
@@ -279,326 +402,316 @@ const PhoneScreen = () => {
         </group>
       ))}
 
-      {/* Tombol CTA Biru */}
-      <mesh position={[0, -1.25, 0.001]}>
-        <planeGeometry args={[2.2, 0.42]} />
-        <meshBasicMaterial color="#0ea5e9" />
+      {/* Tech tag pills */}
+      {(
+        [
+          [-0.64, "React Native"],
+          [0.64, "Figma"],
+        ] as [number, string][]
+      ).map(([x, label]) => (
+        <group key={label} position={[x, -0.2, 0.002]}>
+          <mesh>
+            <planeGeometry args={[0.9, 0.195]} />
+            <meshBasicMaterial color="#0a1e42" />
+          </mesh>
+          <Text
+            position={[0, 0, 0.001]}
+            fontSize={0.09}
+            color="#38bdf8"
+            anchorX="center"
+          >
+            {label}
+          </Text>
+        </group>
+      ))}
+
+      {/* CTA Button */}
+      <mesh position={[0, -1.18, 0.002]}>
+        <planeGeometry args={[2.18, 0.4]} />
+        <meshBasicMaterial color="#0284c7" />
       </mesh>
       <Text
-        position={[0, -1.25, 0.002]}
-        fontSize={0.15}
+        position={[0, -1.18, 0.003]}
+        fontSize={0.13}
         color="#ffffff"
         fontWeight={700}
+        letterSpacing={0.04}
       >
         EXPLORE PROJECT →
       </Text>
 
-      {/* Navigasi Bawah */}
-      <mesh position={[0, -2.55, 0.001]}>
-        <planeGeometry args={[2.8, 0.7]} />
-        <meshBasicMaterial color="#070e1f" />
+      {/* Bottom Nav */}
+      <mesh position={[0, -2.54, 0.001]}>
+        <planeGeometry args={[2.94, 0.66]} />
+        <meshBasicMaterial color="#060d1e" />
       </mesh>
       {["⊞", "◎", "♥", "⊙"].map((icon, i) => (
         <Text
           key={i}
-          position={[-1.05 + i * 0.7, -2.55, 0.002]}
-          fontSize={0.22}
-          color={i === 0 ? "#38bdf8" : "#334155"}
+          position={[-1.05 + i * 0.7, -2.54, 0.002]}
+          fontSize={0.2}
+          color={i === 0 ? "#38bdf8" : "#1e3260"}
           anchorX="center"
         >
           {icon}
         </Text>
       ))}
 
-      {/* Home Indicator */}
-      <mesh position={[0, -2.85, 0.002]}>
-        <planeGeometry args={[0.7, 0.04]} />
-        <meshBasicMaterial color="#334155" />
+      {/* Home indicator */}
+      <mesh position={[0, -2.84, 0.002]}>
+        <planeGeometry args={[0.65, 0.032]} />
+        <meshBasicMaterial color="#334155" transparent opacity={0.65} />
       </mesh>
     </group>
   );
 };
 
 // ==============================================================
-// KOMPONEN: APPLE LOGO (KURVA DIPERBAIKI)
+// BODI IPHONE — ExtrudeGeometry UNIBODY, true 1-material
 // ==============================================================
-const AppleLogo = () => {
-  const { appleShape, leafShape } = useMemo(() => {
-    const shape = new THREE.Shape();
-    // Bentuk Apple yang lebih presisi dan mulus
-    shape.moveTo(0, 0.25);
-    shape.bezierCurveTo(0.15, 0.25, 0.25, 0.1, 0.25, -0.1);
-    shape.bezierCurveTo(0.25, -0.25, 0.15, -0.35, 0.05, -0.35);
-    shape.bezierCurveTo(0, -0.35, -0.05, -0.3, -0.1, -0.3);
-    shape.bezierCurveTo(-0.15, -0.3, -0.2, -0.35, -0.25, -0.35);
-    shape.bezierCurveTo(-0.4, -0.35, -0.45, -0.15, -0.45, 0.05);
-    shape.bezierCurveTo(-0.45, 0.25, -0.3, 0.35, -0.15, 0.3);
-    shape.bezierCurveTo(-0.1, 0.3, -0.05, 0.32, 0, 0.25);
-
-    const bite = new THREE.Path();
-    bite.absarc(0.28, 0.05, 0.12, 0, Math.PI * 2, false);
-    shape.holes.push(bite);
-
-    const leaf = new THREE.Shape();
-    leaf.moveTo(0.02, 0.35);
-    leaf.bezierCurveTo(0.12, 0.35, 0.18, 0.45, 0.08, 0.55);
-    leaf.bezierCurveTo(-0.02, 0.55, -0.08, 0.45, 0.02, 0.35);
-
-    return { appleShape: shape, leafShape: leaf };
-  }, []);
-
-  return (
-    // Posisi di belakang bodi (Z negatif) dan diputar menghadap belakang
-    <group position={[0.05, 0, -0.071]} rotation={[0, Math.PI, 0]} scale={0.65}>
-      <mesh>
-        <shapeGeometry args={[appleShape]} />
-        <meshStandardMaterial color="#888888" roughness={0.3} metalness={0.6} />
-      </mesh>
-      <mesh>
-        <shapeGeometry args={[leafShape]} />
-        <meshStandardMaterial color="#888888" roughness={0.3} metalness={0.6} />
-      </mesh>
-    </group>
-  );
-};
-
-// ==============================================================
-// KOMPONEN: IPHONE 16 PRO (TRUE UNIBODY - 1 MATERIAL)
-// ==============================================================
-const IPhone16Pro = () => {
+const IPhoneBody = () => {
   const geometry = useMemo(() => {
     const shape = createRoundedRect(3.1, 6.2, 0.45);
-
-    // Konfigurasi ketebalan dan lekukan pinggiran bodi
-    const extrudeSettings = {
-      depth: 0.1, // Bodi tipis elegan
+    const extrudeSettings: THREE.ExtrudeGeometryOptions = {
+      depth: 0.1,
       bevelEnabled: true,
-      bevelSegments: 5,
+      bevelSegments: 8, // lebih smooth
       steps: 1,
-      bevelSize: 0.02,
-      bevelThickness: 0.02,
+      bevelSize: 0.025,
+      bevelThickness: 0.025,
     };
-
     const geo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-    // KUNCI: Titik tengah absolut agar tidak mencong
     geo.center();
     return geo;
   }, []);
 
-  // Material Kaca Hitam Pekat (Untuk layar depan & punggung belakang)
-  const glassMat = new THREE.MeshStandardMaterial({
-    color: "#020202",
-    roughness: 0.02,
-    metalness: 0.8,
-    envMapIntensity: 1.5,
-  });
-
-  // Material Bingkai Titanium
-  const frameMat = new THREE.MeshStandardMaterial({
-    color: "#1c1c1e",
-    roughness: 0.25,
-    metalness: 0.95,
-    envMapIntensity: 1.2,
-  });
-
-  return (
-    <group>
-      {/* SATU MESH UNTUK SEMUA!
-        Three.js ExtrudeGeometry menggunakan Array Material:
-        - Index 0: Untuk Kaca Depan & Belakang
-        - Index 1: Untuk Bingkai Samping
-        Ini membuat HP mustahil terbelah karena fisiknya cuma SATU.
-      */}
-      <mesh geometry={geometry} material={[glassMat, frameMat]} />
-
-      <SideButtons />
-      <CameraModule />
-      <AppleLogo />
-      <PhoneScreen />
-    </group>
+  // Kaca depan & belakang: hitam pekat mengkilap
+  const glassMat = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: "#030507",
+        roughness: 0.02,
+        metalness: 0.85,
+        envMapIntensity: 1.8,
+      }),
+    [],
   );
+
+  // Bingkai titanium: sedikit lebih terang
+  const frameMat = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: "#1c1c1f",
+        roughness: 0.22,
+        metalness: 0.97,
+        envMapIntensity: 2.0,
+      }),
+    [],
+  );
+
+  return <mesh geometry={geometry} material={[glassMat, frameMat]} />;
 };
 
 // ==============================================================
-// KOMPONEN SCENE LENGKAP
+// IPHONE LENGKAP
 // ==============================================================
-const PhoneScene = () => {
-  return (
-    <>
-      <ambientLight intensity={0.5} />
-      <directionalLight position={[6, 10, 6]} intensity={1.5} />
-      <directionalLight
-        position={[-6, 4, -4]}
-        intensity={0.8}
-        color="#4488ff"
-      />
-      <pointLight position={[0, -4, 6]} intensity={0.5} color="#38bdf8" />
-
-      <Environment preset="city" />
-
-      {/* Efek mengambang elegan */}
-      <Float
-        speed={2}
-        rotationIntensity={0.1}
-        floatIntensity={0.5}
-        floatingRange={[-0.1, 0.1]}
-      >
-        <group rotation={[0.1, -0.45, 0.05]}>
-          <IPhone16Pro />
-        </group>
-      </Float>
-
-      <ContactShadows
-        position={[0, -3.5, 0]}
-        opacity={0.6}
-        scale={20}
-        blur={2.5}
-        far={4}
-        color="#000820"
-      />
-    </>
-  );
-};
+const IPhone16Pro = () => (
+  <group>
+    <IPhoneBody />
+    <SideButtons />
+    <CameraBack />
+    <AppleLogo />
+    <PhoneScreen />
+  </group>
+);
 
 // ==============================================================
-// KOMPONEN UTAMA
+// SCENE
 // ==============================================================
-export const Projects = () => {
-  return (
-    <section
-      id="projects"
-      className="py-24 md:py-36 scroll-mt-12 mx-auto max-w-6xl px-6 relative z-40"
+const PhoneScene = () => (
+  <>
+    <ambientLight intensity={0.4} />
+    {/* Key light — depan-kiri atas */}
+    <directionalLight position={[-3, 8, 7]} intensity={1.8} />
+    {/* Rim light — belakang kanan, bikin bingkai titanium bersinar */}
+    <directionalLight position={[7, 3, -5]} intensity={1.2} color="#99bbff" />
+    {/* Fill bawah */}
+    <pointLight position={[0, -5, 5]} intensity={0.4} color="#38bdf8" />
+    {/* Top spot */}
+    <spotLight position={[0, 12, 4]} angle={0.2} penumbra={1} intensity={1.0} />
+
+    <Environment preset="studio" />
+
+    <Float
+      speed={1.4}
+      rotationIntensity={0.07}
+      floatIntensity={0.4}
+      floatingRange={[-0.1, 0.1]}
     >
-      <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
-        {/* SISI KIRI: TEKS */}
-        <div className="w-full lg:w-5/12 space-y-8 text-center lg:text-left">
-          <div className="flex items-center justify-center lg:justify-start gap-3">
-            <span className="text-[#38bdf8] font-mono text-lg md:text-xl tracking-widest">
-              03.
-            </span>
-            <span className="text-[#334155] font-mono text-sm tracking-widest uppercase">
-              Featured Work
-            </span>
-          </div>
+      {/* Pose default: sedikit miring, layar menghadap depan */}
+      <group rotation={[0.08, -0.35, 0.04]}>
+        <IPhone16Pro />
+      </group>
+    </Float>
 
-          <h2 className="text-5xl md:text-6xl font-black text-[#f0f9ff] tracking-tight leading-none">
-            My{" "}
-            <span
-              className="text-transparent bg-clip-text"
-              style={{
-                backgroundImage:
-                  "linear-gradient(135deg, #38bdf8 0%, #818cf8 100%)",
-              }}
-            >
-              Work
-            </span>
-          </h2>
+    <Sparkles
+      count={50}
+      scale={[10, 14, 6]}
+      size={0.45}
+      speed={0.1}
+      opacity={0.15}
+      color="#38bdf8"
+    />
 
-          <div className="flex items-center gap-3 justify-center lg:justify-start">
-            <div className="h-[2px] w-12 bg-gradient-to-r from-[#38bdf8] to-transparent" />
-            <div className="h-[2px] w-4 bg-[#38bdf8] opacity-40" />
-          </div>
+    <ContactShadows
+      position={[0, -3.6, 0]}
+      opacity={0.55}
+      scale={18}
+      blur={2.8}
+      far={5}
+      resolution={512}
+      color="#000a20"
+    />
+  </>
+);
 
-          <p className="text-[#64748b] text-base md:text-lg leading-relaxed max-w-sm mx-auto lg:mx-0">
-            Dari mendesain antarmuka yang ramah pengguna hingga membangun
-            aplikasi lintas platform. Setiap proyek dirancang dengan presisi dan
-            perhatian penuh terhadap detail.
-          </p>
-
-          <div className="grid grid-cols-3 gap-4 py-6 border-y border-[#0f2044]">
-            {[
-              { value: "12+", label: "Projects" },
-              { value: "3", label: "Awards" },
-              { value: "98%", label: "Satisfaction" },
-            ].map(({ value, label }) => (
-              <div key={label} className="text-center lg:text-left">
-                <p
-                  className="text-2xl font-black text-transparent bg-clip-text"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(135deg, #38bdf8, #818cf8)",
-                  }}
-                >
-                  {value}
-                </p>
-                <p className="text-xs text-[#475569] font-mono uppercase tracking-wider mt-1">
-                  {label}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <Link href="/projects" className="inline-block group">
-            <button
-              className="relative px-8 py-4 rounded-xl font-mono text-sm font-semibold tracking-widest uppercase overflow-hidden transition-all duration-300"
-              style={{
-                background:
-                  "linear-gradient(135deg, rgba(56,189,248,0.1), rgba(129,140,248,0.1))",
-                border: "1px solid rgba(56,189,248,0.3)",
-                color: "#38bdf8",
-              }}
-            >
-              <span className="relative z-10 flex items-center gap-3">
-                View All Projects
-                <svg
-                  className="transform group-hover:translate-x-1 transition-transform duration-300"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12" />
-                  <polyline points="12 5 19 12 12 19" />
-                </svg>
-              </span>
-              <span
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{
-                  background:
-                    "linear-gradient(135deg, rgba(56,189,248,0.15), rgba(129,140,248,0.15))",
-                }}
-              />
-            </button>
-          </Link>
+// ==============================================================
+// EXPORT UTAMA
+// ==============================================================
+export const Projects = () => (
+  <section
+    id="projects"
+    className="py-24 md:py-36 scroll-mt-12 mx-auto max-w-6xl px-6 relative z-40"
+  >
+    <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
+      {/* ===== KIRI: TEKS ===== */}
+      <div className="w-full lg:w-5/12 space-y-8 text-center lg:text-left">
+        <div className="flex items-center justify-center lg:justify-start gap-3">
+          <span className="text-[#38bdf8] font-mono text-lg tracking-widest">
+            03.
+          </span>
+          <span className="text-[#334155] font-mono text-xs tracking-widest uppercase">
+            Featured Work
+          </span>
         </div>
 
-        {/* SISI KANAN: 3D CANVAS */}
-        <div className="w-full lg:w-7/12 h-[540px] lg:h-[680px] relative cursor-grab active:cursor-grabbing select-none">
-          <div className="absolute top-4 right-4 z-20 font-mono text-[10px] text-[#38bdf8] opacity-40 tracking-widest hidden md:flex items-center gap-2">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#38bdf8] animate-pulse" />
-            DRAG TO ROTATE
-          </div>
-
-          <Canvas
-            className="touch-none"
-            camera={{ position: [0, 0, 10.5], fov: 38 }}
-            dpr={[1, 2]}
-            gl={{ antialias: true, alpha: true }}
+        <h2 className="text-5xl md:text-6xl font-black text-[#f0f9ff] tracking-tight leading-none">
+          My{" "}
+          <span
+            className="text-transparent bg-clip-text"
+            style={{
+              backgroundImage:
+                "linear-gradient(135deg,#38bdf8 0%,#818cf8 100%)",
+            }}
           >
-            <Suspense
-              fallback={
-                <Text color="#38bdf8" fontSize={0.4}>
-                  Loading...
-                </Text>
-              }
-            >
-              <PhoneScene />
-            </Suspense>
+            Work
+          </span>
+        </h2>
 
-            {/* Rotasi Bebas 360 Derajat */}
-            <OrbitControls
-              enableZoom={false}
-              enablePan={false}
-              enableDamping
-              dampingFactor={0.05}
-            />
-          </Canvas>
+        <div className="flex items-center gap-3 justify-center lg:justify-start">
+          <div className="h-[2px] w-12 bg-gradient-to-r from-[#38bdf8] to-transparent" />
+          <div className="h-[2px] w-4 bg-[#38bdf8] opacity-40" />
         </div>
+
+        <p className="text-[#64748b] text-base md:text-lg leading-relaxed max-w-sm mx-auto lg:mx-0">
+          Dari mendesain antarmuka yang ramah pengguna hingga membangun aplikasi
+          lintas platform. Setiap proyek dirancang dengan presisi dan perhatian
+          penuh terhadap detail.
+        </p>
+
+        <div className="grid grid-cols-3 gap-4 py-6 border-y border-[#0f2044]">
+          {[
+            ["12+", "Projects"],
+            ["3", "Awards"],
+            ["98%", "Satisfaction"],
+          ].map(([value, label]) => (
+            <div key={label} className="text-center lg:text-left">
+              <p
+                className="text-2xl font-black text-transparent bg-clip-text"
+                style={{
+                  backgroundImage: "linear-gradient(135deg,#38bdf8,#818cf8)",
+                }}
+              >
+                {value}
+              </p>
+              <p className="text-xs text-[#475569] font-mono uppercase tracking-wider mt-1">
+                {label}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <Link href="/projects" className="inline-block group">
+          <button
+            className="px-8 py-4 rounded-xl font-mono text-sm font-semibold tracking-widest uppercase transition-all duration-300 flex items-center gap-3"
+            style={{
+              background:
+                "linear-gradient(135deg,rgba(56,189,248,0.1),rgba(129,140,248,0.1))",
+              border: "1px solid rgba(56,189,248,0.3)",
+              color: "#38bdf8",
+            }}
+          >
+            View All Projects
+            <svg
+              className="group-hover:translate-x-1 transition-transform duration-300"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </button>
+        </Link>
       </div>
-    </section>
-  );
-};
+
+      {/* ===== KANAN: 3D CANVAS ===== */}
+      <div className="w-full lg:w-7/12 h-[540px] lg:h-[700px] relative cursor-grab active:cursor-grabbing select-none">
+        {/* Background glow */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(ellipse 55% 50% at 58% 50%,rgba(56,189,248,0.06) 0%,transparent 70%)",
+          }}
+        />
+
+        {/* Drag hint */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 font-mono text-[10px] text-[#38bdf8] opacity-30 tracking-widest hidden md:flex items-center gap-2">
+          <span className="w-1 h-1 rounded-full bg-[#38bdf8] animate-pulse inline-block" />
+          DRAG TO ROTATE
+        </div>
+
+        <Canvas
+          className="touch-none"
+          camera={{ position: [0, 0, 10.5], fov: 38 }}
+          dpr={[1, 2]}
+          gl={{ antialias: true, alpha: true }}
+          style={{ background: "transparent" }}
+        >
+          <Suspense
+            fallback={
+              <Text color="#38bdf8" fontSize={0.4}>
+                Loading...
+              </Text>
+            }
+          >
+            <PhoneScene />
+          </Suspense>
+
+          <OrbitControls
+            enableZoom={false}
+            enablePan={false}
+            enableDamping
+            dampingFactor={0.05}
+          />
+        </Canvas>
+      </div>
+    </div>
+  </section>
+);
