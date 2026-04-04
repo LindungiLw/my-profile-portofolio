@@ -1,7 +1,9 @@
+// components/Projects.tsx
 "use client";
 
-import React, { Suspense, useMemo } from "react";
+import React, { Suspense, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Canvas } from "@react-three/fiber";
 import {
   OrbitControls,
@@ -32,12 +34,12 @@ const createRoundedRect = (w: number, h: number, r: number) => {
 };
 
 // ==============================================================
-// CONSTANTS — single source of truth for Z positions
-// Body extrudeDepth=0.10, bevel=0.025 each side → total=0.15
-// After center(): flat front face = +0.05, flat back face = -0.05
+// 🔴 PERBAIKAN BUG LAYAR HITAM: CONSTANTS Z POSITIONS
+// Ketebalan bodi total = depth(0.10) + bevelDepan(0.025) + bevelBelakang(0.025) = 0.15
+// Kaca depan = +0.075 | Kaca belakang = -0.075
 // ==============================================================
-const Z_FRONT = 0.052; // Just in front of front glass
-const Z_BACK = -0.052; // Just behind back glass (items rendered facing +Z here)
+const Z_FRONT = 0.076; // Digeser sedikit ke depan agar tidak tenggelam di kaca
+const Z_BACK = -0.076; // Digeser sedikit ke belakang agar kamera & logo muncul
 
 // ==============================================================
 // TOMBOL SAMPING (rata dengan bingkai, tidak menonjol)
@@ -85,17 +87,12 @@ const SideButtons = () => (
 
 // ==============================================================
 // KAMERA BELAKANG — 100% FLUSH, tidak ada tonjolan
-// Semua elemen adalah flat mesh tepat di permukaan kaca belakang
 // ==============================================================
 const CameraBack = () => {
-  // Rounded square shape untuk housing kamera
   const housingShape = useMemo(() => createRoundedRect(1.32, 1.32, 0.28), []);
 
   return (
-    // Posisi tepat di atas permukaan kaca belakang
-    // Tidak ada rotasi! Kita gambar langsung di Z_BACK
     <group position={[-0.65, 2.05, Z_BACK]}>
-      {/* Housing kamera — flat shape, z-offset sangat kecil */}
       <mesh position={[0, 0, -0.001]}>
         <shapeGeometry args={[housingShape]} />
         <meshStandardMaterial
@@ -106,7 +103,6 @@ const CameraBack = () => {
         />
       </mesh>
 
-      {/* 3 Lensa — flat circles, tidak menonjol */}
       {(
         [
           [-0.28, 0.28, 0.27],
@@ -115,7 +111,6 @@ const CameraBack = () => {
         ] as [number, number, number][]
       ).map(([x, y, r], i) => (
         <group key={i} position={[x, y, 0]}>
-          {/* Ring metal luar */}
           <mesh position={[0, 0, -0.002]}>
             <ringGeometry args={[r - 0.02, r + 0.025, 64]} />
             <meshStandardMaterial
@@ -125,7 +120,6 @@ const CameraBack = () => {
               envMapIntensity={2}
             />
           </mesh>
-          {/* Kaca lensa hitam pekat */}
           <mesh position={[0, 0, -0.001]}>
             <circleGeometry args={[r - 0.02, 64]} />
             <meshStandardMaterial
@@ -135,7 +129,6 @@ const CameraBack = () => {
               envMapIntensity={3}
             />
           </mesh>
-          {/* Inner ring reflektif */}
           <mesh position={[0, 0, 0]}>
             <ringGeometry args={[r * 0.55, r * 0.72, 64]} />
             <meshStandardMaterial
@@ -144,7 +137,6 @@ const CameraBack = () => {
               metalness={1}
             />
           </mesh>
-          {/* Highlight refleksi biru-ungu */}
           <mesh position={[-r * 0.22, r * 0.22, 0.001]}>
             <circleGeometry args={[r * 0.16, 32]} />
             <meshStandardMaterial
@@ -194,29 +186,21 @@ const CameraBack = () => {
 // ==============================================================
 const AppleLogo = () => {
   const { appleShape, leafShape } = useMemo(() => {
-    // Bentuk Apple lebih simetris dan proporsional
     const s = new THREE.Shape();
-    const r = 0.38; // radius dasar
+    const r = 0.38;
 
     s.moveTo(0, r * 0.8);
-    // Kanan atas
     s.bezierCurveTo(r * 0.7, r * 0.8, r, r * 0.4, r, 0);
-    // Kanan bawah
     s.bezierCurveTo(r, -r * 0.55, r * 0.55, -r * 0.9, r * 0.12, -r * 0.9);
-    // Lekukan tengah bawah
     s.bezierCurveTo(0, -r * 0.9, 0, -r * 0.75, 0, -r * 0.75);
     s.bezierCurveTo(0, -r * 0.75, 0, -r * 0.9, -r * 0.12, -r * 0.9);
-    // Kiri bawah
     s.bezierCurveTo(-r * 0.55, -r * 0.9, -r, -r * 0.55, -r, 0);
-    // Kiri atas
     s.bezierCurveTo(-r, r * 0.4, -r * 0.7, r * 0.8, 0, r * 0.8);
 
-    // "Gigitan" Apple
     const bite = new THREE.Path();
     bite.absarc(r * 0.62, r * 0.2, r * 0.32, 0, Math.PI * 2, false);
     s.holes.push(bite);
 
-    // Daun
     const leaf = new THREE.Shape();
     leaf.moveTo(0, r * 0.85);
     leaf.bezierCurveTo(
@@ -233,7 +217,6 @@ const AppleLogo = () => {
   }, []);
 
   return (
-    // Flat, tepat di kaca belakang, sedikit ke kanan-bawah dari tengah
     <group position={[0.18, -0.3, Z_BACK - 0.001]} scale={0.58}>
       <mesh>
         <shapeGeometry args={[appleShape]} />
@@ -262,7 +245,7 @@ const AppleLogo = () => {
 };
 
 // ==============================================================
-// DYNAMIC ISLAND — FLUSH di kaca depan, tanpa tonjolan
+// DYNAMIC ISLAND
 // ==============================================================
 const DynamicIsland = () => {
   const islandShape = useMemo(() => createRoundedRect(0.72, 0.2, 0.1), []);
@@ -275,14 +258,17 @@ const DynamicIsland = () => {
 };
 
 // ==============================================================
-// LAYAR UI — ShapeGeometry mengikuti lekukan bezel
+// LAYAR UI — Sekarang Berada di Atas Permukaan (Tidak Tenggelam!)
 // ==============================================================
 const PhoneScreen = () => {
+  const router = useRouter(); // Pastikan useRouter di-import dari next/navigation
+  const [btnHovered, setBtnHovered] = useState(false);
+
   const screenShape = useMemo(() => createRoundedRect(2.94, 6.04, 0.42), []);
 
   return (
     <group position={[0, 0, Z_FRONT]}>
-      {/* Background screen — mengikuti lekukan bodi */}
+      {/* Background screen */}
       <mesh>
         <shapeGeometry args={[screenShape]} />
         <meshBasicMaterial color="#050a18" />
@@ -294,7 +280,7 @@ const PhoneScreen = () => {
         <meshBasicMaterial color="#081328" transparent opacity={0.95} />
       </mesh>
 
-      {/* Status bar time */}
+      {/* Status bar */}
       <Text
         position={[-0.92, 2.62, 0.002]}
         fontSize={0.185}
@@ -304,7 +290,6 @@ const PhoneScreen = () => {
       >
         9:41
       </Text>
-      {/* Battery/signal icons placeholder */}
       <Text
         position={[1.0, 2.62, 0.002]}
         fontSize={0.13}
@@ -321,19 +306,16 @@ const PhoneScreen = () => {
         <planeGeometry args={[2.5, 3.08]} />
         <meshBasicMaterial color="#0b1d3e" transparent opacity={0.98} />
       </mesh>
-
-      {/* Garis aksen atas card */}
       <mesh position={[0, 2.43, 0.002]}>
         <planeGeometry args={[2.5, 0.018]} />
         <meshBasicMaterial color="#38bdf8" />
       </mesh>
 
-      {/* Avatar circle */}
+      {/* Avatar */}
       <mesh position={[0, 1.76, 0.002]}>
         <circleGeometry args={[0.5, 64]} />
         <meshBasicMaterial color="#0d2550" />
       </mesh>
-      {/* Avatar ring */}
       <mesh position={[0, 1.76, 0.003]}>
         <ringGeometry args={[0.5, 0.545, 64]} />
         <meshBasicMaterial color="#38bdf8" transparent opacity={0.5} />
@@ -347,7 +329,7 @@ const PhoneScreen = () => {
         RL
       </Text>
 
-      {/* Nama project */}
+      {/* Teks */}
       <Text
         position={[0, 1.09, 0.002]}
         fontSize={0.215}
@@ -366,8 +348,6 @@ const PhoneScreen = () => {
       >
         MOBILE UI/UX DESIGN
       </Text>
-
-      {/* Divider */}
       <mesh position={[0, 0.58, 0.002]}>
         <planeGeometry args={[2.1, 0.01]} />
         <meshBasicMaterial color="#1a3260" />
@@ -425,20 +405,39 @@ const PhoneScreen = () => {
         </group>
       ))}
 
-      {/* CTA Button */}
-      <mesh position={[0, -1.18, 0.002]}>
-        <planeGeometry args={[2.18, 0.4]} />
-        <meshBasicMaterial color="#0284c7" />
-      </mesh>
-      <Text
-        position={[0, -1.18, 0.003]}
-        fontSize={0.13}
-        color="#ffffff"
-        fontWeight={700}
-        letterSpacing={0.04}
+      {/* ===== TOMBOL INTERAKTIF ===== */}
+      <group
+        position={[0, -1.18, 0.002]}
+        onClick={(e) => {
+          e.stopPropagation(); // Mencegah perputaran HP
+          router.push("/projects"); // Pindah halaman
+        }}
+        onPointerOver={(e) => {
+          e.stopPropagation();
+          setBtnHovered(true);
+          document.body.style.cursor = "pointer";
+        }}
+        onPointerOut={(e) => {
+          e.stopPropagation();
+          setBtnHovered(false);
+          document.body.style.cursor = "auto";
+        }}
       >
-        EXPLORE PROJECT →
-      </Text>
+        <mesh>
+          <planeGeometry args={[2.18, 0.4]} />
+          {/* Warna menjadi lebih terang jika di-hover */}
+          <meshBasicMaterial color={btnHovered ? "#02a6fa" : "#0284c7"} />
+        </mesh>
+        <Text
+          position={[0, 0, 0.001]}
+          fontSize={0.13}
+          color="#ffffff"
+          fontWeight={700}
+          letterSpacing={0.04}
+        >
+          EXPLORE PROJECT →
+        </Text>
+      </group>
 
       {/* Bottom Nav */}
       <mesh position={[0, -2.54, 0.001]}>
@@ -475,7 +474,7 @@ const IPhoneBody = () => {
     const extrudeSettings: THREE.ExtrudeGeometryOptions = {
       depth: 0.1,
       bevelEnabled: true,
-      bevelSegments: 8, // lebih smooth
+      bevelSegments: 8,
       steps: 1,
       bevelSize: 0.025,
       bevelThickness: 0.025,
@@ -485,7 +484,6 @@ const IPhoneBody = () => {
     return geo;
   }, []);
 
-  // Kaca depan & belakang: hitam pekat mengkilap
   const glassMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -497,7 +495,6 @@ const IPhoneBody = () => {
     [],
   );
 
-  // Bingkai titanium: sedikit lebih terang
   const frameMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -526,18 +523,14 @@ const IPhone16Pro = () => (
 );
 
 // ==============================================================
-// SCENE
+// SCENE LENGKAP
 // ==============================================================
 const PhoneScene = () => (
   <>
     <ambientLight intensity={0.4} />
-    {/* Key light — depan-kiri atas */}
     <directionalLight position={[-3, 8, 7]} intensity={1.8} />
-    {/* Rim light — belakang kanan, bikin bingkai titanium bersinar */}
     <directionalLight position={[7, 3, -5]} intensity={1.2} color="#99bbff" />
-    {/* Fill bawah */}
     <pointLight position={[0, -5, 5]} intensity={0.4} color="#38bdf8" />
-    {/* Top spot */}
     <spotLight position={[0, 12, 4]} angle={0.2} penumbra={1} intensity={1.0} />
 
     <Environment preset="studio" />
@@ -548,7 +541,6 @@ const PhoneScene = () => (
       floatIntensity={0.4}
       floatingRange={[-0.1, 0.1]}
     >
-      {/* Pose default: sedikit miring, layar menghadap depan */}
       <group rotation={[0.08, -0.35, 0.04]}>
         <IPhone16Pro />
       </group>
@@ -672,7 +664,6 @@ export const Projects = () => (
 
       {/* ===== KANAN: 3D CANVAS ===== */}
       <div className="w-full lg:w-7/12 h-[540px] lg:h-[700px] relative cursor-grab active:cursor-grabbing select-none">
-        {/* Background glow */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -681,7 +672,6 @@ export const Projects = () => (
           }}
         />
 
-        {/* Drag hint */}
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 font-mono text-[10px] text-[#38bdf8] opacity-30 tracking-widest hidden md:flex items-center gap-2">
           <span className="w-1 h-1 rounded-full bg-[#38bdf8] animate-pulse inline-block" />
           DRAG TO ROTATE
@@ -703,7 +693,6 @@ export const Projects = () => (
           >
             <PhoneScene />
           </Suspense>
-
           <OrbitControls
             enableZoom={false}
             enablePan={false}
