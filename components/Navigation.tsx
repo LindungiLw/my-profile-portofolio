@@ -1,12 +1,14 @@
+// components/Navigation.tsx
 "use client";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
+// 🔴 PERUBAHAN: URUTAN MENU DIPERBARUI (Projects sekarang nomor 2)
 const navItems = [
   { name: "About", href: "#about" },
+  { name: "Projects", href: "#projects" },
   { name: "Experience", href: "#experience" },
-  { name: "Work", href: "#work" },
   { name: "Contact", href: "#contact" },
 ];
 

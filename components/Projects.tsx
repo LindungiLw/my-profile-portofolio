@@ -2,7 +2,6 @@
 "use client";
 
 import React, { Suspense, useMemo, useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Canvas } from "@react-three/fiber";
 import {
@@ -34,19 +33,16 @@ const createRoundedRect = (w: number, h: number, r: number) => {
 };
 
 // ==============================================================
-// 🔴 PERBAIKAN BUG LAYAR HITAM: CONSTANTS Z POSITIONS
-// Ketebalan bodi total = depth(0.10) + bevelDepan(0.025) + bevelBelakang(0.025) = 0.15
-// Kaca depan = +0.075 | Kaca belakang = -0.075
+// CONSTANTS — single source of truth for Z positions
 // ==============================================================
-const Z_FRONT = 0.076; // Digeser sedikit ke depan agar tidak tenggelam di kaca
-const Z_BACK = -0.076; // Digeser sedikit ke belakang agar kamera & logo muncul
+const Z_FRONT = 0.076;
+const Z_BACK = -0.076;
 
 // ==============================================================
-// TOMBOL SAMPING (rata dengan bingkai, tidak menonjol)
+// TOMBOL SAMPING
 // ==============================================================
 const SideButtons = () => (
   <group>
-    {/* Volume Up */}
     <RoundedBox
       args={[0.032, 0.32, 0.07]}
       radius={0.012}
@@ -55,7 +51,6 @@ const SideButtons = () => (
     >
       <meshStandardMaterial color="#1a1a1c" roughness={0.2} metalness={0.95} />
     </RoundedBox>
-    {/* Volume Down */}
     <RoundedBox
       args={[0.032, 0.32, 0.07]}
       radius={0.012}
@@ -64,7 +59,6 @@ const SideButtons = () => (
     >
       <meshStandardMaterial color="#1a1a1c" roughness={0.2} metalness={0.95} />
     </RoundedBox>
-    {/* Mute/Action */}
     <RoundedBox
       args={[0.032, 0.2, 0.07]}
       radius={0.012}
@@ -73,7 +67,6 @@ const SideButtons = () => (
     >
       <meshStandardMaterial color="#1a1a1c" roughness={0.2} metalness={0.95} />
     </RoundedBox>
-    {/* Power */}
     <RoundedBox
       args={[0.032, 0.46, 0.07]}
       radius={0.012}
@@ -86,7 +79,7 @@ const SideButtons = () => (
 );
 
 // ==============================================================
-// KAMERA BELAKANG — 100% FLUSH, tidak ada tonjolan
+// KAMERA BELAKANG
 // ==============================================================
 const CameraBack = () => {
   const housingShape = useMemo(() => createRoundedRect(1.32, 1.32, 0.28), []);
@@ -150,7 +143,6 @@ const CameraBack = () => {
         </group>
       ))}
 
-      {/* Flash */}
       <group position={[0.28, -0.28, 0]}>
         <mesh>
           <ringGeometry args={[0.07, 0.1, 32]} />
@@ -172,7 +164,6 @@ const CameraBack = () => {
         </mesh>
       </group>
 
-      {/* Microphone dot */}
       <mesh position={[0, -0.28, 0]}>
         <circleGeometry args={[0.038, 16]} />
         <meshStandardMaterial color="#080808" roughness={0.8} metalness={0.1} />
@@ -182,7 +173,7 @@ const CameraBack = () => {
 };
 
 // ==============================================================
-// APPLE LOGO — Presisi tinggi, flat di kaca belakang
+// APPLE LOGO
 // ==============================================================
 const AppleLogo = () => {
   const { appleShape, leafShape } = useMemo(() => {
@@ -258,29 +249,25 @@ const DynamicIsland = () => {
 };
 
 // ==============================================================
-// LAYAR UI — Sekarang Berada di Atas Permukaan (Tidak Tenggelam!)
+// LAYAR UI
 // ==============================================================
 const PhoneScreen = () => {
-  const router = useRouter(); // Pastikan useRouter di-import dari next/navigation
+  const router = useRouter();
   const [btnHovered, setBtnHovered] = useState(false);
-
   const screenShape = useMemo(() => createRoundedRect(2.94, 6.04, 0.42), []);
 
   return (
     <group position={[0, 0, Z_FRONT]}>
-      {/* Background screen */}
       <mesh>
         <shapeGeometry args={[screenShape]} />
         <meshBasicMaterial color="#050a18" />
       </mesh>
 
-      {/* Header area */}
       <mesh position={[0, 2.22, 0.001]}>
         <planeGeometry args={[2.94, 1.35]} />
         <meshBasicMaterial color="#081328" transparent opacity={0.95} />
       </mesh>
 
-      {/* Status bar */}
       <Text
         position={[-0.92, 2.62, 0.002]}
         fontSize={0.185}
@@ -301,7 +288,6 @@ const PhoneScreen = () => {
 
       <DynamicIsland />
 
-      {/* ===== HERO CARD ===== */}
       <mesh position={[0, 0.88, 0.001]}>
         <planeGeometry args={[2.5, 3.08]} />
         <meshBasicMaterial color="#0b1d3e" transparent opacity={0.98} />
@@ -311,7 +297,6 @@ const PhoneScreen = () => {
         <meshBasicMaterial color="#38bdf8" />
       </mesh>
 
-      {/* Avatar */}
       <mesh position={[0, 1.76, 0.002]}>
         <circleGeometry args={[0.5, 64]} />
         <meshBasicMaterial color="#0d2550" />
@@ -329,7 +314,6 @@ const PhoneScreen = () => {
         RL
       </Text>
 
-      {/* Teks */}
       <Text
         position={[0, 1.09, 0.002]}
         fontSize={0.215}
@@ -353,7 +337,6 @@ const PhoneScreen = () => {
         <meshBasicMaterial color="#1a3260" />
       </mesh>
 
-      {/* Stats */}
       {(
         [
           [-0.78, "48", "Screens"],
@@ -382,7 +365,6 @@ const PhoneScreen = () => {
         </group>
       ))}
 
-      {/* Tech tag pills */}
       {(
         [
           [-0.64, "React Native"],
@@ -405,12 +387,11 @@ const PhoneScreen = () => {
         </group>
       ))}
 
-      {/* ===== TOMBOL INTERAKTIF ===== */}
       <group
         position={[0, -1.18, 0.002]}
         onClick={(e) => {
-          e.stopPropagation(); // Mencegah perputaran HP
-          router.push("/projects"); // Pindah halaman
+          e.stopPropagation();
+          router.push("/projects");
         }}
         onPointerOver={(e) => {
           e.stopPropagation();
@@ -425,7 +406,6 @@ const PhoneScreen = () => {
       >
         <mesh>
           <planeGeometry args={[2.18, 0.4]} />
-          {/* Warna menjadi lebih terang jika di-hover */}
           <meshBasicMaterial color={btnHovered ? "#02a6fa" : "#0284c7"} />
         </mesh>
         <Text
@@ -439,7 +419,6 @@ const PhoneScreen = () => {
         </Text>
       </group>
 
-      {/* Bottom Nav */}
       <mesh position={[0, -2.54, 0.001]}>
         <planeGeometry args={[2.94, 0.66]} />
         <meshBasicMaterial color="#060d1e" />
@@ -456,7 +435,6 @@ const PhoneScreen = () => {
         </Text>
       ))}
 
-      {/* Home indicator */}
       <mesh position={[0, -2.84, 0.002]}>
         <planeGeometry args={[0.65, 0.032]} />
         <meshBasicMaterial color="#334155" transparent opacity={0.65} />
@@ -466,7 +444,7 @@ const PhoneScreen = () => {
 };
 
 // ==============================================================
-// BODI IPHONE — ExtrudeGeometry UNIBODY, true 1-material
+// BODI IPHONE
 // ==============================================================
 const IPhoneBody = () => {
   const geometry = useMemo(() => {
@@ -509,9 +487,6 @@ const IPhoneBody = () => {
   return <mesh geometry={geometry} material={[glassMat, frameMat]} />;
 };
 
-// ==============================================================
-// IPHONE LENGKAP
-// ==============================================================
 const IPhone16Pro = () => (
   <group>
     <IPhoneBody />
@@ -554,7 +529,6 @@ const PhoneScene = () => (
       opacity={0.15}
       color="#38bdf8"
     />
-
     <ContactShadows
       position={[0, -3.6, 0]}
       opacity={0.55}
@@ -576,93 +550,7 @@ export const Projects = () => (
     className="py-24 md:py-36 scroll-mt-12 mx-auto max-w-6xl px-6 relative z-40"
   >
     <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
-      {/* ===== KIRI: TEKS ===== */}
-      <div className="w-full lg:w-5/12 space-y-8 text-center lg:text-left">
-        <div className="flex items-center justify-center lg:justify-start gap-3">
-          <span className="text-[#38bdf8] font-mono text-lg tracking-widest">
-            03.
-          </span>
-          <span className="text-[#334155] font-mono text-xs tracking-widest uppercase">
-            Featured Work
-          </span>
-        </div>
-
-        <h2 className="text-5xl md:text-6xl font-black text-[#f0f9ff] tracking-tight leading-none">
-          My{" "}
-          <span
-            className="text-transparent bg-clip-text"
-            style={{
-              backgroundImage:
-                "linear-gradient(135deg,#38bdf8 0%,#818cf8 100%)",
-            }}
-          >
-            Work
-          </span>
-        </h2>
-
-        <div className="flex items-center gap-3 justify-center lg:justify-start">
-          <div className="h-[2px] w-12 bg-gradient-to-r from-[#38bdf8] to-transparent" />
-          <div className="h-[2px] w-4 bg-[#38bdf8] opacity-40" />
-        </div>
-
-        <p className="text-[#64748b] text-base md:text-lg leading-relaxed max-w-sm mx-auto lg:mx-0">
-          Dari mendesain antarmuka yang ramah pengguna hingga membangun aplikasi
-          lintas platform. Setiap proyek dirancang dengan presisi dan perhatian
-          penuh terhadap detail.
-        </p>
-
-        <div className="grid grid-cols-3 gap-4 py-6 border-y border-[#0f2044]">
-          {[
-            ["12+", "Projects"],
-            ["3", "Awards"],
-            ["98%", "Satisfaction"],
-          ].map(([value, label]) => (
-            <div key={label} className="text-center lg:text-left">
-              <p
-                className="text-2xl font-black text-transparent bg-clip-text"
-                style={{
-                  backgroundImage: "linear-gradient(135deg,#38bdf8,#818cf8)",
-                }}
-              >
-                {value}
-              </p>
-              <p className="text-xs text-[#475569] font-mono uppercase tracking-wider mt-1">
-                {label}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <Link href="/projects" className="inline-block group">
-          <button
-            className="px-8 py-4 rounded-xl font-mono text-sm font-semibold tracking-widest uppercase transition-all duration-300 flex items-center gap-3"
-            style={{
-              background:
-                "linear-gradient(135deg,rgba(56,189,248,0.1),rgba(129,140,248,0.1))",
-              border: "1px solid rgba(56,189,248,0.3)",
-              color: "#38bdf8",
-            }}
-          >
-            View All Projects
-            <svg
-              className="group-hover:translate-x-1 transition-transform duration-300"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </button>
-        </Link>
-      </div>
-
-      {/* ===== KANAN: 3D CANVAS ===== */}
+      {/* SISI KIRI: 3D CANVAS */}
       <div className="w-full lg:w-7/12 h-[540px] lg:h-[700px] relative cursor-grab active:cursor-grabbing select-none">
         <div
           className="absolute inset-0 pointer-events-none"
@@ -671,10 +559,8 @@ export const Projects = () => (
               "radial-gradient(ellipse 55% 50% at 58% 50%,rgba(56,189,248,0.06) 0%,transparent 70%)",
           }}
         />
-
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 font-mono text-[10px] text-[#38bdf8] opacity-30 tracking-widest hidden md:flex items-center gap-2">
-          <span className="w-1 h-1 rounded-full bg-[#38bdf8] animate-pulse inline-block" />
-          DRAG TO ROTATE
+        <div className="absolute top-12 right-12 z-20 font-mono text-[10px] text-[#38bdf8] opacity-40 tracking-widest hidden md:block animate-pulse">
+          [ Drag to Rotate ]
         </div>
 
         <Canvas
@@ -700,6 +586,63 @@ export const Projects = () => (
             dampingFactor={0.05}
           />
         </Canvas>
+      </div>
+
+      {/* 🔴 SISI KANAN: TEKS DENGAN EFEK FROSTED GLASS (Backdrop Blur) */}
+      <div className="w-full lg:w-5/12 space-y-8 text-center lg:text-left bg-[#0A192F]/70 backdrop-blur-md p-8 rounded-3xl border border-transparent hover:border-[#233554]/50 transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+        <div className="flex items-center justify-center lg:justify-start gap-3">
+          <span className="text-[#38bdf8] font-mono text-lg tracking-widest">
+            02.
+          </span>
+          <span className="text-[#334155] font-mono text-xs tracking-widest uppercase">
+            Featured Project
+          </span>
+        </div>
+
+        <h2 className="text-5xl md:text-6xl font-black text-[#f0f9ff] tracking-tight leading-none">
+          My{" "}
+          <span
+            className="text-transparent bg-clip-text"
+            style={{
+              backgroundImage:
+                "linear-gradient(135deg,#38bdf8 0%,#818cf8 100%)",
+            }}
+          >
+            Projects
+          </span>
+        </h2>
+
+        <div className="flex items-center gap-3 justify-center lg:justify-start">
+          <div className="h-[2px] w-12 bg-gradient-to-r from-[#38bdf8] to-transparent" />
+          <div className="h-[2px] w-4 bg-[#38bdf8] opacity-40" />
+        </div>
+
+        <p className="text-[#64748b] text-base md:text-lg leading-relaxed max-w-sm mx-auto lg:mx-0">
+          Membangun antarmuka intuitif dan aplikasi berkinerja tinggi dengan
+          presisi.
+        </p>
+
+        <div className="grid grid-cols-3 gap-4 py-6 border-y border-[#0f2044]">
+          {[
+            ["12+", "Projects"],
+            ["3", "Awards"],
+            ["98%", "Satisfaction"],
+          ].map(([value, label]) => (
+            <div key={label} className="text-center lg:text-left">
+              <p
+                className="text-2xl font-black text-transparent bg-clip-text"
+                style={{
+                  backgroundImage: "linear-gradient(135deg,#38bdf8,#818cf8)",
+                }}
+              >
+                {value}
+              </p>
+              <p className="text-xs text-[#475569] font-mono uppercase tracking-wider mt-1">
+                {label}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   </section>
