@@ -128,7 +128,7 @@ export const About = ({ onMouseClick }: AboutProps) => {
               <div className="space-y-5 font-mono text-sm">
                 <div className="flex justify-between items-center border-b border-[#233554]/50 pb-2">
                   <span className="text-[#8892B0]">Name:</span>
-                  <span className="text-[#64FFDA]">"Rahma L. Laowo"</span>
+                  <span className="text-[#64FFDA]">"Rahma Lindungi Laowo"</span>
                 </div>
                 <div className="flex justify-between items-center border-b border-[#233554]/50 pb-2">
                   <span className="text-[#8892B0]">Major:</span>
@@ -136,7 +136,9 @@ export const About = ({ onMouseClick }: AboutProps) => {
                 </div>
                 <div className="flex justify-between items-center border-b border-[#233554]/50 pb-2">
                   <span className="text-[#8892B0]">Focus:</span>
-                  <span className="text-[#E6F1FF]">"UI/UX & Mobile"</span>
+                  <span className="text-[#E6F1FF]">
+                    "UI/UX & frontend development"
+                  </span>
                 </div>
                 <div className="flex justify-between items-center pb-2">
                   <span className="text-[#8892B0]">Loc:</span>
@@ -156,10 +158,10 @@ export const About = ({ onMouseClick }: AboutProps) => {
                   <div className="space-y-2">
                     <div className="flex justify-between text-[11px] font-bold uppercase tracking-wider text-[#8892B0]">
                       <span>Logic</span>
-                      <span className="text-[#64FFDA]">90%</span>
+                      <span className="text-[#64FFDA]">70%</span>
                     </div>
                     <div className="w-full h-1.5 bg-[#0A192F] rounded-full overflow-hidden border border-[#233554]">
-                      <div className="w-[90%] h-full bg-[#64FFDA] shadow-[0_0_8px_#64FFDA]"></div>
+                      <div className="w-[70%] h-full bg-[#64FFDA] shadow-[0_0_8px_#64FFDA]"></div>
                     </div>
                   </div>
                 </div>
