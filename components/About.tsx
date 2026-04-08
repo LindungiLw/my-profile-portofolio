@@ -96,7 +96,7 @@ export const About = ({ onMouseClick }: AboutProps) => {
               {" "}
               sederhana, estetik, dan sangat nyaman
             </span>{" "}
-            digunakan oleh *user*.
+            digunakan oleh <strong>*user*.</strong>
           </p>
         </div>
 
