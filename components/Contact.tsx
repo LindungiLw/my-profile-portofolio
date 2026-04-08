@@ -189,7 +189,7 @@ export const Contact = () => {
             </span>{" "}
             Let's Connect
           </h2>
-          <div className="h-[1px] bg-[#233554] flex-grow ml-8 mt-2 opacity-50"></div>
+          <div className="h-1px bg-[#233554] grow ml-8 mt-2 opacity-50"></div>
         </div>
 
         {/* ================= GRID UTAMA (KIRI & KANAN) ================= */}
@@ -244,7 +244,7 @@ export const Contact = () => {
           {/* ================= SISI KANAN: REVIEW BOX ================= */}
           <div className="flex flex-col space-y-6">
             {/* BOX FORM */}
-            <div className="bg-[#0A192F] border border-[#233554] p-8 rounded-2xl shadow-2xl flex flex-col justify-center min-h-[300px]">
+            <div className="bg-[#0A192F] border border-[#233554] p-8 rounded-2xl shadow-2xl flex flex-col justify-center min-h-300px">
               {/* PENGECEKAN LOGIN HANYA TERJADI DI DALAM KOTAK INI */}
               {!user ? (
                 // JIKA BELUM LOGIN

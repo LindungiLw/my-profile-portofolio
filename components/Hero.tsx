@@ -49,7 +49,7 @@ const BoundingBox = ({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
-      className={`relative w-fit h-fit border-[1px] border-[#8892B0] border-dashed group select-none ${
+      className={`relative w-fit h-fit border-1px border-[#8892B0] border-dashed group select-none ${
         enableDrag
           ? isDragging
             ? "cursor-grabbing z-50 bg-[#112240]/80 shadow-2xl scale-105"
@@ -168,7 +168,7 @@ export const Hero = () => {
       </div>
 
       {/* --- TYPOGRAPHY SENTRAL --- */}
-      <div className="relative flex items-center justify-center w-full max-w-5xl h-[400px] md:h-[500px]">
+      <div className="relative flex items-center justify-center w-full max-w-5xl h-400px md:h-500px">
         {/* 1. Kata: rahma */}
         <div className="absolute left-10 md:left-28 -translate-y-12 md:-translate-y-20 z-30">
           <BoundingBox
