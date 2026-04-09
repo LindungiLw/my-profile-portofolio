@@ -1,12 +1,57 @@
-// data/projects.ts
-
 export const projects = [
+  // FIGMA
+  {
+    slug: "emergency-call-web",
+    overline: "wireframe",
+    title: "Emergency Call Web",
+    category: "UI/UX",
+    image: "/assets/emergencyy.png",
+    shortDescription:
+      "Eksplorasi antarmuka untuk aplikasi dompet digital dengan gaya modern minimalis.",
+    techStack: ["Figma", "FigJam", "Prototyping"],
+    external:
+      "https://www.figma.com/proto/k9dT7lgTBib5JQ0tSXejzq/Emergency-Call?node-id=54-8&p=f&t=8aDr8ivMeBxe5jgo-1&scaling=scale-down&content-scaling=fixed&page-id=54%3A6&starting-point-node-id=54%3A8",
+    figma:
+      "https://www.figma.com/proto/k9dT7lgTBib5JQ0tSXejzq/Emergency-Call?node-id=54-8&p=f&t=hB9Xltu4M7ydCUU3-1&scaling=scale-down&content-scaling=fixed&page-id=54%3A6&starting-point-node-id=54%3A8&hotspot-hints=0",
+    figmaEmbed:
+      "https://embed.figma.com/proto/k9dT7lgTBib5JQ0tSXejzq/Emergency-Call?node-id=61-127&p=f&scaling=scale-down&content-scaling=fixed&page-id=54%3A6&starting-point-node-id=54%3A8&hotspot-hints=0&embed-host=share",
+    longDescription:
+      "Desain wireframe untuk web emergency call yang mengutamakan kenyamanan dan kesesuaian dengan kebutuhan pengguna.",
+    challenges:
+      "Menampilkan suasana yang tenang dan profesional dalam konteks layanan darurat yang biasanya penuh tekanan.",
+    solutions:
+      "Sebagain tempat untuk bisa cerita dan tidak takut untuk mencoba desain yang berbeda-beda, serta melakukan banyak iterasi berdasarkan feedback dari pengguna potensial.",
+  },
+
+  {
+    slug: "emergency-call-web",
+    overline: "wireframe",
+    title: "Emergency Call Web",
+    category: "UI/UX",
+    image:
+      "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=800&auto=format&fit=crop",
+    shortDescription:
+      "Eksplorasi antarmuka untuk aplikasi dompet digital dengan gaya modern minimalis.",
+    techStack: ["Figma", "FigJam", "Prototyping"],
+    external: "https://dribbble.com",
+    figma:
+      "https://www.figma.com/proto/k9dT7lgTBib5JQ0tSXejzq/Emergency-Call?node-id=54-8&p=f&t=hB9Xltu4M7ydCUU3-1&scaling=scale-down&content-scaling=fixed&page-id=54%3A6&starting-point-node-id=54%3A8&hotspot-hints=0",
+    figmaEmbed:
+      "https://embed.figma.com/proto/k9dT7lgTBib5JQ0tSXejzq/Emergency-Call?node-id=61-127&p=f&scaling=scale-down&content-scaling=fixed&page-id=54%3A6&starting-point-node-id=54%3A8&hotspot-hints=0&embed-host=share",
+    longDescription:
+      "Desain wireframe untuk web emergency call yang mengutamakan kenyamanan dan kesesuaian dengan kebutuhan pengguna.",
+    challenges:
+      "Menampilkan suasana yang tenang dan profesional dalam konteks layanan darurat yang biasanya penuh tekanan.",
+    solutions:
+      "Sebagain tempat untuk bisa cerita dan tidak takut untuk mencoba desain yang berbeda-beda, serta melakukan banyak iterasi berdasarkan feedback dari pengguna potensial.",
+  },
+
+  // WEB
   {
     slug: "ecommerce-redesign",
     overline: "Featured Project",
     title: "E-Commerce Web Platform",
     category: "Web",
-    // 👇 Tambahkan properti image ini
     image:
       "https://images.unsplash.com/photo-1661956602116-aa6865609028?q=80&w=800&auto=format&fit=crop",
     shortDescription:
@@ -21,6 +66,8 @@ export const projects = [
     solutions:
       "Implementasi Image Optimization bawaan Next.js dan teknik Lazy Loading.",
   },
+
+  // MOBILE
   {
     slug: "taskflow-mobile",
     overline: "Mobile Application",
@@ -40,25 +87,8 @@ export const projects = [
     solutions:
       "Menggunakan kemampuan local persistence dari Firebase Firestore.",
   },
-  {
-    slug: "fintech-app-design",
-    overline: "Design Concept",
-    title: "Fintech Wallet App Design",
-    category: "UI/UX",
-    image:
-      "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=800&auto=format&fit=crop",
-    shortDescription:
-      "Eksplorasi antarmuka untuk aplikasi dompet digital dengan gaya modern minimalis.",
-    techStack: ["Figma", "FigJam", "Prototyping"],
-    github: "https://github.com/LindungiLw",
-    external: "https://dribbble.com",
-    longDescription:
-      "Desain aplikasi keuangan yang menyederhanakan grafik investasi yang rumit.",
-    challenges:
-      "Menampilkan banyak angka dan data tanpa membuat layar terlihat penuh dan membingungkan.",
-    solutions:
-      "Penggunaan whitespace yang berani dan hierarki tipografi yang jelas.",
-  },
+
+  // LICENSES
   {
     slug: "aws-cloud-practitioner",
     overline: "Certification",
