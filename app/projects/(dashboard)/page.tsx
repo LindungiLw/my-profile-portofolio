@@ -1,7 +1,7 @@
 // app/projects/(dashboard)/page.tsx
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { projects } from "@/data/projects";
 import {
   AreaChart,
@@ -15,19 +15,60 @@ import {
   Cell,
 } from "recharts";
 
-// Data Dummy Gelombang (Bisa disambungkan ke GitHub API nanti)
-const commitData = [
-  { name: "W1", val: 12 },
-  { name: "W2", val: 45 },
-  { name: "W3", val: 30 },
-  { name: "W4", val: 78 },
-  { name: "W5", val: 54 },
-];
-
 export default function OverviewPage() {
   const totalProjects = projects.length;
 
-  // 1. MENGHITUNG 4 KATEGORI SECARA REAL-TIME DARI FILE projects.ts
+  // ================= STATE UNTUK GITHUB API =================
+  const [githubStats, setGithubStats] = useState({
+    repos: 0,
+    stars: 0,
+    totalCommits: 0,
+  });
+
+  // Format bawaan kini menggunakan 6 bulan
+  const [commitData, setCommitData] = useState([
+    { name: "M1", val: 0 },
+    { name: "M2", val: 0 },
+    { name: "M3", val: 0 },
+    { name: "M4", val: 0 },
+    { name: "M5", val: 0 },
+    { name: "M6", val: 0 },
+  ]);
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+
+    async function fetchMyInternalAPI() {
+      try {
+        const res = await fetch("/api/github");
+
+        if (!res.ok) {
+          console.error("Gagal mengambil data dari /api/github");
+          return;
+        }
+
+        const data = await res.json();
+
+        setGithubStats({
+          repos: data.repos || 0,
+          stars: data.stars || 0,
+          totalCommits: data.totalCommits || 0,
+        });
+
+        if (data.graphData) {
+          setCommitData(data.graphData);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data internal:", error);
+      }
+    }
+
+    fetchMyInternalAPI();
+  }, []);
+
+  // ================= MENGHITUNG KATEGORI WORKSPACE =================
   const chartData = [
     {
       name: "Web",
@@ -48,18 +89,18 @@ export default function OverviewPage() {
       name: "Licenses",
       value: projects.filter((p) => p.category === "Licenses").length,
       color: "#10B981",
-    }, // Hijau untuk sertifikat
-  ].filter((item) => item.value > 0); // Sembunyikan kategori yang isinya masih 0
+    },
+  ].filter((item) => item.value > 0);
 
-  // Mencari kategori paling dominan
   const topCategory =
     chartData.length > 0
       ? [...chartData].sort((a, b) => b.value - a.value)[0]
       : { name: "None", value: 0 };
 
+  if (!isMounted) return null;
+
   return (
-    <div className="animate-fade-in space-y-10">
-      {/* HEADER */}
+    <div className="animate-fade-in space-y-10 pb-12">
       <div>
         <h1 className="text-3xl md:text-4xl font-bold text-[#E6F1FF] mb-2">
           Analytics Overview
@@ -71,10 +112,9 @@ export default function OverviewPage() {
         </p>
       </div>
 
-      {/* ================= BARIS 1: AREA CHART & DONUT CHART ================= */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* CHART 1: GITHUB ACTIVITY (Area Chart) */}
-        <div className="lg:col-span-2 bg-[#112240] border border-[#233554] p-8 rounded-2xl shadow-xl flex flex-col justify-between">
+        {/* CHART 1: GITHUB ACTIVITY (GROWTH) */}
+        <div className="lg:col-span-2 bg-[#112240] border border-[#233554] p-8 rounded-2xl shadow-xl flex flex-col justify-between hover:border-[#233554]/80 transition-colors">
           <div className="flex justify-between items-start mb-6">
             <div>
               <h3 className="text-[#E6F1FF] font-bold flex items-center gap-2">
@@ -88,21 +128,26 @@ export default function OverviewPage() {
                 GitHub Commits
               </h3>
               <p className="text-[#8892B0] text-xs mt-1">
-                Productivity over the last 5 weeks
+                6-Month cumulative code contributions
               </p>
             </div>
             <div className="text-right">
-              <span className="text-[#64FFDA] font-mono text-xl font-bold">
-                219
+              <span className="text-[#64FFDA] font-mono text-2xl font-bold">
+                {githubStats.totalCommits}
               </span>
-              <p className="text-[#8892B0] text-[10px] uppercase tracking-widest">
-                Total Commits
+              <p className="text-[#8892B0] text-[9px] uppercase tracking-widest mt-1">
+                All-Time Commits
               </p>
             </div>
           </div>
 
-          <div className="h-48 w-full font-mono text-[10px]">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="h-56 w-full font-mono text-[10px]">
+            <ResponsiveContainer
+              width="99%"
+              height="100%"
+              minWidth={1}
+              minHeight={1}
+            >
               <AreaChart data={commitData}>
                 <CartesianGrid
                   strokeDasharray="3 3"
@@ -143,12 +188,12 @@ export default function OverviewPage() {
           </div>
         </div>
 
-        {/* CHART 2: PROJECT DISTRIBUTION (4 Menu) */}
-        <div className="bg-[#112240] border border-[#233554] p-8 rounded-2xl shadow-xl flex flex-col items-center">
-          <h3 className="text-[#E6F1FF] font-bold w-full mb-2">
+        {/* CHART 2: PROJECT DISTRIBUTION */}
+        <div className="bg-[#112240] border border-[#233554] p-8 rounded-2xl shadow-xl flex flex-col items-center hover:border-[#233554]/80 transition-colors">
+          <h3 className="text-[#E6F1FF] font-bold w-full mb-1">
             Workspace Mix
           </h3>
-          <p className="text-[#8892B0] text-xs w-full mb-6">
+          <p className="text-[#8892B0] text-xs w-full mb-8">
             Based on category volume
           </p>
 
@@ -171,14 +216,16 @@ export default function OverviewPage() {
                   backgroundColor: "#0A192F",
                   border: "1px solid #233554",
                   borderRadius: "8px",
+                  color: "#E6F1FF",
                 }}
+                itemStyle={{ color: "#E6F1FF" }}
               />
             </PieChart>
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <span className="text-3xl font-bold text-[#E6F1FF]">
                 {totalProjects}
               </span>
-              <span className="text-[10px] text-[#8892B0] uppercase">
+              <span className="text-[9px] text-[#8892B0] tracking-widest uppercase mt-1">
                 Items
               </span>
             </div>
@@ -205,8 +252,7 @@ export default function OverviewPage() {
       </div>
 
       {/* ================= BARIS 2: GITHUB STATS & INSIGHT ================= */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* INSIGHT CARD */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-12">
         <div className="bg-[#112240]/30 border border-[#233554] p-6 rounded-2xl flex items-start gap-4">
           <div className="text-2xl">💡</div>
           <div>
@@ -217,7 +263,7 @@ export default function OverviewPage() {
               Your current portfolio is heavily focused on{" "}
               <span className="text-[#E6F1FF] font-bold">
                 {topCategory.name}
-              </span>
+              </span>{" "}
               (
               {totalProjects > 0
                 ? ((topCategory.value / totalProjects) * 100).toFixed(0)
@@ -227,8 +273,12 @@ export default function OverviewPage() {
           </div>
         </div>
 
-        {/* MINI GITHUB DASHBOARD */}
-        <div className="bg-gradient-to-br from-[#112240] to-[#0A192F] border border-[#233554] p-6 rounded-2xl flex justify-between items-center group cursor-pointer hover:border-[#64FFDA] transition-colors">
+        <a
+          href="https://github.com/LindungiLw"
+          target="_blank"
+          rel="noreferrer"
+          className="bg-gradient-to-br from-[#112240] to-[#0A192F] border border-[#233554] p-6 rounded-2xl flex justify-between items-center group cursor-pointer hover:border-[#64FFDA] transition-colors"
+        >
           <div>
             <h4 className="text-[#E6F1FF] font-bold text-sm mb-4">
               GitHub Live Status
@@ -238,20 +288,24 @@ export default function OverviewPage() {
                 <p className="text-[#8892B0] text-[10px] uppercase font-mono tracking-wider">
                   Repositories
                 </p>
-                <p className="text-2xl font-bold text-[#E6F1FF]">14</p>
+                <p className="text-2xl font-bold text-[#E6F1FF]">
+                  {githubStats.repos}
+                </p>
               </div>
               <div>
                 <p className="text-[#8892B0] text-[10px] uppercase font-mono tracking-wider">
                   Stars
                 </p>
-                <p className="text-2xl font-bold text-[#F97316]">32</p>
+                <p className="text-2xl font-bold text-[#F97316]">
+                  {githubStats.stars}
+                </p>
               </div>
             </div>
           </div>
           <div className="w-12 h-12 rounded-full border-2 border-[#233554] flex items-center justify-center group-hover:border-[#64FFDA] group-hover:text-[#64FFDA] transition-colors text-[#8892B0]">
             →
           </div>
-        </div>
+        </a>
       </div>
     </div>
   );
