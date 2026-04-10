@@ -4,43 +4,42 @@
 import React, { useState } from "react";
 
 // ==============================================================
-// DATA PENGALAMAN (Silakan sesuaikan isinya)
+// DATA PENGALAMAN (Berdasarkan CV Asli & Update Terbaru)
 // ==============================================================
 const experiences = [
   {
     id: 1,
-    role: "UI/UX Designer Intern",
-    company: "TechNova Solutions",
-    date: "Jan 2025 - Present",
+    role: "Assistant Library",
+    company: "Jakarta International University",
+    date: "Ongoing (Present)",
     description: [
-      "Merancang antarmuka pengguna (UI) untuk aplikasi mobile internal perusahaan berfokus pada efisiensi alur kerja.",
-      "Melakukan riset pengguna dan pengujian A/B untuk meningkatkan retensi pengguna sebesar 15%.",
-      "Berkolaborasi dengan tim Frontend untuk memastikan implementasi desain Figma yang Pixel Perfect.",
+      "Managed circulation desk and accurately input daily visitor/loan data into the Koha Library System.",
+      "Organized book inventory and maintained database accuracy.",
+      "Successfully deployed and managed the hosting for the library's website to ensure reliable online access.", // 👈 Poin barumu di sini!
     ],
-    tech: ["Figma", "Prototyping", "User Research"],
+    tech: ["Koha System", "Database Management", "Web Deployment", "Hosting"], // 👈 Tech stack di-update!
   },
   {
     id: 2,
-    role: "Frontend Web Developer",
-    company: "Freelance Project",
-    date: "Jun 2024 - Des 2024",
+    role: "Graphic Design",
+    company: "Dermawan Indonesia",
+    date: "3 Months Contract",
     description: [
-      "Membangun landing page responsif menggunakan React dan Tailwind CSS untuk klien UMKM.",
-      "Mengoptimalkan performa website (Core Web Vitals) hingga mencapai skor 90+ di Google Lighthouse.",
-      "Mengintegrasikan animasi interaktif menggunakan Framer Motion.",
+      "Consistently met weekly targets of 7+ designs.",
+      "Managed and organized digital archives in Google Drive.",
     ],
-    tech: ["React.js", "Tailwind CSS", "Framer Motion"],
+    tech: ["Graphic Design", "Google Workspace", "Digital Archiving"],
   },
   {
     id: 3,
-    role: "Information System Student",
-    company: "Jakarta International Univ.",
-    date: "2023 - Present",
+    role: "IT Design Sprint",
+    company: "Jakarta International University",
+    date: "2 Weeks Sprint",
     description: [
-      "Fokus pada pemahaman arsitektur sistem informasi, desain basis data, dan interaksi manusia-komputer (HCI).",
-      "Aktif dalam proyek kampus berbasis desain produk dan pengembangan perangkat lunak lintas platform.",
+      "Analyzed device data and designed a structured interface for a Smart Home automation project.",
+      "Collaborated with the team to transform complex system logic into a user-friendly layout.",
     ],
-    tech: ["System Analysis", "Database", "HCI"],
+    tech: ["UI/UX Design", "System Analysis", "Team Collaboration"],
   },
 ];
 
