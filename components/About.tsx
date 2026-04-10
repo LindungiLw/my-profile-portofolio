@@ -3,6 +3,8 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+// 👇 1. Import mesin bahasa
+import { useLanguage } from "@/context/LanguageContext";
 
 interface AboutProps {
   onMouseClick?: () => void;
@@ -10,6 +12,9 @@ interface AboutProps {
 
 export const About = ({ onMouseClick }: AboutProps) => {
   const [isFlipped, setIsFlipped] = useState(false);
+
+  // 👇 2. Panggil fungsi bahasa
+  const { t } = useLanguage();
 
   return (
     <section
@@ -23,11 +28,8 @@ export const About = ({ onMouseClick }: AboutProps) => {
         .rotate-y-180 { transform: rotateY(180deg); }
       `}</style>
 
-      {/* ========================================================== */}
-      {/* 🔴 POSISI MOUSE & TITIK PANGKAL (DIKUNCI PRESISI) */}
-      {/* ========================================================== */}
+      {/* POSISI MOUSE & TITIK PANGKAL */}
       <div className="absolute top-[80px] left-[75%] -translate-x-1/2 z-30 flex flex-col items-center">
-        {/* Icon Mouse */}
         <div
           onClick={onMouseClick}
           className="w-[26px] h-[42px] border-2 border-[#8892B0]/50 rounded-full relative bg-[#0A192F] shadow-[0_0_15px_rgba(100,255,218,0.15)] hover:border-[#64FFDA] cursor-pointer transition-all active:scale-90"
@@ -35,7 +37,6 @@ export const About = ({ onMouseClick }: AboutProps) => {
         >
           <div className="w-1.5 h-3.5 bg-[#64FFDA] rounded-full absolute left-1/2 -translate-x-1/2 top-2 animate-bounce drop-shadow-[0_0_5px_rgba(100,255,218,0.8)]"></div>
         </div>
-        {/* Titik Pangkal Kabel (Menyala Oranye) */}
         <svg viewBox="0 0 20 20" className="w-5 h-5 mt-2 pointer-events-none">
           <circle
             cx="10"
@@ -55,48 +56,44 @@ export const About = ({ onMouseClick }: AboutProps) => {
         <div className="flex items-center w-full">
           <h2 className="text-3xl md:text-5xl font-bold text-[#E6F1FF] flex items-center whitespace-nowrap pointer-events-auto">
             <span className="text-[#FF5722] font-mono text-2xl md:text-4xl mr-3">
-              01.
+              {t("about.sectionNum")}
             </span>
-            About Me
+            {t("about.title")}
           </h2>
           <div className="h-[1px] bg-[#233554] w-[100px] md:flex-grow max-w-sm mt-2 ml-4"></div>
         </div>
       </div>
 
-      {/* 2. BIOGRAFI KIRI & KARTU KANAN */}
+      {/* BIOGRAFI KIRI & KARTU KANAN */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-10 md:gap-14 items-center relative z-10">
-        {/* 🔴 EFEK KACA BURAM (Backdrop Blur) PADA TEKS */}
+        {/* PARAGRAF BIOGRAFI (DENGAN TEKS DINAMIS) */}
         <div className="md:col-span-7 text-[#8892B0] text-lg leading-relaxed space-y-6 pointer-events-auto bg-[#0A192F]/70 backdrop-blur-md p-6 md:p-8 rounded-2xl border border-transparent hover:border-[#233554]/50 transition-colors shadow-lg">
           <p>
-            Halo! Saya{" "}
+            {t("about.greeting")}
             <span className="text-[#64FFDA] font-semibold">
               Rahma Lindungi Laowo
             </span>
-            , mahasiswa
+            {t("about.studentStatus")}
             <span className="text-[#E6F1FF] font-semibold">
               {" "}
-              Information Systems{" "}
-            </span>{" "}
-            semester 6 di
+              {t("about.major")}{" "}
+            </span>
+            {t("about.at")}
             <span className="text-[#E6F1FF] font-semibold">
               {" "}
-              Jakarta International University
+              {t("about.university")}
             </span>
             .
           </p>
           <p>
-            Saya sangat tertarik pada dunia{" "}
+            {t("about.passion")}
             <span className="text-[#64FFDA] font-semibold border-b border-[#64FFDA]/30 pb-0.5">
-              UI/UX Design
+              {t("about.focus1")}
             </span>{" "}
-            serta pengembangan aplikasi web dan mobile. Fokus utama saya adalah
-            menciptakan pengalaman digital yang tidak hanya berfungsi dengan
-            baik, tetapi juga
-            <span className="text-[#E6F1FF]">
-              {" "}
-              sederhana, estetik, dan sangat nyaman
-            </span>{" "}
-            digunakan oleh <strong>*user*.</strong>
+            {t("about.focus2")}
+            <span className="text-[#E6F1FF]"> {t("about.focus3")}</span>{" "}
+            {t("about.focus4")}
+            <strong>{t("about.user")}</strong>
           </p>
         </div>
 
@@ -107,16 +104,17 @@ export const About = ({ onMouseClick }: AboutProps) => {
           title="Click to flip card"
         >
           <div className="absolute -top-6 right-0 text-[10px] uppercase tracking-widest text-[#64FFDA] font-mono opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            {isFlipped ? "Click to see biodata" : "Click to see photo"}
+            {isFlipped ? t("about.hoverBio") : t("about.hoverPhoto")}
           </div>
 
           <div
             className={`relative w-full h-full transition-transform duration-700 preserve-3d ${isFlipped ? "rotate-y-180" : ""}`}
           >
+            {/* BAGIAN DEPAN KARTU (BIODATA) */}
             <div className="absolute inset-0 w-full h-full backface-hidden bg-[#112240]/90 backdrop-blur-md border border-[#233554] rounded-xl p-6 md:p-8 shadow-2xl">
               <div className="flex items-center justify-between mb-8 border-b border-[#233554] pb-4">
                 <span className="text-xs font-bold uppercase tracking-widest text-[#8892B0]">
-                  My Biodata
+                  {t("about.cardTitle")}
                 </span>
                 <div className="flex gap-2">
                   <div className="w-3 h-3 rounded-full bg-[#FF5F56] shadow-[0_0_5px_#FF5F56]/50"></div>
@@ -132,23 +130,21 @@ export const About = ({ onMouseClick }: AboutProps) => {
                 </div>
                 <div className="flex justify-between items-center border-b border-[#233554]/50 pb-2">
                   <span className="text-[#8892B0]">Major:</span>
-                  <span className="text-[#E6F1FF]">"Information Systems"</span>
+                  <span className="text-[#E6F1FF]">"{t("about.major")}"</span>
                 </div>
                 <div className="flex justify-between items-center border-b border-[#233554]/50 pb-2">
                   <span className="text-[#8892B0]">Focus:</span>
-                  <span className="text-[#E6F1FF]">
-                    "UI/UX & frontend development"
-                  </span>
+                  <span className="text-[#E6F1FF]">"UI/UX & frontend"</span>
                 </div>
                 <div className="flex justify-between items-center pb-2">
-                  <span className="text-[#8892B0]">Loc:</span>
-                  <span className="text-[#E6F1FF]">"Indonesia"</span>
+                  <span className="text-[#8892B0]">{t("about.locLabel")}</span>
+                  <span className="text-[#E6F1FF]">{t("about.locValue")}</span>
                 </div>
 
                 <div className="pt-6 space-y-4">
                   <div className="space-y-2">
                     <div className="flex justify-between text-[11px] font-bold uppercase tracking-wider text-[#8892B0]">
-                      <span>Creativity</span>
+                      <span>{t("about.creativity")}</span>
                       <span className="text-[#FF5722]">95%</span>
                     </div>
                     <div className="w-full h-1.5 bg-[#0A192F] rounded-full overflow-hidden border border-[#233554]">
@@ -157,7 +153,7 @@ export const About = ({ onMouseClick }: AboutProps) => {
                   </div>
                   <div className="space-y-2">
                     <div className="flex justify-between text-[11px] font-bold uppercase tracking-wider text-[#8892B0]">
-                      <span>Logic</span>
+                      <span>{t("about.logic")}</span>
                       <span className="text-[#64FFDA]">70%</span>
                     </div>
                     <div className="w-full h-1.5 bg-[#0A192F] rounded-full overflow-hidden border border-[#233554]">
@@ -168,6 +164,7 @@ export const About = ({ onMouseClick }: AboutProps) => {
               </div>
             </div>
 
+            {/* BAGIAN BELAKANG KARTU (FOTO) */}
             <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180 bg-[#112240] border-2 border-[#64FFDA]/50 rounded-xl overflow-hidden shadow-[0_0_30px_rgba(100,255,218,0.2)]">
               <div className="w-full h-full relative">
                 <Image
@@ -182,10 +179,10 @@ export const About = ({ onMouseClick }: AboutProps) => {
                 <div className="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSIvPgo8L3N2Zz4=')]"></div>
                 <div className="absolute bottom-6 left-6 right-6">
                   <h3 className="text-2xl font-bold text-[#E6F1FF] font-mono">
-                    Hello World!
+                    {t("about.hello")}
                   </h3>
                   <p className="text-[#64FFDA] text-sm mt-1">
-                    Ready to code & design.
+                    {t("about.ready")}
                   </p>
                 </div>
               </div>

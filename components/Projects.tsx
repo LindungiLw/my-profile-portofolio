@@ -14,8 +14,10 @@ import {
   Sparkles,
 } from "@react-three/drei";
 import * as THREE from "three";
-// Import data asli dari projects.ts
 import { projects } from "@/data/projects";
+
+// 👇 1. Import mesin bahasa
+import { useLanguage } from "@/context/LanguageContext";
 
 // ==============================================================
 // UTILITY: Rounded Rectangle Shape
@@ -34,9 +36,6 @@ const createRoundedRect = (w: number, h: number, r: number) => {
   return shape;
 };
 
-// ==============================================================
-// CONSTANTS — single source of truth for Z positions
-// ==============================================================
 const Z_FRONT = 0.076;
 const Z_BACK = -0.076;
 
@@ -258,7 +257,9 @@ const PhoneScreen = () => {
   const [btnHovered, setBtnHovered] = useState(false);
   const screenShape = useMemo(() => createRoundedRect(2.94, 6.04, 0.42), []);
 
-  // Memuat foto profil dari folder public/profile.png
+  // 👇 2. Panggil fungsi bahasa untuk di dalam layar HP
+  const { t } = useLanguage();
+
   const [profileTex, setProfileTex] = useState<THREE.Texture | null>(null);
   useEffect(() => {
     new THREE.TextureLoader().load("/profile.png", (tex) => {
@@ -313,7 +314,6 @@ const PhoneScreen = () => {
         {profileTex ? (
           <meshBasicMaterial map={profileTex} />
         ) : (
-          // Warna fallback jika gambar belum loading atau tidak ditemukan
           <meshBasicMaterial color="#0d2550" />
         )}
       </mesh>
@@ -338,7 +338,7 @@ const PhoneScreen = () => {
         anchorX="center"
         letterSpacing={0.06}
       >
-        PORTFOLIO PROFILE
+        {t("projects.phoneProfile")} {/* 👈 Teks dinamis */}
       </Text>
 
       <mesh position={[0, 0.58, 0.002]}>
@@ -346,7 +346,7 @@ const PhoneScreen = () => {
         <meshBasicMaterial color="#1a3260" />
       </mesh>
 
-      {/* HANYA MENAMPILKAN TOTAL PROJECT */}
+      {/* TOTAL PROJECT */}
       <group position={[0, 0.24, 0.002]}>
         <Text
           position={[0, 0.1, 0]}
@@ -364,7 +364,7 @@ const PhoneScreen = () => {
           anchorX="center"
           letterSpacing={0.05}
         >
-          TOTAL PROJECTS
+          {t("projects.phoneTotal")} {/* 👈 Teks dinamis */}
         </Text>
       </group>
 
@@ -418,7 +418,7 @@ const PhoneScreen = () => {
           fontWeight={700}
           letterSpacing={0.04}
         >
-          EXPLORE PROJECT →
+          {t("projects.phoneExplore")} {/* 👈 Teks dinamis */}
         </Text>
       </group>
 
@@ -447,7 +447,7 @@ const PhoneScreen = () => {
 };
 
 // ==============================================================
-// BODI IPHONE
+// BODI IPHONE & SCENE TETAP SAMA
 // ==============================================================
 const IPhoneBody = () => {
   const geometry = useMemo(() => {
@@ -475,7 +475,6 @@ const IPhoneBody = () => {
       }),
     [],
   );
-
   const frameMat = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
@@ -486,7 +485,6 @@ const IPhoneBody = () => {
       }),
     [],
   );
-
   return <mesh geometry={geometry} material={[glassMat, frameMat]} />;
 };
 
@@ -500,9 +498,6 @@ const IPhone16Pro = () => (
   </group>
 );
 
-// ==============================================================
-// SCENE LENGKAP
-// ==============================================================
 const PhoneScene = () => (
   <>
     <ambientLight intensity={0.4} />
@@ -510,9 +505,7 @@ const PhoneScene = () => (
     <directionalLight position={[7, 3, -5]} intensity={1.2} color="#99bbff" />
     <pointLight position={[0, -5, 5]} intensity={0.4} color="#38bdf8" />
     <spotLight position={[0, 12, 4]} angle={0.2} penumbra={1} intensity={1.0} />
-
     <Environment preset="studio" />
-
     <Float
       speed={1.4}
       rotationIntensity={0.07}
@@ -523,7 +516,6 @@ const PhoneScene = () => (
         <IPhone16Pro />
       </group>
     </Float>
-
     <Sparkles
       count={50}
       scale={[10, 14, 6]}
@@ -548,9 +540,10 @@ const PhoneScene = () => (
 // EXPORT UTAMA
 // ==============================================================
 export const Projects = () => {
-  // Hitung Data Real-Time
+  // 👇 3. Panggil fungsi bahasa untuk teks di luar layar
+  const { t } = useLanguage();
+
   const totalProjectsCount = projects.length;
-  // Hitung project yang memiliki link eksternal valid (live hosted)
   const totalHostedCount = projects.filter(
     (p) => p.external && p.external !== "#",
   ).length;
@@ -573,7 +566,6 @@ export const Projects = () => {
           <div className="absolute top-12 right-12 z-20 font-mono text-[10px] text-[#38bdf8] opacity-40 tracking-widest hidden md:block animate-pulse">
             [ Drag to Rotate ]
           </div>
-
           <Canvas
             className="touch-none"
             camera={{ position: [0, 0, 10.5], fov: 38 }}
@@ -603,9 +595,9 @@ export const Projects = () => {
         <div className="w-full lg:w-5/12 space-y-8 text-center lg:text-left bg-[#0A192F]/70 backdrop-blur-md p-8 rounded-3xl border border-transparent hover:border-[#233554]/50 transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
           <h2 className="flex items-baseline gap-3 text-4xl md:text-5xl font-black text-[#f0f9ff] tracking-tight leading-none mb-2">
             <span className="text-[#38bdf8] font-mono text-2xl md:text-3xl tracking-widest drop-shadow-sm">
-              02.
+              {t("projects.sectionNum")}
             </span>
-            <span>My</span>
+            <span>{t("projects.titleWord1")}</span>
             <span
               className="text-transparent bg-clip-text drop-shadow-lg"
               style={{
@@ -613,7 +605,7 @@ export const Projects = () => {
                   "linear-gradient(135deg,#38bdf8 0%,#818cf8 100%)",
               }}
             >
-              Projects
+              {t("projects.titleWord2")}
             </span>
           </h2>
 
@@ -623,8 +615,7 @@ export const Projects = () => {
           </div>
 
           <p className="text-[#64748b] text-base md:text-lg leading-relaxed max-w-sm mx-auto lg:mx-0">
-            Membangun antarmuka intuitif dan aplikasi berkinerja tinggi dengan
-            presisi. Berikut adalah kumpulan karya terbaik saya.
+            {t("projects.description")}
           </p>
 
           <div className="grid grid-cols-2 gap-4 py-6 border-y border-[#0f2044]">
@@ -638,7 +629,7 @@ export const Projects = () => {
                 {totalProjectsCount}
               </p>
               <p className="text-xs text-[#475569] font-mono uppercase tracking-wider mt-1">
-                Total Projects
+                {t("projects.total")}
               </p>
             </div>
             <div className="text-center lg:text-left">
@@ -651,7 +642,7 @@ export const Projects = () => {
                 {totalHostedCount}
               </p>
               <p className="text-xs text-[#475569] font-mono uppercase tracking-wider mt-1">
-                Live Hosted
+                {t("projects.hosted")}
               </p>
             </div>
           </div>

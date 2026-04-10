@@ -3,51 +3,62 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+// 👇 1. Import mesin bahasanya
+import { useLanguage } from "@/context/LanguageContext";
 
-// 🔴 PERUBAHAN: URUTAN MENU DIPERBARUI (Projects sekarang nomor 2)
-const navItems = [
-  { name: "About", href: "#about" },
-  { name: "Projects", href: "#projects" },
-  { name: "Experience", href: "#experience" },
-  { name: "Contact", href: "#contact" },
+// Kita tidak pakai array statis lagi, karena nama menunya akan berubah-ubah
+const navRoutes = [
+  { key: "about", href: "#about" },
+  { key: "projects", href: "#projects" },
+  { key: "experience", href: "#experience" },
+  { key: "contact", href: "#contact" },
 ];
 
 // ==========================================
 // KOMPONEN KHUSUS: Menu Navigasi Magnetic + Glitch 3D
 // ==========================================
 const CyberNavItem = ({
-  item,
+  itemKey, // 👈 Menerima 'key' dari kamus
+  href,
   index,
   isActive,
   onClick,
 }: {
-  item: { name: string; href: string };
+  itemKey: string;
+  href: string;
   index: number;
   isActive: boolean;
   onClick: () => void;
 }) => {
-  const [displayText, setDisplayText] = useState(item.name);
+  // 👇 2. Panggil fungsi bahasa di sini
+  const { t } = useLanguage();
+  const itemName = t(`nav.${itemKey}`); // Akan menghasilkan "About" atau "Tentang"
+
+  const [displayText, setDisplayText] = useState(itemName);
   const [isGlitching, setIsGlitching] = useState(false);
+
+  // Efek jika bahasa berubah (harus segera mereset teks)
+  useEffect(() => {
+    setDisplayText(itemName);
+  }, [itemName]);
 
   // State untuk efek Magnetik
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const itemRef = useRef<HTMLAnchorElement>(null);
 
-  // Fungsi Efek Magnet (Mengikuti Kursor)
+  // Fungsi Efek Magnet
   const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (!itemRef.current) return;
     const rect = itemRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left - rect.width / 2;
     const y = e.clientY - rect.top - rect.height / 2;
-    // Bergeser 20% ke arah kursor
     setPosition({ x: x * 0.2, y: y * 0.2 });
   };
 
   const handleMouseLeave = () => {
-    // Kembali ke posisi semula saat mouse pergi (efek per/spring)
     setPosition({ x: 0, y: 0 });
     setIsGlitching(false);
-    setDisplayText(item.name); // Reset teks kalau mouse pergi di tengah animasi
+    setDisplayText(itemName);
   };
 
   // Fungsi Animasi Teks Mengacak (Matrix Decode)
@@ -60,16 +71,16 @@ const CyberNavItem = ({
 
     const interval = setInterval(() => {
       setDisplayText((prev) =>
-        item.name
+        itemName
           .split("")
           .map((letter, i) => {
-            if (i < iteration) return item.name[i];
+            if (i < iteration) return itemName[i];
             return letters[Math.floor(Math.random() * letters.length)];
           })
           .join(""),
       );
 
-      if (iteration >= item.name.length) {
+      if (iteration >= itemName.length) {
         clearInterval(interval);
         setIsGlitching(false);
       }
@@ -79,7 +90,7 @@ const CyberNavItem = ({
 
   return (
     <Link
-      href={item.href}
+      href={href}
       ref={itemRef}
       onClick={onClick}
       onMouseEnter={triggerGlitch}
@@ -88,10 +99,9 @@ const CyberNavItem = ({
       className="group relative flex items-center gap-2 text-sm font-medium uppercase tracking-widest cursor-pointer p-4 -m-4 transition-transform ease-out"
       style={{
         transform: `translate(${position.x}px, ${position.y}px)`,
-        transitionDuration: position.x === 0 ? "300ms" : "50ms", // Lembut saat balik, responsif saat ditarik
+        transitionDuration: position.x === 0 ? "300ms" : "50ms",
       }}
     >
-      {/* Simbol Kurung Buka "<" saat Aktif */}
       <span
         className={`font-mono text-[#64FFDA] transition-all duration-300 ${
           isActive ? "opacity-100 translate-x-0" : "opacity-0 translate-x-3"
@@ -100,7 +110,6 @@ const CyberNavItem = ({
         {"<"}
       </span>
 
-      {/* Teks Navigasi dengan Efek RGB Glitch 3D */}
       <span
         className={`transition-colors duration-300 relative z-10 ${
           isActive
@@ -119,7 +128,6 @@ const CyberNavItem = ({
         {displayText}
       </span>
 
-      {/* Simbol Kurung Tutup ">" saat Aktif */}
       <span
         className={`font-mono text-[#64FFDA] transition-all duration-300 ${
           isActive ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-3"
@@ -128,7 +136,6 @@ const CyberNavItem = ({
         {">"}
       </span>
 
-      {/* Cahaya Latar (Glow) saat di-hover */}
       <div
         className={`absolute inset-0 bg-[#64FFDA]/10 blur-md rounded-lg transition-opacity duration-300 -z-10 ${
           isGlitching ? "opacity-100" : "opacity-0"
@@ -142,7 +149,7 @@ const CyberNavItem = ({
 // KOMPONEN UTAMA: Navbar Glassmorphism
 // ==========================================
 export const Navigation = () => {
-  const [activeItem, setActiveItem] = useState("About");
+  const [activeItem, setActiveItem] = useState("about"); // Sekarang melacak 'key'
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
@@ -162,34 +169,23 @@ export const Navigation = () => {
       }`}
     >
       <div className="mx-auto flex max-w-5xl items-start justify-between px-6 md:px-12">
-        {/* ========================================= */}
-        {/* LOGO: [ rll. ] The Sentinel Brackets      */}
-        {/* ========================================= */}
+        {/* LOGO */}
         <Link href="/" className="group flex flex-col cursor-pointer mt-1">
           <div className="flex items-baseline relative text-3xl font-bold font-mono">
-            {/* Kurung Siku Kiri (Membuka saat di-hover) */}
             <span className="text-[#64FFDA] transition-transform duration-500 ease-out group-hover:-translate-x-2 opacity-80 group-hover:opacity-100">
               [
             </span>
-
-            {/* Inisial */}
             <span className="tracking-tighter text-[#E6F1FF] mx-1 relative z-10 font-sans">
               rll
             </span>
             <span className="text-[#64FFDA] animate-pulse relative z-10 font-sans">
               .
             </span>
-
-            {/* Kurung Siku Kanan (Membuka saat di-hover) */}
             <span className="text-[#64FFDA] transition-transform duration-500 ease-out group-hover:translate-x-2 opacity-80 group-hover:opacity-100 ml-1">
               ]
             </span>
-
-            {/* Cahaya di balik logo saat di hover */}
             <div className="absolute inset-0 bg-[#64FFDA]/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
           </div>
-
-          {/* Rahasia Animasi CSS Grid: Mengungkap nama saat di-hover */}
           <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-500 ease-in-out pl-2">
             <span className="overflow-hidden text-[9px] font-mono tracking-[0.2em] text-[#64FFDA] uppercase pt-1">
               Rahma Lindungi Laowo
@@ -197,20 +193,21 @@ export const Navigation = () => {
           </div>
         </Link>
 
-        {/* MENU KANAN (Desktop) */}
+        {/* MENU KANAN */}
         <nav className="hidden md:flex items-center gap-6 pt-2">
-          {navItems.map((item, index) => (
+          {navRoutes.map((route, index) => (
             <CyberNavItem
-              key={item.name}
-              item={item}
+              key={route.key}
+              itemKey={route.key}
+              href={route.href}
               index={index}
-              isActive={activeItem === item.name}
-              onClick={() => setActiveItem(item.name)}
+              isActive={activeItem === route.key}
+              onClick={() => setActiveItem(route.key)}
             />
           ))}
         </nav>
 
-        {/* Tombol Menu Mobile */}
+        {/* Menu Mobile */}
         <div className="md:hidden text-[#64FFDA] pt-2 cursor-pointer hover:scale-110 transition-transform">
           <svg
             className="w-8 h-8"

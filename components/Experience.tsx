@@ -2,54 +2,53 @@
 "use client";
 
 import React, { useState } from "react";
-
-// ==============================================================
-// DATA PENGALAMAN (Berdasarkan CV Asli & Update Terbaru)
-// ==============================================================
-const experiences = [
-  {
-    id: 1,
-    role: "Assistant Library",
-    company: "Jakarta International University",
-    date: "Ongoing (Present)",
-    description: [
-      "Managed circulation desk and accurately input daily visitor/loan data into the Koha Library System.",
-      "Organized book inventory and maintained database accuracy.",
-      "Successfully deployed and managed the hosting for the library's website to ensure reliable online access.", // 👈 Poin barumu di sini!
-    ],
-    tech: ["Koha System", "Database Management", "Web Deployment", "Hosting"], // 👈 Tech stack di-update!
-  },
-  {
-    id: 2,
-    role: "Graphic Design",
-    company: "Dermawan Indonesia",
-    date: "3 Months Contract",
-    description: [
-      "Consistently met weekly targets of 7+ designs.",
-      "Managed and organized digital archives in Google Drive.",
-    ],
-    tech: ["Graphic Design", "Google Workspace", "Digital Archiving"],
-  },
-  {
-    id: 3,
-    role: "IT Design Sprint",
-    company: "Jakarta International University",
-    date: "2 Weeks Sprint",
-    description: [
-      "Analyzed device data and designed a structured interface for a Smart Home automation project.",
-      "Collaborated with the team to transform complex system logic into a user-friendly layout.",
-    ],
-    tech: ["UI/UX Design", "System Analysis", "Team Collaboration"],
-  },
-];
+// 👇 1. Import mesin bahasanya
+import { useLanguage } from "@/context/LanguageContext";
 
 export const Experience = () => {
   // State untuk melacak kartu mana yang sedang dibuka
   const [expandedId, setExpandedId] = useState<number | null>(null);
 
+  // 👇 2. Panggil fungsi bahasa
+  const { t } = useLanguage();
+
   const toggleExpand = (id: number) => {
     setExpandedId(expandedId === id ? null : id);
   };
+
+  // ==============================================================
+  // DATA PENGALAMAN (Dipindah ke dalam komponen agar bisa pakai t() )
+  // ==============================================================
+  const experiences = [
+    {
+      id: 1,
+      role: t("experience.job1_role"),
+      company: "Jakarta International University",
+      date: t("experience.job1_date"),
+      description: [
+        t("experience.job1_desc1"),
+        t("experience.job1_desc2"),
+        t("experience.job1_desc3"),
+      ],
+      tech: ["Koha System", "Database Management", "Web Deployment", "Hosting"],
+    },
+    {
+      id: 2,
+      role: t("experience.job2_role"),
+      company: "Dermawan Indonesia",
+      date: t("experience.job2_date"),
+      description: [t("experience.job2_desc1"), t("experience.job2_desc2")],
+      tech: ["Graphic Design", "Google Workspace", "Digital Archiving"],
+    },
+    {
+      id: 3,
+      role: t("experience.job3_role"),
+      company: "Jakarta International University",
+      date: t("experience.job3_date"),
+      description: [t("experience.job3_desc1"), t("experience.job3_desc2")],
+      tech: ["UI/UX Design", "System Analysis", "Team Collaboration"],
+    },
+  ];
 
   return (
     <section
@@ -58,14 +57,14 @@ export const Experience = () => {
     >
       <div className="max-w-3xl mx-auto">
         {/* ========================================================== */}
-        {/* HEADER SECTION (Padding diperkecil untuk efek compact)     */}
+        {/* HEADER SECTION                                             */}
         {/* ========================================================== */}
         <div className="flex items-center w-full mb-8">
           <h2 className="text-3xl md:text-5xl font-bold text-[#E6F1FF] flex items-center whitespace-nowrap">
             <span className="text-[#FF5722] font-mono text-2xl md:text-4xl mr-3">
-              03.
+              {t("experience.sectionNum")}
             </span>
-            Experience
+            {t("experience.title")}
           </h2>
           <div className="h-[1px] bg-[#233554] flex-grow ml-6 mt-2 opacity-30"></div>
         </div>
@@ -84,7 +83,7 @@ export const Experience = () => {
               }`}
               onClick={() => toggleExpand(exp.id)}
             >
-              {/* HEADER KARTU: Selalu terlihat (Role, Company, Date) */}
+              {/* HEADER KARTU */}
               <div className="p-5 md:p-6 flex items-center justify-between">
                 <div className="flex-grow">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-1">

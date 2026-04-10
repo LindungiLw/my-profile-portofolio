@@ -2,6 +2,8 @@
 "use client";
 
 import React, { useState, useRef } from "react";
+// 👇 1. Import mesin bahasanya
+import { useLanguage } from "@/context/LanguageContext";
 
 // ==========================================
 // KOMPONEN KHUSUS: Kotak Seleksi (Bisa Di-Drag)
@@ -82,6 +84,9 @@ const BoundingBox = ({
 export const Hero = () => {
   const [displayText, setDisplayText] = useState("Lindungi");
   const intervalRef = useRef<any>(null);
+
+  // 👇 2. Panggil fungsi bahasa di sini
+  const { t } = useLanguage();
 
   const triggerGlitch = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
@@ -212,7 +217,7 @@ export const Hero = () => {
           </BoundingBox>
         </div>
 
-        {/* 4. Sub-title: Software Engineer */}
+        {/* 4. Sub-title: UI/UX Designer */}
         <div className="absolute bottom-[-10px] md:bottom-8 left-1/2 -translate-x-1/2 z-50">
           <BoundingBox
             enableDrag={true}
@@ -220,10 +225,10 @@ export const Hero = () => {
           >
             <div className="text-center pointer-events-none">
               <span className="block text-[#FF5722] font-bold text-xl leading-none">
-                UI/UX
+                {t("hero.role1")} {/* 👈 Teks dinamis */}
               </span>
               <span className="block font-['Dancing_Script',_cursive] text-white text-3xl leading-none -mt-1">
-                Designer
+                {t("hero.role2")} {/* 👈 Teks dinamis */}
               </span>
             </div>
           </BoundingBox>
@@ -233,10 +238,10 @@ export const Hero = () => {
       {/* --- LABEL KANAN BAWAH --- */}
       <div className="absolute right-6 md:right-12 bottom-12 text-right pointer-events-none z-10">
         <p className="font-['Dancing_Script',_cursive] text-3xl text-[#E6F1FF] mb-2 opacity-90">
-          UI/UX & Frontend
+          {t("hero.subtitle")} {/* 👈 Teks dinamis */}
         </p>
         <p className="text-[10px] font-bold text-[#8892B0] tracking-widest uppercase">
-          Information System Student
+          {t("hero.studentStatus")} {/* 👈 Teks dinamis */}
         </p>
       </div>
     </section>

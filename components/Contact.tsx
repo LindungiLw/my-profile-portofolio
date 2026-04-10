@@ -3,6 +3,8 @@
 
 import React, { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
+// 👇 1. Import mesin bahasa
+import { useLanguage } from "@/context/LanguageContext";
 
 // Inisialisasi Supabase
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -106,6 +108,9 @@ export const Contact = () => {
   const [rating, setRating] = useState(5);
   const [isSending, setIsSending] = useState(false);
 
+  // 👇 2. Panggil fungsi bahasa
+  const { t } = useLanguage();
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -154,7 +159,7 @@ export const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return alert("Silakan login dengan Google terlebih dahulu!");
+    if (!user) return alert(t("contact.alertLogin")); // 👈 Pesan Alert dinamis
 
     setIsSending(true);
     const googleName = user.user_metadata.full_name || "Anonymous User";
@@ -164,14 +169,12 @@ export const Contact = () => {
       .insert([{ name: googleName, message, rating, likes: 0 }]);
 
     if (!error) {
-      alert(
-        "Terima kasih! Rating bintang " + rating + " kamu sudah tersimpan. ⭐",
-      );
+      alert(t("contact.alertSuccess1") + rating + t("contact.alertSuccess2")); // 👈 Pesan Alert dinamis
       setMessage("");
       setRating(5);
       fetchComments();
     } else {
-      alert("Gagal kirim komentar. Cek koneksi.");
+      alert(t("contact.alertFail")); // 👈 Pesan Alert dinamis
     }
     setIsSending(false);
   };
@@ -185,20 +188,19 @@ export const Contact = () => {
         <div className="flex items-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold text-[#E6F1FF] flex items-center tracking-tight">
             <span className="text-[#FF5722] font-mono text-2xl md:text-4xl mr-4">
-              04.
+              {t("contact.sectionNum")}
             </span>{" "}
-            Let's Connect
+            {t("contact.title")}
           </h2>
           <div className="h-1px bg-[#233554] grow ml-8 mt-2 opacity-50"></div>
         </div>
 
         {/* ================= GRID UTAMA (KIRI & KANAN) ================= */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          {/* ================= SISI KIRI: SOSIAL MEDIA (PASTI MUNCUL TERUS) ================= */}
+          {/* ================= SISI KIRI: SOSIAL MEDIA ================= */}
           <div className="flex flex-col justify-start space-y-8">
             <p className="text-[#8892B0] text-lg leading-relaxed">
-              Punya tawaran proyek, pertanyaan, atau sekadar ingin menyapa?
-              Jangan ragu untuk menghubungi saya melalui platform di bawah ini.
+              {t("contact.description")}
             </p>
             <div className="grid grid-cols-2 gap-4">
               {[
@@ -243,23 +245,21 @@ export const Contact = () => {
 
           {/* ================= SISI KANAN: REVIEW BOX ================= */}
           <div className="flex flex-col space-y-6">
-            {/* BOX FORM */}
             <div className="bg-[#0A192F] border border-[#233554] p-8 rounded-2xl shadow-2xl flex flex-col justify-center min-h-300px">
-              {/* PENGECEKAN LOGIN HANYA TERJADI DI DALAM KOTAK INI */}
               {!user ? (
                 // JIKA BELUM LOGIN
                 <div className="text-center flex flex-col items-center justify-center h-full animate-fade-in">
                   <h3 className="text-[#E6F1FF] text-2xl font-bold mb-3">
-                    Leave a Review
+                    {t("contact.leaveReview")}
                   </h3>
                   <p className="text-[#8892B0] text-sm mb-8">
-                    Log in with Google to share your thoughts.
+                    {t("contact.loginPrompt")}
                   </p>
                   <button
                     onClick={handleGoogleLogin}
                     className="flex items-center justify-center gap-3 py-3 px-8 bg-transparent border border-[#64FFDA] text-[#64FFDA] font-mono text-xs font-bold uppercase tracking-[0.15em] rounded hover:bg-[#64FFDA]/10 transition-all duration-300"
                   >
-                    <Icons.Message /> GIVE COMMENT
+                    <Icons.Message /> {t("contact.btnComment")}
                   </button>
                 </div>
               ) : (
@@ -268,7 +268,6 @@ export const Contact = () => {
                   onSubmit={handleSubmit}
                   className="flex flex-col h-full animate-fade-in"
                 >
-                  {/* Foto, Nama Google, Tombol Logout */}
                   <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#233554]/50">
                     <div className="flex items-center gap-4">
                       <img
@@ -281,7 +280,7 @@ export const Contact = () => {
                           {user.user_metadata.full_name}
                         </span>
                         <span className="text-[#64FFDA] text-[10px] font-mono uppercase tracking-widest mt-0.5">
-                          Verified Reviewer
+                          {t("contact.verified")}
                         </span>
                       </div>
                     </div>
@@ -290,14 +289,14 @@ export const Contact = () => {
                       onClick={handleLogout}
                       className="text-[#8892B0] text-xs font-mono hover:text-[#FF5722] transition-colors"
                     >
-                      Logout
+                      {t("contact.logout")}
                     </button>
                   </div>
 
                   {/* Input Bintang */}
                   <div className="flex items-center gap-4 mb-6">
                     <p className="text-[#8892B0] font-mono text-[10px] uppercase tracking-[0.2em]">
-                      Rating:
+                      {t("contact.rating")}
                     </p>
                     <div className="flex gap-2">
                       {[1, 2, 3, 4, 5].map((num) => (
@@ -316,7 +315,7 @@ export const Contact = () => {
                   {/* Teks Area */}
                   <textarea
                     rows={3}
-                    placeholder="Share your suggestions..."
+                    placeholder={t("contact.placeholder")}
                     required
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
@@ -328,7 +327,9 @@ export const Contact = () => {
                     disabled={isSending}
                     className="w-full py-3.5 bg-transparent border border-[#64FFDA] text-[#64FFDA] font-mono text-xs font-bold uppercase tracking-[0.15em] rounded hover:bg-[#64FFDA]/10 transition-all duration-300"
                   >
-                    {isSending ? "SENDING..." : "SUBMIT REVIEW"}
+                    {isSending
+                      ? t("contact.btnSending")
+                      : t("contact.btnSubmit")}
                   </button>
                 </form>
               )}
@@ -376,7 +377,7 @@ export const Contact = () => {
                 </div>
               ) : (
                 <p className="text-[#8892B0] italic text-xs text-center font-mono tracking-widest">
-                  WAITING FOR REVIEWS...
+                  {t("contact.waiting")}
                 </p>
               )}
             </div>
