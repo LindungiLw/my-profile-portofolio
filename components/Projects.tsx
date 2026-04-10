@@ -1,7 +1,7 @@
 // components/Projects.tsx
 "use client";
 
-import React, { Suspense, useMemo, useState } from "react";
+import React, { Suspense, useMemo, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Canvas } from "@react-three/fiber";
 import {
@@ -14,6 +14,8 @@ import {
   Sparkles,
 } from "@react-three/drei";
 import * as THREE from "three";
+// Import data asli dari projects.ts
+import { projects } from "@/data/projects";
 
 // ==============================================================
 // UTILITY: Rounded Rectangle Shape
@@ -249,12 +251,20 @@ const DynamicIsland = () => {
 };
 
 // ==============================================================
-// LAYAR UI
+// LAYAR UI (DENGAN FOTO PROFIL & TOTAL PROJECT)
 // ==============================================================
 const PhoneScreen = () => {
   const router = useRouter();
   const [btnHovered, setBtnHovered] = useState(false);
   const screenShape = useMemo(() => createRoundedRect(2.94, 6.04, 0.42), []);
+
+  // Memuat foto profil dari folder public/profile.png
+  const [profileTex, setProfileTex] = useState<THREE.Texture | null>(null);
+  useEffect(() => {
+    new THREE.TextureLoader().load("/profile.png", (tex) => {
+      setProfileTex(tex);
+    });
+  }, []);
 
   return (
     <group position={[0, 0, Z_FRONT]}>
@@ -297,22 +307,20 @@ const PhoneScreen = () => {
         <meshBasicMaterial color="#38bdf8" />
       </mesh>
 
+      {/* FOTO PROFIL */}
       <mesh position={[0, 1.76, 0.002]}>
         <circleGeometry args={[0.5, 64]} />
-        <meshBasicMaterial color="#0d2550" />
+        {profileTex ? (
+          <meshBasicMaterial map={profileTex} />
+        ) : (
+          // Warna fallback jika gambar belum loading atau tidak ditemukan
+          <meshBasicMaterial color="#0d2550" />
+        )}
       </mesh>
       <mesh position={[0, 1.76, 0.003]}>
         <ringGeometry args={[0.5, 0.545, 64]} />
         <meshBasicMaterial color="#38bdf8" transparent opacity={0.5} />
       </mesh>
-      <Text
-        position={[0, 1.76, 0.004]}
-        fontSize={0.3}
-        color="#38bdf8"
-        fontWeight={800}
-      >
-        RL
-      </Text>
 
       <Text
         position={[0, 1.09, 0.002]}
@@ -321,7 +329,7 @@ const PhoneScreen = () => {
         anchorX="center"
         fontWeight={700}
       >
-        Tryotel App
+        LindungiLw
       </Text>
       <Text
         position={[0, 0.78, 0.002]}
@@ -330,45 +338,40 @@ const PhoneScreen = () => {
         anchorX="center"
         letterSpacing={0.06}
       >
-        MOBILE UI/UX DESIGN
+        PORTFOLIO PROFILE
       </Text>
+
       <mesh position={[0, 0.58, 0.002]}>
         <planeGeometry args={[2.1, 0.01]} />
         <meshBasicMaterial color="#1a3260" />
       </mesh>
 
-      {(
-        [
-          [-0.78, "48", "Screens"],
-          [0, "4.9★", "Rating"],
-          [0.78, "2K+", "Users"],
-        ] as [number, string, string][]
-      ).map(([x, val, label]) => (
-        <group key={label} position={[x, 0.24, 0.002]}>
-          <Text
-            position={[0, 0.1, 0]}
-            fontSize={0.185}
-            color="#38bdf8"
-            anchorX="center"
-            fontWeight={800}
-          >
-            {val}
-          </Text>
-          <Text
-            position={[0, -0.1, 0]}
-            fontSize={0.09}
-            color="#475569"
-            anchorX="center"
-          >
-            {label}
-          </Text>
-        </group>
-      ))}
+      {/* HANYA MENAMPILKAN TOTAL PROJECT */}
+      <group position={[0, 0.24, 0.002]}>
+        <Text
+          position={[0, 0.1, 0]}
+          fontSize={0.28}
+          color="#38bdf8"
+          anchorX="center"
+          fontWeight={800}
+        >
+          {projects.length}
+        </Text>
+        <Text
+          position={[0, -0.15, 0]}
+          fontSize={0.1}
+          color="#475569"
+          anchorX="center"
+          letterSpacing={0.05}
+        >
+          TOTAL PROJECTS
+        </Text>
+      </group>
 
       {(
         [
-          [-0.64, "React Native"],
-          [0.64, "Figma"],
+          [-0.64, "GitHub"],
+          [0.64, "LinkedIn"],
         ] as [number, string][]
       ).map(([x, label]) => (
         <group key={label} position={[x, -0.2, 0.002]}>
@@ -544,106 +547,116 @@ const PhoneScene = () => (
 // ==============================================================
 // EXPORT UTAMA
 // ==============================================================
-export const Projects = () => (
-  <section
-    id="projects"
-    className="py-24 md:py-36 scroll-mt-12 mx-auto max-w-6xl px-6 relative z-40"
-  >
-    <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
-      {/* SISI KIRI: 3D CANVAS */}
-      <div className="w-full lg:w-7/12 h-[540px] lg:h-[700px] relative cursor-grab active:cursor-grabbing select-none">
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              "radial-gradient(ellipse 55% 50% at 58% 50%,rgba(56,189,248,0.06) 0%,transparent 70%)",
-          }}
-        />
-        <div className="absolute top-12 right-12 z-20 font-mono text-[10px] text-[#38bdf8] opacity-40 tracking-widest hidden md:block animate-pulse">
-          [ Drag to Rotate ]
-        </div>
+export const Projects = () => {
+  // Hitung Data Real-Time
+  const totalProjectsCount = projects.length;
+  // Hitung project yang memiliki link eksternal valid (live hosted)
+  const totalHostedCount = projects.filter(
+    (p) => p.external && p.external !== "#",
+  ).length;
 
-        <Canvas
-          className="touch-none"
-          camera={{ position: [0, 0, 10.5], fov: 38 }}
-          dpr={[1, 2]}
-          gl={{ antialias: true, alpha: true }}
-          style={{ background: "transparent" }}
-        >
-          <Suspense
-            fallback={
-              <Text color="#38bdf8" fontSize={0.4}>
-                Loading...
-              </Text>
-            }
-          >
-            <PhoneScene />
-          </Suspense>
-          <OrbitControls
-            enableZoom={false}
-            enablePan={false}
-            enableDamping
-            dampingFactor={0.05}
-          />
-        </Canvas>
-      </div>
-
-      {/* 🔴 SISI KANAN: TEKS DENGAN EFEK FROSTED GLASS (Backdrop Blur) */}
-      <div className="w-full lg:w-5/12 space-y-8 text-center lg:text-left bg-[#0A192F]/70 backdrop-blur-md p-8 rounded-3xl border border-transparent hover:border-[#233554]/50 transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
-        <div className="flex items-center justify-center lg:justify-start gap-3">
-          <span className="text-[#38bdf8] font-mono text-lg tracking-widest">
-            02.
-          </span>
-          <span className="text-[#334155] font-mono text-xs tracking-widest uppercase">
-            Featured Project
-          </span>
-        </div>
-
-        <h2 className="text-5xl md:text-6xl font-black text-[#f0f9ff] tracking-tight leading-none">
-          My{" "}
-          <span
-            className="text-transparent bg-clip-text"
+  return (
+    <section
+      id="projects"
+      className="py-24 md:py-36 scroll-mt-12 mx-auto max-w-6xl px-6 relative z-40"
+    >
+      <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
+        {/* SISI KIRI: 3D CANVAS */}
+        <div className="w-full lg:w-7/12 h-[540px] lg:h-[700px] relative cursor-grab active:cursor-grabbing select-none">
+          <div
+            className="absolute inset-0 pointer-events-none"
             style={{
-              backgroundImage:
-                "linear-gradient(135deg,#38bdf8 0%,#818cf8 100%)",
+              background:
+                "radial-gradient(ellipse 55% 50% at 58% 50%,rgba(56,189,248,0.06) 0%,transparent 70%)",
             }}
-          >
-            Projects
-          </span>
-        </h2>
+          />
+          <div className="absolute top-12 right-12 z-20 font-mono text-[10px] text-[#38bdf8] opacity-40 tracking-widest hidden md:block animate-pulse">
+            [ Drag to Rotate ]
+          </div>
 
-        <div className="flex items-center gap-3 justify-center lg:justify-start">
-          <div className="h-[2px] w-12 bg-gradient-to-r from-[#38bdf8] to-transparent" />
-          <div className="h-[2px] w-4 bg-[#38bdf8] opacity-40" />
+          <Canvas
+            className="touch-none"
+            camera={{ position: [0, 0, 10.5], fov: 38 }}
+            dpr={[1, 2]}
+            gl={{ antialias: true, alpha: true }}
+            style={{ background: "transparent" }}
+          >
+            <Suspense
+              fallback={
+                <Text color="#38bdf8" fontSize={0.4}>
+                  Loading...
+                </Text>
+              }
+            >
+              <PhoneScene />
+            </Suspense>
+            <OrbitControls
+              enableZoom={false}
+              enablePan={false}
+              enableDamping
+              dampingFactor={0.05}
+            />
+          </Canvas>
         </div>
 
-        <p className="text-[#64748b] text-base md:text-lg leading-relaxed max-w-sm mx-auto lg:mx-0">
-          Membangun antarmuka intuitif dan aplikasi berkinerja tinggi dengan
-          presisi.
-        </p>
+        {/* 🔴 SISI KANAN: TEKS DENGAN EFEK FROSTED GLASS */}
+        <div className="w-full lg:w-5/12 space-y-8 text-center lg:text-left bg-[#0A192F]/70 backdrop-blur-md p-8 rounded-3xl border border-transparent hover:border-[#233554]/50 transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+          <h2 className="flex items-baseline gap-3 text-4xl md:text-5xl font-black text-[#f0f9ff] tracking-tight leading-none mb-2">
+            <span className="text-[#38bdf8] font-mono text-2xl md:text-3xl tracking-widest drop-shadow-sm">
+              02.
+            </span>
+            <span>My</span>
+            <span
+              className="text-transparent bg-clip-text drop-shadow-lg"
+              style={{
+                backgroundImage:
+                  "linear-gradient(135deg,#38bdf8 0%,#818cf8 100%)",
+              }}
+            >
+              Projects
+            </span>
+          </h2>
 
-        <div className="grid grid-cols-3 gap-4 py-6 border-y border-[#0f2044]">
-          {[
-            ["12+", "Projects"],
-            ["3", "Awards"],
-            ["98%", "Satisfaction"],
-          ].map(([value, label]) => (
-            <div key={label} className="text-center lg:text-left">
+          <div className="flex items-center gap-3 justify-center lg:justify-start">
+            <div className="h-[2px] w-12 bg-gradient-to-r from-[#38bdf8] to-transparent" />
+            <div className="h-[2px] w-4 bg-[#38bdf8] opacity-40" />
+          </div>
+
+          <p className="text-[#64748b] text-base md:text-lg leading-relaxed max-w-sm mx-auto lg:mx-0">
+            Membangun antarmuka intuitif dan aplikasi berkinerja tinggi dengan
+            presisi. Berikut adalah kumpulan karya terbaik saya.
+          </p>
+
+          <div className="grid grid-cols-2 gap-4 py-6 border-y border-[#0f2044]">
+            <div className="text-center lg:text-left">
               <p
-                className="text-2xl font-black text-transparent bg-clip-text"
+                className="text-4xl font-black text-transparent bg-clip-text"
                 style={{
                   backgroundImage: "linear-gradient(135deg,#38bdf8,#818cf8)",
                 }}
               >
-                {value}
+                {totalProjectsCount}
               </p>
               <p className="text-xs text-[#475569] font-mono uppercase tracking-wider mt-1">
-                {label}
+                Total Projects
               </p>
             </div>
-          ))}
+            <div className="text-center lg:text-left">
+              <p
+                className="text-4xl font-black text-transparent bg-clip-text"
+                style={{
+                  backgroundImage: "linear-gradient(135deg,#38bdf8,#818cf8)",
+                }}
+              >
+                {totalHostedCount}
+              </p>
+              <p className="text-xs text-[#475569] font-mono uppercase tracking-wider mt-1">
+                Live Hosted
+              </p>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
-);
+    </section>
+  );
+};

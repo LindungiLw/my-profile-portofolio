@@ -107,7 +107,7 @@ export const About = ({ onMouseClick }: AboutProps) => {
           title="Click to flip card"
         >
           <div className="absolute -top-6 right-0 text-[10px] uppercase tracking-widest text-[#64FFDA] font-mono opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            {isFlipped ? "Click to see properties" : "Click to see photo"}
+            {isFlipped ? "Click to see biodata" : "Click to see photo"}
           </div>
 
           <div
@@ -116,7 +116,7 @@ export const About = ({ onMouseClick }: AboutProps) => {
             <div className="absolute inset-0 w-full h-full backface-hidden bg-[#112240]/90 backdrop-blur-md border border-[#233554] rounded-xl p-6 md:p-8 shadow-2xl">
               <div className="flex items-center justify-between mb-8 border-b border-[#233554] pb-4">
                 <span className="text-xs font-bold uppercase tracking-widest text-[#8892B0]">
-                  Object Properties
+                  My Biodata
                 </span>
                 <div className="flex gap-2">
                   <div className="w-3 h-3 rounded-full bg-[#FF5F56] shadow-[0_0_5px_#FF5F56]/50"></div>
