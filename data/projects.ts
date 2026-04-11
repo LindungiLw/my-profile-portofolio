@@ -8,7 +8,7 @@ export const projects = [
     image: "/assets/emergencyy.png",
     shortDescription:
       "Eksplorasi antarmuka untuk aplikasi dompet digital dengan gaya modern minimalis.",
-    techStack: ["Figma", "FigJam", "Prototyping"],
+    techStack: ["Figma", "Prototyping"],
     external:
       "https://www.figma.com/proto/k9dT7lgTBib5JQ0tSXejzq/Emergency-Call?node-id=54-8&p=f&t=8aDr8ivMeBxe5jgo-1&scaling=scale-down&content-scaling=fixed&page-id=54%3A6&starting-point-node-id=54%3A8",
     figma:
@@ -24,15 +24,15 @@ export const projects = [
   },
 
   {
-    slug: "emergency-call-web",
+    slug: "smart-home",
     overline: "wireframe",
-    title: "Emergency Call Web",
+    title: "Smart Home",
     category: "UI/UX",
     image:
       "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=800&auto=format&fit=crop",
     shortDescription:
       "Eksplorasi antarmuka untuk aplikasi dompet digital dengan gaya modern minimalis.",
-    techStack: ["Figma", "FigJam", "Prototyping"],
+    techStack: ["Figma", "Prototyping"],
     external: "https://dribbble.com",
     figma:
       "https://www.figma.com/proto/k9dT7lgTBib5JQ0tSXejzq/Emergency-Call?node-id=54-8&p=f&t=hB9Xltu4M7ydCUU3-1&scaling=scale-down&content-scaling=fixed&page-id=54%3A6&starting-point-node-id=54%3A8&hotspot-hints=0",

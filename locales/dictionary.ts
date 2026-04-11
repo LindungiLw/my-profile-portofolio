@@ -122,6 +122,16 @@ export const dictionary = {
       repos: "Repositories",
       stars: "Stars",
     },
+
+    dashboard: {
+      backHome: "Back to Home",
+      workspace: "Workspace",
+      overview: "Overview",
+      uiux: "UI/UX",
+      web: "Web",
+      mobile: "Mobile",
+      licenses: "Licenses",
+    },
   },
   id: {
     nav: {
@@ -242,6 +252,15 @@ export const dictionary = {
       githubStatus: "Status Live GitHub",
       repos: "Repositori",
       stars: "Bintang",
+    },
+    dashboard: {
+      backHome: "Kembali ke Beranda",
+      workspace: "Ruang Kerja",
+      overview: "Ringkasan",
+      uiux: "UI/UX",
+      web: "Web",
+      mobile: "Mobile",
+      licenses: "Lisensi",
     },
   },
 };
