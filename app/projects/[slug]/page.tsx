@@ -1,39 +1,69 @@
 // app/projects/[slug]/page.tsx
-import React from "react";
-import Link from "next/link";
+"use client";
+
+import React, { use } from "react";
+// 1. Import useRouter untuk mengontrol navigasi sejarah (history)
+import { useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
 import { projects } from "@/data/projects";
+import { useLanguage } from "@/context/LanguageContext";
 
-// Tambahkan "async" di sini untuk Next.js 15
-export default async function CaseStudyPage({
+export default function CaseStudyPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  // Tunggu slug-nya siap
-  const { slug } = await params;
+  const { slug } = use(params);
+
+  // 2. Inisialisasi router
+  const router = useRouter();
+  const { t } = useLanguage();
 
   const p = projects.find((item) => item.slug === slug);
   if (!p) notFound();
 
+  const translatedTitle = t(`projectsData.${p.slug}.title`);
+  const displayTitle =
+    translatedTitle !== `projectsData.${p.slug}.title`
+      ? translatedTitle
+      : p.title;
+
+  const translatedDesc = t(`projectsData.${p.slug}.longDesc`);
+  const displayDesc =
+    translatedDesc !== `projectsData.${p.slug}.longDesc`
+      ? translatedDesc
+      : p.longDescription;
+
+  // 3. Fungsi untuk tombol kembali yang pintar
+  const handleBack = (e: React.MouseEvent) => {
+    e.preventDefault(); // Mencegah reload halaman
+    // Jika ada history sebelumnya, kembalilah. Jika tidak, ke /projects
+    if (window.history.length > 2) {
+      router.back();
+    } else {
+      router.push("/projects");
+    }
+  };
+
   return (
     <div className="bg-[#0A192F] min-h-screen text-[#8892B0] p-6 md:p-24 selection:bg-[#64FFDA]/30">
-      <Link
-        href="/projects"
-        className="text-[#64FFDA] mb-10 inline-block hover:underline font-mono text-sm"
+      {/* 4. Ubah Link menjadi button yang memanggil handleBack */}
+      <button
+        onClick={handleBack}
+        className="text-[#64FFDA] mb-10 inline-block hover:underline font-mono text-sm bg-transparent border-none cursor-pointer p-0"
       >
-        ← Back to Dashboard
-      </Link>
+        ← {t("Back")}
+      </button>
 
       <div className="max-w-4xl mx-auto animate-fade-in">
         {/* ================= HEADER: JUDUL PROYEK ================= */}
         <h1 className="text-4xl md:text-7xl font-bold text-[#E6F1FF] mb-8 leading-tight">
-          {p.title}
+          {displayTitle}
         </h1>
 
         {/* ================= AREA TOMBOL (FIGMA LINK, GITHUB, LIVE) ================= */}
         <div className="flex flex-wrap gap-4 mb-16 border-b border-[#233554] pb-10">
-          {/* 1. TOMBOL GITHUB (Hanya muncul jika ada link GitHub yang valid) */}
+          {/* 1. TOMBOL GITHUB */}
           {p.github && p.github !== "#" && (
             <a
               href={p.github}
@@ -41,19 +71,18 @@ export default async function CaseStudyPage({
               rel="noreferrer"
               className="flex items-center gap-2 text-[#E6F1FF] bg-[#112240] hover:bg-[#233554] border border-[#233554] px-6 py-3 rounded-lg font-mono text-sm transition-all shadow-lg hover:-translate-y-1"
             >
-              <span>📂</span> Source Code
+              <span>📂</span> {t("caseStudy.sourceCode")}
             </a>
           )}
 
-          {/* 2. TOMBOL FIGMA PROTOTYPE (Eksternal Link) */}
-          {(p as any).figma && (p as any).figma !== "#" && (
+          {/* 2. TOMBOL FIGMA PROTOTYPE */}
+          {p.figma && p.figma !== "#" && (
             <a
-              href={(p as any).figma}
+              href={p.figma}
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-2 text-[#E6F1FF] bg-[#2C2D33] hover:bg-[#1E1E24] border border-[#A259FF]/50 hover:border-[#A259FF] px-6 py-3 rounded-lg font-mono text-sm transition-all group shadow-[0_0_15px_rgba(162,89,255,0.1)] hover:shadow-[0_0_20px_rgba(162,89,255,0.3)] hover:-translate-y-1"
             >
-              {/* SVG Logo Figma Asli */}
               <svg
                 viewBox="0 0 38 57"
                 fill="none"
@@ -81,7 +110,7 @@ export default async function CaseStudyPage({
                   fill="#A259FF"
                 />
               </svg>
-              View in Figma
+              {t("caseStudy.viewFigma")}
             </a>
           )}
 
@@ -93,21 +122,21 @@ export default async function CaseStudyPage({
               rel="noreferrer"
               className="flex items-center gap-2 text-[#0A192F] bg-[#64FFDA] hover:bg-[#64FFDA]/80 px-6 py-3 rounded-lg font-mono text-sm font-bold transition-all shadow-[0_0_20px_rgba(100,255,218,0.2)] hover:-translate-y-1"
             >
-              <span>🚀</span> Live Site
+              <span>🚀</span> {t("caseStudy.liveSite")}
             </a>
           )}
         </div>
 
         {/* ================= IFRAME: INTERACTIVE PROTOTYPE ================= */}
-        {/* Akan muncul secara otomatis jika kamu menaruh figmaEmbed di data projects.ts */}
-        {(p as any).figmaEmbed && (
+        {p.figmaEmbed && (
           <section className="mb-20 animate-fade-in-up">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl md:text-3xl font-bold text-[#E6F1FF] flex items-center gap-3">
-                <span className="text-[#A259FF]"></span> Interactive Prototype
+                <span className="text-[#A259FF]"></span>{" "}
+                {t("caseStudy.prototype")}
               </h2>
               <span className="text-xs font-mono text-[#8892B0] bg-[#112240] px-3 py-1 rounded-full border border-[#233554] shadow-sm">
-                Try it here
+                {t("caseStudy.tryHere")}
               </span>
             </div>
 
@@ -115,7 +144,7 @@ export default async function CaseStudyPage({
               <iframe
                 style={{ border: "none" }}
                 className="w-full h-[600px] md:h-[800px] rounded-xl bg-[#0A192F]"
-                src={(p as any).figmaEmbed}
+                src={p.figmaEmbed}
                 allowFullScreen
                 loading="lazy"
                 title="Figma Interactive Prototype"
@@ -124,28 +153,17 @@ export default async function CaseStudyPage({
           </section>
         )}
 
-        {/* ================= KONTEN UTAMA: PENJELASAN PROYEK ================= */}
+        {/* ================= KONTEN UTAMA: OVERVIEW SAJA ================= */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-          <div className="space-y-12 md:col-span-2">
+          {/* Kolom Kiri: Penjelasan */}
+          <div className="space-y-8 md:col-span-2">
             <section>
               <h2 className="text-[#64FFDA] font-mono text-xs mb-4 uppercase tracking-widest">
-                01. Overview
+                {t("caseStudy.overview")}
               </h2>
               <p className="text-xl text-[#ccd6f6] leading-relaxed">
-                {p.longDescription}
+                {displayDesc}
               </p>
-            </section>
-            <section>
-              <h2 className="text-[#FF5722] font-mono text-xs mb-4 uppercase tracking-widest">
-                02. Challenges
-              </h2>
-              <p className="leading-relaxed">{p.challenges}</p>
-            </section>
-            <section>
-              <h2 className="text-[#06B6D4] font-mono text-xs mb-4 uppercase tracking-widest">
-                03. Solutions
-              </h2>
-              <p className="leading-relaxed">{p.solutions}</p>
             </section>
           </div>
 
@@ -153,22 +171,22 @@ export default async function CaseStudyPage({
           <aside className="border-l border-[#233554] pl-8 h-fit space-y-8 sticky top-8">
             <div>
               <h4 className="text-[#E6F1FF] font-bold text-sm mb-4">
-                Technologies
+                {t("caseStudy.tech")}
               </h4>
               <ul className="space-y-2 font-mono text-xs">
-                {p.techStack.map((t) => (
+                {p.techStack.map((tItem) => (
                   <li
-                    key={t}
+                    key={tItem}
                     className="text-[#64FFDA] flex items-center gap-2"
                   >
-                    <span>▹</span> {t}
+                    <span>▹</span> {tItem}
                   </li>
                 ))}
               </ul>
             </div>
             <div>
               <h4 className="text-[#E6F1FF] font-bold text-sm mb-4">
-                Category
+                {t("caseStudy.category")}
               </h4>
               <span className="text-xs bg-[#233554] px-3 py-1 rounded-full text-[#E6F1FF] border border-[#495670]">
                 {p.category}
