@@ -1,17 +1,34 @@
 export const licensesProjects = [
   {
-    slug: "aws-cloud-practitioner",
+    slug: "certification-healtech2025-himatif",
     overline: "Certification",
-    title: "AWS Cloud Practitioner",
+    title: "Healtech 2025 - HIMATIF Certification",
     category: "Licenses",
-    image:
-      "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop",
+    image: "/assets/licences/healtech.jpg",
     shortDescription:
-      "Sertifikasi resmi dari Amazon Web Services untuk pemahaman dasar arsitektur Cloud.",
-    techStack: ["AWS", "Cloud Computing", "Security"],
+      "Sertifikasi resmi dari HIMATIF Competition tentang UI/UX untuk pemahaman dasar teknologi kesehatan.",
     github: "#",
-    external: "https://aws.amazon.com",
-    longDescription:
-      "Sertifikasi ini memvalidasi pemahaman teknis mengenai infrastruktur cloud AWS.",
+  },
+  {
+    slug: "certification-dermawan-indonesia",
+    overline: "Certification",
+    title: "Dermawan Indonesia - Certification",
+    category: "Licenses",
+    image: "/assets/licences/dermawan.png",
+    shortDescription:
+      "Sertifikasi resmi dari Dermawan Indonesia tentang pelayanan kesehatan masyarakat.",
+    github: "#",
+    external: "/assets/work/Dermawan-Indonesia.pdf",
+  },
+  {
+    slug: "certification-dof-training-completion",
+    overline: "Certification",
+    title: "DOF Training - Certificate of Completion",
+    category: "Licenses",
+    image: "/assets/licences/training.png",
+    shortDescription:
+      "Sertifikasi resmi dari Dermawan Indonesia tentang pelayanan kesehatan masyarakat.",
+    github: "#",
+    external: "/assets/licences/Certificate_of_Completion.pdf",
   },
 ];

@@ -9,17 +9,8 @@ export default function LicensesLayout({ p }: { p: any }) {
   const router = useRouter();
   const { t } = useLanguage();
 
-  const translatedTitle = t(`projectsData.${p.slug}.title`);
-  const displayTitle =
-    translatedTitle !== `projectsData.${p.slug}.title`
-      ? translatedTitle
-      : p.title;
-
-  const translatedDesc = t(`projectsData.${p.slug}.longDesc`);
-  const displayDesc =
-    translatedDesc !== `projectsData.${p.slug}.longDesc`
-      ? translatedDesc
-      : p.longDescription;
+  // Cek apakah file di p.image adalah PDF atau bukan
+  const isPDF = p.image?.toLowerCase().endsWith(".pdf");
 
   const handleBack = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -28,52 +19,55 @@ export default function LicensesLayout({ p }: { p: any }) {
   };
 
   return (
-    <div className="bg-[#0A192F] min-h-screen text-[#8892B0] p-6 md:p-24 selection:bg-[#FACC15]/30">
-      <button
-        onClick={handleBack}
-        className="text-[#FACC15] mb-10 inline-block hover:underline font-mono text-sm bg-transparent border-none cursor-pointer p-0 transition-transform hover:-translate-x-1"
-      >
-        ← {t("caseStudy.back") || "Back"} (Certifications)
-      </button>
+    <div className="bg-[#0A192F] min-h-screen text-[#8892B0] p-6 md:p-24 selection:bg-[#FACC15]/30 flex flex-col">
+      <div className="max-w-5xl mx-auto w-full">
+        <button
+          onClick={handleBack}
+          className="text-[#FACC15] mb-10 inline-block hover:underline font-mono text-sm bg-transparent border-none cursor-pointer p-0 transition-transform hover:-translate-x-1"
+        >
+          ← {t("Back") || "Back"} (Certifications)
+        </button>
+      </div>
 
-      <div className="max-w-4xl mx-auto text-center animate-fade-in">
-        <h1 className="text-4xl md:text-5xl font-bold text-[#E6F1FF] mb-4">
-          {displayTitle}
+      <div className="max-w-5xl mx-auto w-full text-center animate-fade-in flex-1 flex flex-col items-center justify-center -mt-10">
+        <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-[#E6F1FF] mb-12 leading-tight">
+          {p.title}
         </h1>
-        <p className="text-[#FACC15] font-mono mb-12 tracking-widest uppercase text-sm">
-          {p.overline}
-        </p>
 
-        <div className="relative group mx-auto mb-12 inline-block">
-          <div className="absolute -inset-1 bg-gradient-to-r from-[#FACC15] to-[#A259FF] rounded-xl blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
-          <img
-            src={p.image}
-            alt={displayTitle}
-            className="relative w-full max-w-2xl mx-auto rounded-xl border border-[#233554] shadow-2xl"
-          />
+        <div className="relative group mx-auto w-full max-w-4xl inline-block">
+          <div className="absolute -inset-2 bg-gradient-to-r from-[#FACC15] to-[#A259FF] rounded-xl blur opacity-20 group-hover:opacity-40 transition duration-1000"></div>
+
+          <div className="relative w-full rounded-xl border border-[#233554] shadow-2xl overflow-hidden bg-[#112240]">
+            {isPDF ? (
+              /* 👇 JIKA FILE PDF: Tampilkan di dalam frame agar muncul isinya */
+              <iframe
+                src={`${p.image}#toolbar=0&navpanes=0&scrollbar=0`}
+                className="w-full h-[500px] md:h-[700px] border-none"
+                title={p.title}
+              ></iframe>
+            ) : (
+              /* 👇 JIKA FILE GAMBAR (JPG/PNG): Tampilkan seperti biasa */
+              <img
+                src={p.image}
+                alt={p.title}
+                className="w-full h-auto object-cover"
+              />
+            )}
+          </div>
         </div>
 
-        <div className="text-left bg-[#112240]/50 p-8 rounded-2xl border border-[#233554] max-w-2xl mx-auto">
-          <h2 className="text-[#FACC15] font-mono text-xs mb-4 uppercase tracking-widest">
-            {t("caseStudy.overview") || "Overview"}
-          </h2>
-          <p className="text-[#ccd6f6] text-lg leading-relaxed">
-            {displayDesc}
-          </p>
-
-          {p.external && p.external !== "#" && (
-            <div className="mt-8 pt-6 border-t border-[#233554]">
-              <a
-                href={p.external}
-                target="_blank"
-                rel="noreferrer"
-                className="text-[#FACC15] hover:text-[#E6F1FF] font-mono text-sm transition-colors flex items-center gap-2 justify-center"
-              >
-                Verify Credential ↗
-              </a>
-            </div>
-          )}
-        </div>
+        {p.external && p.external !== "#" && (
+          <div className="mt-12">
+            <a
+              href={p.external}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 text-[#FACC15] border border-[#FACC15]/30 hover:bg-[#FACC15]/10 px-8 py-3 rounded-full font-mono text-sm transition-all shadow-lg"
+            >
+              Open Full Document ↗
+            </a>
+          </div>
+        )}
       </div>
     </div>
   );

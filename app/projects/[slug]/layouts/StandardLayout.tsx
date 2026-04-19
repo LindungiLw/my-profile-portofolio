@@ -21,7 +21,7 @@ export default function StandardLayout({ p }: { p: any }) {
         onClick={handleBack}
         className="text-[#64FFDA] mb-10 inline-block hover:underline font-mono text-sm bg-transparent border-none cursor-pointer p-0 transition-transform hover:-translate-x-1"
       >
-        ← {t("caseStudy.back") || "Back"}
+        ← {"Back"}
       </button>
 
       <div className="max-w-4xl mx-auto animate-fade-in">
@@ -35,7 +35,7 @@ export default function StandardLayout({ p }: { p: any }) {
 
         <section>
           <h2 className="text-[#64FFDA] font-mono text-xs mb-4 uppercase tracking-widest">
-            {t("caseStudy.overview") || "Overview"}
+            {"Overview"}
           </h2>
           <p className="text-xl text-[#ccd6f6] leading-relaxed">
             {p.longDescription}

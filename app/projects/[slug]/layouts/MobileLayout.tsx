@@ -33,7 +33,7 @@ export default function MobileLayout({ p }: { p: any }) {
         onClick={handleBack}
         className="text-[#38BDF8] mb-10 inline-block hover:underline font-mono text-sm bg-transparent border-none cursor-pointer p-0 transition-transform hover:-translate-x-1"
       >
-        ← {t("caseStudy.back") || "Back"} (Mobile)
+        ← {"Back"} (Mobile)
       </button>
 
       <div className="max-w-4xl mx-auto animate-fade-in">
@@ -58,7 +58,7 @@ export default function MobileLayout({ p }: { p: any }) {
           <div className="space-y-8 md:col-span-2">
             <section>
               <h2 className="text-[#38BDF8] font-mono text-xs mb-4 uppercase tracking-widest">
-                {t("caseStudy.overview") || "Overview"}
+                {t("Back") || "Overview"}
               </h2>
               <p className="text-xl text-[#ccd6f6] leading-relaxed">
                 {displayDesc}
@@ -68,7 +68,7 @@ export default function MobileLayout({ p }: { p: any }) {
           <aside className="border-l border-[#233554] pl-8 h-fit space-y-8 sticky top-8">
             <div>
               <h4 className="text-[#E6F1FF] font-bold text-sm mb-4">
-                {t("caseStudy.tech") || "Technologies"}
+                {"Technologies"}
               </h4>
               <ul className="space-y-2 font-mono text-xs">
                 {p.techStack.map((tItem: string) => (

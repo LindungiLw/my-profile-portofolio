@@ -63,11 +63,11 @@ export const uiUxProjects = [
       "Aplikasi Self-Checking untuk Diabetes Melitus: Mitigasi Risiko Komplikasi Dini Melalui Pemantauan Terpersonalisasi",
     techStack: ["Figma", "Prototyping"],
     figma:
-      "https://www.figma.com/design/UvNbpPmaLBEj8m9C9kzxgH/SADARI_Mobile?node-id=0-1",
+      "https://www.figma.com/design/1HUUE2XH8gE14r8T6P2Tau/JIU---Student-Information-Portal?node-id=0-1&p=f&t=qWMaqqJKTWkQ9zg2-0",
     // 👇 Perhatikan bagian akhir link ini
     figmaEmbed:
-      "https://embed.figma.com/proto/UvNbpPmaLBEj8m9C9kzxgH/SADARI_Mobile?node-id=14-79&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=6%3A2&show-proto-sidebar=1&embed-host=portofolioku",
+      "https://embed.figma.com/proto/1HUUE2XH8gE14r8T6P2Tau/JIU---Student-Information-Portal?node-id=171-4724&p=f&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&embed-host=share",
     longDescription:
-      "Aplikasi SADARI merupakan sebuah platform yang dirancang untuk mengatasi tantangan utama dalam manajemen diabetes melitus. Dengan fitur-fitur yang memungkinkan pengguna untuk mencatat dan memantau kondisi mereka secara rutin. Aplikasi SADARI ini tidak hanya berfungsi sebagai alat pencatat data, melainkan juga sebagai asisten pribadi yang memberikan umpan balik dan rekomendasi yang disesuaikan. Aplikasi ini berpotensi besar untuk membantu penderita diabetes melitus dalam memitigasi risiko komplikasi dini, meningkatkan kualitas hidup penderita, dan juga berkontribusi pada penurunan angka penderita dan kematian akibat diabetes melitus di Indonesia.",
+      "Aplikasi merupakan sebuah platform yang dirancang untuk mengatasi tantangan utama dalam manajemen diabetes melitus. Dengan fitur-fitur yang memungkinkan pengguna untuk mencatat dan memantau kondisi mereka secara rutin. Aplikasi SADARI ini tidak hanya berfungsi sebagai alat pencatat data, melainkan juga sebagai asisten pribadi yang memberikan umpan balik dan rekomendasi yang disesuaikan. Aplikasi ini berpotensi besar untuk membantu penderita diabetes melitus dalam memitigasi risiko komplikasi dini, meningkatkan kualitas hidup penderita, dan juga berkontribusi pada penurunan angka penderita dan kematian akibat diabetes melitus di Indonesia.",
   },
 ];
