@@ -2,11 +2,10 @@
 "use client";
 
 import React, { useState, useRef } from "react";
-// 👇 1. Import mesin bahasanya
 import { useLanguage } from "@/context/LanguageContext";
 
 // ==========================================
-// KOMPONEN KHUSUS: Kotak Seleksi (Bisa Di-Drag)
+// KOTAK SELEKSI (Hanya bisa di-drag di layar besar)
 // ==========================================
 const BoundingBox = ({
   children,
@@ -22,7 +21,8 @@ const BoundingBox = ({
   const startPos = useRef({ x: 0, y: 0 });
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!enableDrag) return;
+    // Matikan drag di mobile agar tidak mengganggu scroll
+    if (!enableDrag || window.innerWidth < 768) return;
     setIsDragging(true);
     startPos.current = {
       x: e.clientX - dragOffset.x,
@@ -32,7 +32,7 @@ const BoundingBox = ({
   };
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging || !enableDrag) return;
+    if (!isDragging || !enableDrag || window.innerWidth < 768) return;
     setDragOffset({
       x: e.clientX - startPos.current.x,
       y: e.clientY - startPos.current.y,
@@ -40,7 +40,7 @@ const BoundingBox = ({
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!enableDrag) return;
+    if (!enableDrag || window.innerWidth < 768) return;
     setIsDragging(false);
     e.currentTarget.releasePointerCapture(e.pointerId);
   };
@@ -54,12 +54,12 @@ const BoundingBox = ({
       className={`relative w-fit h-fit border-[1px] border-[#8892B0] border-dashed group select-none ${
         enableDrag
           ? isDragging
-            ? "cursor-grabbing z-50 bg-[#112240]/80 shadow-2xl scale-105"
-            : "cursor-grab hover:bg-[#112240]/50"
+            ? "cursor-grabbing z-50 bg-[#112240]/80 shadow-2xl md:scale-105"
+            : "md:cursor-grab hover:bg-[#112240]/50"
           : ""
       } ${className}`}
       style={
-        enableDrag
+        enableDrag && typeof window !== "undefined" && window.innerWidth >= 768
           ? {
               transform: `translate(${dragOffset.x}px, ${dragOffset.y}px)`,
               touchAction: "none",
@@ -71,12 +71,11 @@ const BoundingBox = ({
       }
     >
       {children}
-      <div className="absolute -top-1 -left-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
-      <div className="absolute -top-1 -right-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
-      <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
-      <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
-      <div className="absolute top-1/2 -translate-y-1/2 -left-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
-      <div className="absolute top-1/2 -translate-y-1/2 -right-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0] group-hover:bg-[#64FFDA] transition-colors"></div>
+      {/* Anchor points disembunyikan di mobile agar lebih bersih */}
+      <div className="hidden md:block absolute -top-1 -left-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0]"></div>
+      <div className="hidden md:block absolute -top-1 -right-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0]"></div>
+      <div className="hidden md:block absolute -bottom-1 -left-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0]"></div>
+      <div className="hidden md:block absolute -bottom-1 -right-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0]"></div>
     </div>
   );
 };
@@ -84,8 +83,6 @@ const BoundingBox = ({
 export const Hero = () => {
   const [displayText, setDisplayText] = useState("Lindungi");
   const intervalRef = useRef<any>(null);
-
-  // 👇 2. Panggil fungsi bahasa di sini
   const { t } = useLanguage();
 
   const triggerGlitch = () => {
@@ -110,9 +107,11 @@ export const Hero = () => {
   };
 
   return (
-    <section className="flex min-h-screen items-center justify-center relative w-full max-w-7xl mx-auto px-6">
-      {/* --- DEKORASI TECH STACK --- */}
-      <div className="absolute left-6 md:left-12 bottom-20 flex gap-8 text-[#8892B0] font-bold text-lg md:text-xl leading-snug tracking-tighter mix-blend-screen opacity-80 pointer-events-none z-10">
+    // Tambahkan overflow-x-hidden agar aman di mobile
+    <section className="flex min-h-[90vh] md:min-h-screen items-center justify-center relative w-full max-w-7xl mx-auto px-4 md:px-6 overflow-x-hidden pt-20 md:pt-0">
+      {/* --- DEKORASI TECH STACK (Disembunyikan di layar HP kecil agar tidak sumpek) --- */}
+      <div className="hidden sm:flex absolute left-6 md:left-12 bottom-20 gap-8 text-[#8892B0] font-bold text-lg md:text-xl leading-snug tracking-tighter mix-blend-screen opacity-80 pointer-events-none z-10">
+        {/* ... (Tech stack konten tetap sama) ... */}
         <div>
           <p>CSS</p>
           <p>SAP</p>
@@ -130,11 +129,8 @@ export const Hero = () => {
         </div>
       </div>
 
-      <div className="absolute top-32 right-12 md:right-32 bg-[#FF5722] text-[#0A192F] font-bold text-2xl md:text-4xl px-3 py-1 scale-110 transform rotate-3 shadow-lg pointer-events-none z-10">
-        #2026
-      </div>
-
-      <div className="absolute top-32 left-12 md:left-32 flex gap-3 pointer-events-none z-10">
+      {/* --- ICON FLOATING (Disesuaikan posisinya di mobile) --- */}
+      <div className="absolute top-24 left-4 md:top-32 md:left-32 flex gap-2 md:gap-3 pointer-events-none z-10 opacity-60 md:opacity-100 scale-75 md:scale-100">
         <div className="w-12 h-12 bg-[#1E1E1E] rounded-xl flex items-center justify-center border border-[#333]">
           <svg
             className="w-6 h-6"
@@ -172,76 +168,68 @@ export const Hero = () => {
         </div>
       </div>
 
-      {/* --- TYPOGRAPHY SENTRAL --- */}
-      <div className="relative flex items-center justify-center w-full max-w-5xl h-[400px] md:h-[500px]">
-        {/* 1. Kata: rahma */}
-        <div className="absolute left-10 md:left-28 -translate-y-12 md:-translate-y-20 z-30">
+      <div className="absolute top-24 right-4 md:top-32 md:right-32 bg-[#FF5722] text-[#0A192F] font-bold text-lg md:text-4xl px-3 py-1 transform rotate-3 shadow-lg pointer-events-none z-10">
+        #2026
+      </div>
+
+      {/* --- TYPOGRAPHY SENTRAL (Diperbaiki Ukurannya untuk Mobile) --- */}
+      <div className="relative flex flex-col items-center justify-center w-full max-w-5xl h-fit md:h-[500px] mt-10 md:mt-0">
+        <div className="md:absolute left-0 lg:left-20 md:-translate-y-20 z-30 mb-2 md:mb-0">
           <BoundingBox
             enableDrag={true}
-            className="px-3 py-1.5 cursor-crosshair"
+            className="px-3 py-1.5 cursor-crosshair border-none md:border-solid"
           >
-            <span className="block text-6xl md:text-8xl font-black text-[#E6F1FF] tracking-tighter lowercase pointer-events-none">
+            <span className="block text-4xl sm:text-6xl md:text-8xl font-black text-[#E6F1FF] tracking-tighter lowercase pointer-events-none">
               rahma
             </span>
-            <svg
-              className="absolute -bottom-8 -right-4 w-8 h-8 text-[#FF5722] transform -rotate-12 drop-shadow-lg pointer-events-none"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path
-                d="M7 2l12 11.2l-5.8.5l3.3 7.3l-2.2.9l-3.2-7.4l-4.4 4.5V2z"
-                stroke="white"
-                strokeWidth="1"
-              />
-            </svg>
           </BoundingBox>
         </div>
 
-        {/* 2. Kata: Lindungi */}
+        {/* Teks "Lindungi" - Diubah ukurannya agar muat di HP */}
         <div
           onMouseEnter={triggerGlitch}
-          className="absolute z-40 font-['Dancing_Script',_cursive] text-[120px] md:text-[220px] text-[#FF5722] leading-none transform -rotate-6 drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] cursor-crosshair select-none"
+          onClick={triggerGlitch} // Bisa diklik di HP untuk efek glitch
+          className="z-40 font-['Dancing_Script',_cursive] text-[65px] sm:text-[90px] md:text-[180px] lg:text-[220px] text-[#FF5722] leading-none transform -rotate-3 md:-rotate-6 drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] md:cursor-crosshair select-none my-[-10px] md:my-0 md:absolute"
         >
           {displayText}
         </div>
 
-        {/* 3. Kata: laowo */}
-        <div className="absolute right-10 md:right-28 translate-y-16 md:translate-y-24 z-30">
+        <div className="md:absolute right-0 lg:right-20 md:translate-y-24 z-30 mt-2 md:mt-0">
           <BoundingBox
             enableDrag={true}
-            className="px-3 py-1.5 cursor-crosshair"
+            className="px-3 py-1.5 cursor-crosshair border-none md:border-solid"
           >
-            <span className="block text-6xl md:text-8xl font-black text-[#E6F1FF] tracking-tighter lowercase pointer-events-none">
+            <span className="block text-4xl sm:text-6xl md:text-8xl font-black text-[#E6F1FF] tracking-tighter lowercase pointer-events-none">
               laowo
             </span>
           </BoundingBox>
         </div>
 
-        {/* 4. Sub-title: UI/UX Designer */}
-        <div className="absolute bottom-[-10px] md:bottom-8 left-1/2 -translate-x-1/2 z-50">
+        {/* Kotak Peran */}
+        <div className="mt-12 md:mt-0 md:absolute md:bottom-[-10px] z-50">
           <BoundingBox
             enableDrag={true}
-            className="px-4 py-2 rotate-3 bg-[#0A192F]/90 backdrop-blur-sm border-[1px] border-[#8892B0]/30 rounded-sm shadow-xl cursor-crosshair"
+            className="px-4 py-2 md:rotate-3 bg-[#0A192F]/90 backdrop-blur-sm border-[1px] border-[#8892B0]/30 rounded-sm shadow-xl cursor-crosshair"
           >
             <div className="text-center pointer-events-none">
-              <span className="block text-[#FF5722] font-bold text-xl leading-none">
-                {t("hero.role1")} {/* 👈 Teks dinamis */}
+              <span className="block text-[#FF5722] font-bold text-lg md:text-xl leading-none">
+                {t("hero.role1")}
               </span>
-              <span className="block font-['Dancing_Script',_cursive] text-white text-3xl leading-none -mt-1">
-                {t("hero.role2")} {/* 👈 Teks dinamis */}
+              <span className="block font-['Dancing_Script',_cursive] text-white text-2xl md:text-3xl leading-none -mt-1">
+                {t("hero.role2")}
               </span>
             </div>
           </BoundingBox>
         </div>
       </div>
 
-      {/* --- LABEL KANAN BAWAH --- */}
-      <div className="absolute right-6 md:right-12 bottom-12 text-right pointer-events-none z-10">
-        <p className="font-['Dancing_Script',_cursive] text-3xl text-[#E6F1FF] mb-2 opacity-90">
-          {t("hero.subtitle")} {/* 👈 Teks dinamis */}
+      {/* --- LABEL BAWAH (Disesuaikan posisinya di mobile) --- */}
+      <div className="absolute right-4 md:right-12 bottom-8 md:bottom-12 text-right pointer-events-none z-10">
+        <p className="font-['Dancing_Script',_cursive] text-xl md:text-3xl text-[#E6F1FF] mb-1 md:mb-2 opacity-90">
+          {t("hero.subtitle")}
         </p>
-        <p className="text-[10px] font-bold text-[#8892B0] tracking-widest uppercase">
-          {t("hero.studentStatus")} {/* 👈 Teks dinamis */}
+        <p className="text-[8px] md:text-[10px] font-bold text-[#8892B0] tracking-widest uppercase">
+          {t("hero.studentStatus")}
         </p>
       </div>
     </section>
