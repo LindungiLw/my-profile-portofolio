@@ -1,47 +1,100 @@
 @import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap");
 @import "tailwindcss";
 
+/* ========================================================
+   1. DEFINISI WARNA TEMA (CSS VARIABLES)
+   ======================================================== */
 @layer base {
+  /* TEMA 1: NAVY TEAL (Default Aslimu) */
+  :root {
+    --bg-main: #020c1b;
+    --bg-surface: #112240;
+    --bg-surface-light: #233554;
+    --text-main: #e6f1ff;
+    --text-muted: #8892b0;
+    --accent-primary: #64ffda; /* Teal */
+    --accent-secondary: #ff5722; /* Orange */
+  }
+
+  /* TEMA 2: CYBERPUNK NEON */
+  [data-theme="cyberpunk"] {
+    --bg-main: #090212;
+    --bg-surface: #1c0b3b;
+    --bg-surface-light: #321b63;
+    --text-main: #ffffff;
+    --text-muted: #b8a6d9;
+    --accent-primary: #ff00ff; /* Neon Pink */
+    --accent-secondary: #00ffff; /* Cyan */
+  }
+
+  /* TEMA 3: MATRIX HACKER */
+  [data-theme="matrix"] {
+    --bg-main: #000000;
+    --bg-surface: #0a140a;
+    --bg-surface-light: #162e16;
+    --text-main: #ccffcc;
+    --text-muted: #66b366;
+    --accent-primary: #00ff00; /* Matrix Green */
+    --accent-secondary: #ffcc00; /* Yellow */
+  }
+
   html {
     scroll-behavior: smooth;
   }
 
   body {
-    /* UBAH DI SINI: Makin pekat! */
-    background-color: #020c1b;
-    color: #8892b0;
+    background-color: var(--bg-main);
+    color: var(--text-muted);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition:
+      background-color 0.5s ease,
+      color 0.5s ease;
   }
 
   ::selection {
-    background-color: rgba(45, 212, 191, 0.2);
-    color: #e6f1ff;
+    background-color: var(--bg-surface-light);
+    color: var(--accent-primary);
   }
 
   ::-webkit-scrollbar {
     width: 8px;
   }
   ::-webkit-scrollbar-track {
-    /* UBAH DI SINI JUGA: Samakan dengan background body */
-    background: #020c1b;
+    background: var(--bg-main);
   }
   ::-webkit-scrollbar-thumb {
-    background: #172a45; /* Aku gelapkan sedikit thumb-nya agar serasi */
+    background: var(--bg-surface);
     border-radius: 10px;
+    border: 1px solid var(--bg-surface-light);
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #303c55;
+    background: var(--accent-primary);
   }
 }
+
+/* ========================================================
+   2. DAFTARKAN VARIABEL KE TAILWIND V4
+   ======================================================== */
+@theme {
+  --color-main: var(--bg-main);
+  --color-surface: var(--bg-surface);
+  --color-surface-light: var(--bg-surface-light);
+  --color-textMain: var(--text-main);
+  --color-textMuted: var(--text-muted);
+  --color-primary: var(--accent-primary);
+  --color-secondary: var(--accent-secondary);
+}
+
+/* ========================================================
+   3. ANIMASI CUSTOM (Bawaanmu)
+   ======================================================== */
 .animate-mouse-scroll {
   animation: mouse-scroll 1.5s cubic-bezier(0.19, 1, 0.22, 1) infinite;
 }
-
 .animate-path-flow {
   animation: path-flow 2s linear infinite;
 }
-
 .animation-delay-1000 {
   animation-delay: 1s;
 }

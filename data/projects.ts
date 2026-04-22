@@ -12,8 +12,8 @@ export interface Project {
   category: string;
   image: string;
   shortDescription: string;
-  longDescription?: string; // 👈 Tambahkan tanda tanya (?)
-  techStack?: string[]; // 👈 Tambahkan tanda tanya (?)
+  longDescription?: string;
+  techStack?: string[];
   external?: string;
   github?: string;
   figma?: string;
