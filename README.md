@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# My Profile — Portfolio Rahma Lindungi Laowo
 
-## Getting Started
+Website portfolio pribadi bertema cyberpunk/terminal, dibangun dengan **Next.js 16 (App Router)**, **React 19**, **TypeScript**, dan **Tailwind CSS v4**.
 
-First, run the development server:
+Repo: [LindungiLw/my-profile-portofolio](https://github.com/LindungiLw/my-profile-portofolio)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ✨ Fitur
+
+- **Hero interaktif** — teks dengan efek glitch, elemen yang bisa di-drag (desktop), dan bounding box ala design tool.
+- **Kabel data animasi** — jalur SVG yang melintasi section About → Projects → Experience → Contact, dengan paket data "01" yang mengalir saat dipicu.
+- **Model 3D** — showcase proyek dengan Three.js melalui `@react-three/fiber` dan `drei`.
+- **Multi-tema** — tiga tema (default, cyberpunk, matrix) berbasis CSS variable `@theme` Tailwind v4, tersimpan di `localStorage`.
+- **Dwibahasa (EN/ID)** — toggle bahasa dengan dictionary terpusat di `locales/`.
+- **GitHub Analytics** — statistik repo, stars, dan kontribusi via GitHub GraphQL API (route handler `/api/github`), divisualisasikan dengan Recharts.
+- **Komentar & rating** — pengunjung login dengan Google (Supabase Auth) lalu meninggalkan komentar di section Contact.
+- **Dashboard proyek** — daftar proyek per kategori (Web, Mobile, UI/UX, Licenses) dengan layout detail berbeda per kategori.
+
+## 🧰 Tech Stack
+
+| Bagian | Teknologi |
+| --- | --- |
+| Framework | Next.js 16.2.1 (App Router) + React 19 |
+| Bahasa | TypeScript |
+| Styling | Tailwind CSS v4 (token via `@theme` di `app/globals.css`) |
+| 3D | three, @react-three/fiber, @react-three/drei |
+| Chart | Recharts |
+| Backend-as-a-Service | Supabase (Auth Google + tabel komentar) |
+| Data eksternal | GitHub GraphQL API |
+
+## 📁 Struktur Proyek
+
+```
+app/
+├── page.tsx                  # Halaman utama (Hero, About, Projects, Experience, Contact)
+├── layout.tsx                # Root layout + ThemeProvider & LanguageProvider
+├── api/github/route.ts       # Route handler statistik GitHub (GraphQL)
+└── projects/
+    ├── (dashboard)/          # Dashboard proyek + halaman kategori
+    │   └── category/[name]/  # Daftar proyek per kategori
+    └── [slug]/               # Halaman detail proyek
+        └── layouts/          # Layout per kategori: Web, Mobile, UI/UX, Licenses
+components/                   # Hero, About, Projects (3D), Experience, Contact, dll.
+context/                      # ThemeContext (multi-tema) & LanguageContext (EN/ID)
+data/                         # Data proyek per kategori + status
+locales/                      # Dictionary terjemahan EN/ID
+utils/                        # Supabase client
+public/                       # Aset gambar, thumbnail, dan PDF lisensi
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Menjalankan Secara Lokal
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. **Clone dan install dependency**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+   ```bash
+   git clone https://github.com/LindungiLw/my-profile-portofolio.git
+   cd my-profile-portofolio
+   npm install
+   ```
 
-## Learn More
+2. **Siapkan environment variable** — buat file `.env.local` di root proyek:
 
-To learn more about Next.js, take a look at the following resources:
+   ```bash
+   # Supabase (Settings → API di dashboard Supabase)
+   NEXT_PUBLIC_SUPABASE_URL=...
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+   # GitHub analytics (token dengan scope read:user, hanya dipakai server-side)
+   GITHUB_TOKEN=...
+   GITHUB_USERNAME=...
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   > `.env.local` sudah masuk `.gitignore` — jangan pernah di-commit.
 
-## Deploy on Vercel
+3. **Jalankan development server**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+   Buka [http://localhost:3000](http://localhost:3000) di browser.
+
+## 📜 Scripts
+
+| Perintah | Fungsi |
+| --- | --- |
+| `npm run dev` | Development server |
+| `npm run build` | Build produksi |
+| `npm run start` | Menjalankan hasil build |
+| `npm run lint` | Pengecekan ESLint |
+
+## ☁️ Deploy
+
+Cara termudah adalah melalui [Vercel](https://vercel.com/new): import repo, isi keempat environment variable di atas pada pengaturan project, lalu deploy.

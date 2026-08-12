@@ -22,8 +22,8 @@ export const ThemeToggle = () => {
   return (
     <button
       onClick={cycleTheme}
-      // 👇 PERUBAHAN DI SINI: bottom-24 untuk mobile (naik jauh), md:bottom-10 untuk desktop
-      className="fixed bottom-24 left-6 md:bottom-10 md:left-10 z-50 flex items-center justify-center w-12 h-12 bg-surface border border-surface-light rounded-full shadow-[0_0_15px_rgba(0,0,0,0.5)] hover:scale-110 transition-all duration-300 group"
+      // 👇 PERUBAHAN DI SINI: bottom-36 (HP) dan md:bottom-20 (Desktop) agar posisinya jauh lebih tinggi
+      className="fixed bottom-36 left-6 md:bottom-20 md:left-10 z-50 flex items-center justify-center w-12 h-12 bg-surface border border-surface-light rounded-full shadow-[0_0_15px_rgba(0,0,0,0.5)] hover:scale-110 transition-all duration-300 group"
       aria-label="Toggle Theme"
     >
       <svg

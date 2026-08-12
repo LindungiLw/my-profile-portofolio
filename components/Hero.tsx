@@ -21,7 +21,6 @@ const BoundingBox = ({
   const startPos = useRef({ x: 0, y: 0 });
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    // Matikan drag di mobile agar tidak mengganggu scroll
     if (!enableDrag || window.innerWidth < 768) return;
     setIsDragging(true);
     startPos.current = {
@@ -51,11 +50,12 @@ const BoundingBox = ({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
-      className={`relative w-fit h-fit border-[1px] border-[#8892B0] border-dashed group select-none ${
+      // 👇 MENGGUNAKAN VARIABEL TEMA: border-textMuted, bg-surface
+      className={`relative w-fit h-fit border-[1px] border-textMuted border-dashed group select-none ${
         enableDrag
           ? isDragging
-            ? "cursor-grabbing z-50 bg-[#112240]/80 shadow-2xl md:scale-105"
-            : "md:cursor-grab hover:bg-[#112240]/50"
+            ? "cursor-grabbing z-50 bg-surface/80 shadow-2xl md:scale-105"
+            : "md:cursor-grab hover:bg-surface/50"
           : ""
       } ${className}`}
       style={
@@ -71,11 +71,11 @@ const BoundingBox = ({
       }
     >
       {children}
-      {/* Anchor points disembunyikan di mobile agar lebih bersih */}
-      <div className="hidden md:block absolute -top-1 -left-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0]"></div>
-      <div className="hidden md:block absolute -top-1 -right-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0]"></div>
-      <div className="hidden md:block absolute -bottom-1 -left-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0]"></div>
-      <div className="hidden md:block absolute -bottom-1 -right-1 w-2 h-2 bg-[#0A192F] border border-[#8892B0]"></div>
+      {/* 👇 MENGGUNAKAN VARIABEL TEMA: bg-main, border-textMuted */}
+      <div className="hidden md:block absolute -top-1 -left-1 w-2 h-2 bg-main border border-textMuted"></div>
+      <div className="hidden md:block absolute -top-1 -right-1 w-2 h-2 bg-main border border-textMuted"></div>
+      <div className="hidden md:block absolute -bottom-1 -left-1 w-2 h-2 bg-main border border-textMuted"></div>
+      <div className="hidden md:block absolute -bottom-1 -right-1 w-2 h-2 bg-main border border-textMuted"></div>
     </div>
   );
 };
@@ -107,16 +107,14 @@ export const Hero = () => {
   };
 
   return (
-    // Tambahkan overflow-x-hidden agar aman di mobile
     <section className="flex min-h-[90vh] md:min-h-screen items-center justify-center relative w-full max-w-7xl mx-auto px-4 md:px-6 overflow-x-hidden pt-20 md:pt-0">
-      {/* --- DEKORASI TECH STACK (Disembunyikan di layar HP kecil agar tidak sumpek) --- */}
-      <div className="hidden sm:flex absolute left-6 md:left-12 bottom-20 gap-8 text-[#8892B0] font-bold text-lg md:text-xl leading-snug tracking-tighter mix-blend-screen opacity-80 pointer-events-none z-10">
-        {/* ... (Tech stack konten tetap sama) ... */}
+      {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-textMuted, text-textMain */}
+      <div className="hidden sm:flex absolute left-6 md:left-12 bottom-20 gap-8 text-textMuted font-bold text-lg md:text-xl leading-snug tracking-tighter mix-blend-screen opacity-80 pointer-events-none z-10 transition-colors duration-500">
         <div>
           <p>CSS</p>
           <p>SAP</p>
           <p>JS</p>
-          <p className="text-[#E6F1FF]">HTML</p>
+          <p className="text-textMain">HTML</p>
           <p>React</p>
         </div>
         <div>
@@ -125,11 +123,10 @@ export const Hero = () => {
           <p>Flutter</p>
           <p>Java</p>
           <p>Python</p>
-          <p className="text-[#E6F1FF]">Next.js</p>
+          <p className="text-textMain">Next.js</p>
         </div>
       </div>
 
-      {/* --- ICON FLOATING (Disesuaikan posisinya di mobile) --- */}
       <div className="absolute top-24 left-4 md:top-32 md:left-32 flex gap-2 md:gap-3 pointer-events-none z-10 opacity-60 md:opacity-100 scale-75 md:scale-100">
         <div className="w-12 h-12 bg-[#1E1E1E] rounded-xl flex items-center justify-center border border-[#333]">
           <svg
@@ -168,28 +165,29 @@ export const Hero = () => {
         </div>
       </div>
 
-      <div className="absolute top-24 right-4 md:top-32 md:right-32 bg-[#FF5722] text-[#0A192F] font-bold text-lg md:text-4xl px-3 py-1 transform rotate-3 shadow-lg pointer-events-none z-10">
+      {/* 👇 MENGGUNAKAN VARIABEL TEMA: bg-secondary, text-main */}
+      <div className="absolute top-24 right-4 md:top-32 md:right-32 bg-secondary text-main font-bold text-lg md:text-4xl px-3 py-1 transform rotate-3 shadow-[0_4px_20px_var(--color-secondary)] pointer-events-none z-10 transition-colors duration-500">
         #2026
       </div>
 
-      {/* --- TYPOGRAPHY SENTRAL (Diperbaiki Ukurannya untuk Mobile) --- */}
       <div className="relative flex flex-col items-center justify-center w-full max-w-5xl h-fit md:h-[500px] mt-10 md:mt-0">
         <div className="md:absolute left-0 lg:left-20 md:-translate-y-20 z-30 mb-2 md:mb-0">
           <BoundingBox
             enableDrag={true}
             className="px-3 py-1.5 cursor-crosshair border-none md:border-solid"
           >
-            <span className="block text-4xl sm:text-6xl md:text-8xl font-black text-[#E6F1FF] tracking-tighter lowercase pointer-events-none">
+            {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-textMain */}
+            <span className="block text-4xl sm:text-6xl md:text-8xl font-black text-textMain tracking-tighter lowercase pointer-events-none transition-colors duration-500">
               rahma
             </span>
           </BoundingBox>
         </div>
 
-        {/* Teks "Lindungi" - Diubah ukurannya agar muat di HP */}
+        {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-secondary */}
         <div
           onMouseEnter={triggerGlitch}
-          onClick={triggerGlitch} // Bisa diklik di HP untuk efek glitch
-          className="z-40 font-['Dancing_Script',_cursive] text-[65px] sm:text-[90px] md:text-[180px] lg:text-[220px] text-[#FF5722] leading-none transform -rotate-3 md:-rotate-6 drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] md:cursor-crosshair select-none my-[-10px] md:my-0 md:absolute"
+          onClick={triggerGlitch}
+          className="z-40 font-['Dancing_Script',_cursive] text-[65px] sm:text-[90px] md:text-[180px] lg:text-[220px] text-secondary leading-none transform -rotate-3 md:-rotate-6 drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] md:cursor-crosshair select-none my-[-10px] md:my-0 md:absolute transition-colors duration-500"
         >
           {displayText}
         </div>
@@ -199,20 +197,22 @@ export const Hero = () => {
             enableDrag={true}
             className="px-3 py-1.5 cursor-crosshair border-none md:border-solid"
           >
-            <span className="block text-4xl sm:text-6xl md:text-8xl font-black text-[#E6F1FF] tracking-tighter lowercase pointer-events-none">
+            {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-textMain */}
+            <span className="block text-4xl sm:text-6xl md:text-8xl font-black text-textMain tracking-tighter lowercase pointer-events-none transition-colors duration-500">
               laowo
             </span>
           </BoundingBox>
         </div>
 
-        {/* Kotak Peran */}
         <div className="mt-12 md:mt-0 md:absolute md:bottom-[-10px] z-50">
+          {/* 👇 MENGGUNAKAN VARIABEL TEMA: bg-main/90, border-textMuted/30 */}
           <BoundingBox
             enableDrag={true}
-            className="px-4 py-2 md:rotate-3 bg-[#0A192F]/90 backdrop-blur-sm border-[1px] border-[#8892B0]/30 rounded-sm shadow-xl cursor-crosshair"
+            className="px-4 py-2 md:rotate-3 bg-main/90 backdrop-blur-sm border-[1px] border-textMuted/30 rounded-sm shadow-xl cursor-crosshair transition-colors duration-500"
           >
             <div className="text-center pointer-events-none">
-              <span className="block text-[#FF5722] font-bold text-lg md:text-xl leading-none">
+              {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-secondary */}
+              <span className="block text-secondary font-bold text-lg md:text-xl leading-none transition-colors duration-500">
                 {t("hero.role1")}
               </span>
               <span className="block font-['Dancing_Script',_cursive] text-white text-2xl md:text-3xl leading-none -mt-1">
@@ -223,12 +223,13 @@ export const Hero = () => {
         </div>
       </div>
 
-      {/* --- LABEL BAWAH (Disesuaikan posisinya di mobile) --- */}
       <div className="absolute right-4 md:right-12 bottom-8 md:bottom-12 text-right pointer-events-none z-10">
-        <p className="font-['Dancing_Script',_cursive] text-xl md:text-3xl text-[#E6F1FF] mb-1 md:mb-2 opacity-90">
+        {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-textMain */}
+        <p className="font-['Dancing_Script',_cursive] text-xl md:text-3xl text-textMain mb-1 md:mb-2 opacity-90 transition-colors duration-500">
           {t("hero.subtitle")}
         </p>
-        <p className="text-[8px] md:text-[10px] font-bold text-[#8892B0] tracking-widest uppercase">
+        {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-textMuted */}
+        <p className="text-[8px] md:text-[10px] font-bold text-textMuted tracking-widest uppercase transition-colors duration-500">
           {t("hero.studentStatus")}
         </p>
       </div>
