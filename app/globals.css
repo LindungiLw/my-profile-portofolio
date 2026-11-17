@@ -1,13 +1,12 @@
-@import url("https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap");
 @import "tailwindcss";
 
 /* ========================================================
    1. DEFINISI WARNA TEMA (CSS VARIABLES)
    ======================================================== */
 @layer base {
-  /* TEMA 1: NAVY TEAL (Default Aslimu) */
+  /* TEMA 1: NAVY TEAL (Default) */
   :root {
-    --bg-main: #020c1b;
+    --bg-main: #0a192f;
     --bg-surface: #112240;
     --bg-surface-light: #233554;
     --text-main: #e6f1ff;
@@ -48,8 +47,8 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     transition:
-      background-color 0.5s ease,
-      color 0.5s ease;
+      background-color 0.4s ease,
+      color 0.4s ease;
   }
 
   ::selection {
@@ -84,45 +83,59 @@
   --color-textMuted: var(--text-muted);
   --color-primary: var(--accent-primary);
   --color-secondary: var(--accent-secondary);
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-script: var(--font-dancing-script), cursive;
 }
 
 /* ========================================================
-   3. ANIMASI CUSTOM (Bawaanmu)
+   3. ANIMASI CUSTOM
    ======================================================== */
-.animate-mouse-scroll {
-  animation: mouse-scroll 1.5s cubic-bezier(0.19, 1, 0.22, 1) infinite;
-}
-.animate-path-flow {
-  animation: path-flow 2s linear infinite;
-}
-.animation-delay-1000 {
-  animation-delay: 1s;
+.animate-fade-in {
+  animation: fade-in 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@keyframes mouse-scroll {
-  0% {
-    transform: translateX(-50%) translateY(0);
+.animate-fade-in-up {
+  animation: fade-in-up 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
     opacity: 1;
   }
-  100% {
-    transform: translateX(-50%) translateY(14px);
+}
+
+@keyframes fade-in-up {
+  from {
     opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@keyframes path-flow {
-  0% {
-    top: 0;
-    opacity: 0;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-  20% {
-    opacity: 0.6;
-  }
-  80% {
-    opacity: 0.6;
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
+  .animate-fade-in,
+  .animate-fade-in-up,
+  .animate-pulse,
+  .animate-bounce,
+  .animate-ping {
+    animation: none !important;
   }
 }
