@@ -1,28 +1,44 @@
 // app/projects/[slug]/page.tsx
-"use client";
-
-import React, { use } from "react";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { projects } from "@/data/projects";
 
-// Import semua layout kategori
 import UiUxLayout from "./layouts/UiUxLayout";
 import WebLayout from "./layouts/WebLayout";
 import MobileLayout from "./layouts/MobileLayout";
 import LicensesLayout from "./layouts/LicensesLayout";
-import StandardLayout from "./layouts/StandardLayout"; // Untuk jaga-jaga
+import StandardLayout from "./layouts/StandardLayout";
 
-export default function CaseStudyPage({
+export function generateStaticParams() {
+  return projects.map((p) => ({ slug: p.slug }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const p = projects.find((item) => item.slug === slug);
+  if (!p) {
+    return { title: "Project Not Found" };
+  }
+  return {
+    title: p.title,
+    description: p.shortDescription,
+  };
+}
+
+export default async function CaseStudyPage({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = use(params);
+  const { slug } = await params;
   const p = projects.find((item) => item.slug === slug);
 
   if (!p) notFound();
 
-  // Sistem Switcher berdasarkan kategori
   switch (p.category) {
     case "UI/UX":
       return <UiUxLayout p={p} />;
