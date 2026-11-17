@@ -15,13 +15,33 @@ import {
 } from "@react-three/drei";
 import * as THREE from "three";
 import { projects } from "@/data/projects";
-
-// 👇 1. Import mesin bahasa
 import { useLanguage } from "@/context/LanguageContext";
+import { useTheme, type Theme } from "@/context/ThemeContext";
 
-// ==============================================================
-// UTILITY: Rounded Rectangle Shape
-// ==============================================================
+const THEME_ACCENTS: Record<
+  Theme,
+  { accent: string; accentHover: string; secondary: string; btnBg: string }
+> = {
+  default: {
+    accent: "#38bdf8",
+    accentHover: "#02a6fa",
+    secondary: "#818cf8",
+    btnBg: "#0284c7",
+  },
+  cyberpunk: {
+    accent: "#ff00ff",
+    accentHover: "#ff4dff",
+    secondary: "#00ffff",
+    btnBg: "#a21caf",
+  },
+  matrix: {
+    accent: "#00ff00",
+    accentHover: "#4dff4d",
+    secondary: "#ffcc00",
+    btnBg: "#15803d",
+  },
+};
+
 const createRoundedRect = (w: number, h: number, r: number) => {
   const shape = new THREE.Shape();
   shape.moveTo(-w / 2 + r, -h / 2);
@@ -39,9 +59,6 @@ const createRoundedRect = (w: number, h: number, r: number) => {
 const Z_FRONT = 0.076;
 const Z_BACK = -0.076;
 
-// ==============================================================
-// TOMBOL SAMPING
-// ==============================================================
 const SideButtons = () => (
   <group>
     <RoundedBox
@@ -79,9 +96,6 @@ const SideButtons = () => (
   </group>
 );
 
-// ==============================================================
-// KAMERA BELAKANG
-// ==============================================================
 const CameraBack = () => {
   const housingShape = useMemo(() => createRoundedRect(1.32, 1.32, 0.28), []);
 
@@ -173,9 +187,6 @@ const CameraBack = () => {
   );
 };
 
-// ==============================================================
-// APPLE LOGO
-// ==============================================================
 const AppleLogo = () => {
   const { appleShape, leafShape } = useMemo(() => {
     const s = new THREE.Shape();
@@ -236,9 +247,6 @@ const AppleLogo = () => {
   );
 };
 
-// ==============================================================
-// DYNAMIC ISLAND
-// ==============================================================
 const DynamicIsland = () => {
   const islandShape = useMemo(() => createRoundedRect(0.72, 0.2, 0.1), []);
   return (
@@ -249,22 +257,37 @@ const DynamicIsland = () => {
   );
 };
 
-// ==============================================================
-// LAYAR UI (DENGAN FOTO PROFIL & TOTAL PROJECT)
-// ==============================================================
-const PhoneScreen = () => {
+const SOCIAL_LINKS: [number, string, string][] = [
+  [-0.64, "GitHub", "https://github.com/LindungiLw"],
+  [
+    0.64,
+    "LinkedIn",
+    "https://www.linkedin.com/in/rahma-lindungi-laowo-4aa49a349/",
+  ],
+];
+
+const PhoneScreen = ({ accentColor, accentHover, btnBg }: {
+  accentColor: string;
+  accentHover: string;
+  btnBg: string;
+}) => {
   const router = useRouter();
   const [btnHovered, setBtnHovered] = useState(false);
+  const [hoveredSocial, setHoveredSocial] = useState<string | null>(null);
   const screenShape = useMemo(() => createRoundedRect(2.94, 6.04, 0.42), []);
-
-  // 👇 2. Panggil fungsi bahasa untuk di dalam layar HP
   const { t } = useLanguage();
 
   const [profileTex, setProfileTex] = useState<THREE.Texture | null>(null);
   useEffect(() => {
-    new THREE.TextureLoader().load("/profile.png", (tex) => {
-      setProfileTex(tex);
+    const loader = new THREE.TextureLoader();
+    let mounted = true;
+    loader.load("/profile.png", (tex) => {
+      if (mounted) setProfileTex(tex);
     });
+    return () => {
+      mounted = false;
+      document.body.style.cursor = "auto";
+    };
   }, []);
 
   return (
@@ -305,7 +328,7 @@ const PhoneScreen = () => {
       </mesh>
       <mesh position={[0, 2.43, 0.002]}>
         <planeGeometry args={[2.5, 0.018]} />
-        <meshBasicMaterial color="#38bdf8" />
+        <meshBasicMaterial color={accentColor} />
       </mesh>
 
       {/* FOTO PROFIL */}
@@ -319,7 +342,7 @@ const PhoneScreen = () => {
       </mesh>
       <mesh position={[0, 1.76, 0.003]}>
         <ringGeometry args={[0.5, 0.545, 64]} />
-        <meshBasicMaterial color="#38bdf8" transparent opacity={0.5} />
+        <meshBasicMaterial color={accentColor} transparent opacity={0.5} />
       </mesh>
 
       <Text
@@ -334,11 +357,11 @@ const PhoneScreen = () => {
       <Text
         position={[0, 0.78, 0.002]}
         fontSize={0.105}
-        color="#475569"
+        color="#94a3b8"
         anchorX="center"
         letterSpacing={0.06}
       >
-        {t("projects.phoneProfile")} {/* 👈 Teks dinamis */}
+        {t("projects.phoneProfile")}
       </Text>
 
       <mesh position={[0, 0.58, 0.002]}>
@@ -351,7 +374,7 @@ const PhoneScreen = () => {
         <Text
           position={[0, 0.1, 0]}
           fontSize={0.28}
-          color="#38bdf8"
+          color={accentColor}
           anchorX="center"
           fontWeight={800}
         >
@@ -360,29 +383,43 @@ const PhoneScreen = () => {
         <Text
           position={[0, -0.15, 0]}
           fontSize={0.1}
-          color="#475569"
+          color="#94a3b8"
           anchorX="center"
           letterSpacing={0.05}
         >
-          {t("projects.phoneTotal")} {/* 👈 Teks dinamis */}
+          {t("projects.phoneTotal")}
         </Text>
       </group>
 
-      {(
-        [
-          [-0.64, "GitHub"],
-          [0.64, "LinkedIn"],
-        ] as [number, string][]
-      ).map(([x, label]) => (
-        <group key={label} position={[x, -0.2, 0.002]}>
+      {SOCIAL_LINKS.map(([x, label, url]) => (
+        <group
+          key={label}
+          position={[x, -0.2, 0.002]}
+          onClick={(e) => {
+            e.stopPropagation();
+            window.open(url, "_blank", "noopener,noreferrer");
+          }}
+          onPointerOver={(e) => {
+            e.stopPropagation();
+            setHoveredSocial(label);
+            document.body.style.cursor = "pointer";
+          }}
+          onPointerOut={(e) => {
+            e.stopPropagation();
+            setHoveredSocial(null);
+            document.body.style.cursor = "auto";
+          }}
+        >
           <mesh>
-            <planeGeometry args={[0.9, 0.195]} />
-            <meshBasicMaterial color="#0a1e42" />
+            <planeGeometry args={[0.9, 0.21]} />
+            <meshBasicMaterial
+              color={hoveredSocial === label ? "#163567" : "#0a1e42"}
+            />
           </mesh>
           <Text
             position={[0, 0, 0.001]}
             fontSize={0.09}
-            color="#38bdf8"
+            color={accentColor}
             anchorX="center"
           >
             {label}
@@ -394,6 +431,7 @@ const PhoneScreen = () => {
         position={[0, -1.18, 0.002]}
         onClick={(e) => {
           e.stopPropagation();
+          document.body.style.cursor = "auto";
           router.push("/projects");
         }}
         onPointerOver={(e) => {
@@ -409,7 +447,7 @@ const PhoneScreen = () => {
       >
         <mesh>
           <planeGeometry args={[2.18, 0.4]} />
-          <meshBasicMaterial color={btnHovered ? "#02a6fa" : "#0284c7"} />
+          <meshBasicMaterial color={btnHovered ? accentHover : btnBg} />
         </mesh>
         <Text
           position={[0, 0, 0.001]}
@@ -418,7 +456,7 @@ const PhoneScreen = () => {
           fontWeight={700}
           letterSpacing={0.04}
         >
-          {t("projects.phoneExplore")} {/* 👈 Teks dinamis */}
+          {t("projects.phoneExplore")}
         </Text>
       </group>
 
@@ -431,7 +469,7 @@ const PhoneScreen = () => {
           key={i}
           position={[-1.05 + i * 0.7, -2.54, 0.002]}
           fontSize={0.2}
-          color={i === 0 ? "#38bdf8" : "#1e3260"}
+          color={i === 0 ? accentColor : "#334e80"}
           anchorX="center"
         >
           {icon}
@@ -446,9 +484,6 @@ const PhoneScreen = () => {
   );
 };
 
-// ==============================================================
-// BODI IPHONE & SCENE TETAP SAMA
-// ==============================================================
 const IPhoneBody = () => {
   const geometry = useMemo(() => {
     const shape = createRoundedRect(3.1, 6.2, 0.45);
@@ -488,22 +523,42 @@ const IPhoneBody = () => {
   return <mesh geometry={geometry} material={[glassMat, frameMat]} />;
 };
 
-const IPhone16Pro = () => (
+const IPhone16Pro = ({
+  accentColor,
+  accentHover,
+  btnBg,
+}: {
+  accentColor: string;
+  accentHover: string;
+  btnBg: string;
+}) => (
   <group>
     <IPhoneBody />
     <SideButtons />
     <CameraBack />
     <AppleLogo />
-    <PhoneScreen />
+    <PhoneScreen
+      accentColor={accentColor}
+      accentHover={accentHover}
+      btnBg={btnBg}
+    />
   </group>
 );
 
-const PhoneScene = () => (
+const PhoneScene = ({
+  accent,
+  accentHover,
+  btnBg,
+}: {
+  accent: string;
+  accentHover: string;
+  btnBg: string;
+}) => (
   <>
     <ambientLight intensity={0.4} />
     <directionalLight position={[-3, 8, 7]} intensity={1.8} />
     <directionalLight position={[7, 3, -5]} intensity={1.2} color="#99bbff" />
-    <pointLight position={[0, -5, 5]} intensity={0.4} color="#38bdf8" />
+    <pointLight position={[0, -5, 5]} intensity={0.4} color={accent} />
     <spotLight position={[0, 12, 4]} angle={0.2} penumbra={1} intensity={1.0} />
     <Environment preset="studio" />
     <Float
@@ -513,7 +568,11 @@ const PhoneScene = () => (
       floatingRange={[-0.1, 0.1]}
     >
       <group rotation={[0.08, -0.35, 0.04]}>
-        <IPhone16Pro />
+        <IPhone16Pro
+          accentColor={accent}
+          accentHover={accentHover}
+          btnBg={btnBg}
+        />
       </group>
     </Float>
     <Sparkles
@@ -522,7 +581,7 @@ const PhoneScene = () => (
       size={0.45}
       speed={0.1}
       opacity={0.15}
-      color="#38bdf8"
+      color={accent}
     />
     <ContactShadows
       position={[0, -3.6, 0]}
@@ -536,16 +595,14 @@ const PhoneScene = () => (
   </>
 );
 
-// ==============================================================
-// EXPORT UTAMA
-// ==============================================================
 export const Projects = () => {
-  // 👇 3. Panggil fungsi bahasa untuk teks di luar layar
   const { t } = useLanguage();
+  const { theme } = useTheme();
+  const palette = THEME_ACCENTS[theme];
 
   const totalProjectsCount = projects.length;
   const totalHostedCount = projects.filter(
-    (p) => p.external && p.external !== "#",
+    (p) => p.category !== "Licenses" && p.external && p.external !== "#",
   ).length;
 
   return (
@@ -554,17 +611,15 @@ export const Projects = () => {
       className="py-24 md:py-36 scroll-mt-12 mx-auto max-w-6xl px-6 relative z-40"
     >
       <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16">
-        {/* SISI KIRI: 3D CANVAS */}
         <div className="w-full lg:w-7/12 h-[540px] lg:h-[700px] relative cursor-grab active:cursor-grabbing select-none">
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background:
-                "radial-gradient(ellipse 55% 50% at 58% 50%,rgba(56,189,248,0.06) 0%,transparent 70%)",
+              background: `radial-gradient(ellipse 55% 50% at 58% 50%, color-mix(in srgb, ${palette.accent} 8%, transparent) 0%, transparent 70%)`,
             }}
           />
-          <div className="absolute top-12 right-12 z-20 font-mono text-[10px] text-[#38bdf8] opacity-40 tracking-widest hidden md:block animate-pulse">
-            [ Drag to Rotate ]
+          <div className="absolute top-12 right-12 z-20 font-mono text-[10px] text-primary opacity-60 tracking-widest hidden md:block animate-pulse">
+            {t("projects.dragHint")}
           </div>
           <Canvas
             className="touch-none"
@@ -575,12 +630,16 @@ export const Projects = () => {
           >
             <Suspense
               fallback={
-                <Text color="#38bdf8" fontSize={0.4}>
+                <Text color={palette.accent} fontSize={0.4}>
                   Loading...
                 </Text>
               }
             >
-              <PhoneScene />
+              <PhoneScene
+                accent={palette.accent}
+                accentHover={palette.accentHover}
+                btnBg={palette.btnBg}
+              />
             </Suspense>
             <OrbitControls
               enableZoom={false}
@@ -591,18 +650,16 @@ export const Projects = () => {
           </Canvas>
         </div>
 
-        {/* 🔴 SISI KANAN: TEKS DENGAN EFEK FROSTED GLASS */}
-        <div className="w-full lg:w-5/12 space-y-8 text-center lg:text-left bg-[#0A192F]/70 backdrop-blur-md p-8 rounded-3xl border border-transparent hover:border-[#233554]/50 transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
-          <h2 className="flex items-baseline gap-3 text-4xl md:text-5xl font-black text-[#f0f9ff] tracking-tight leading-none mb-2">
-            <span className="text-[#38bdf8] font-mono text-2xl md:text-3xl tracking-widest drop-shadow-sm">
+        <div className="w-full lg:w-5/12 space-y-8 text-center lg:text-left bg-main/75 backdrop-blur-md p-8 rounded-3xl border border-surface-light/40 hover:border-surface-light transition-colors shadow-[0_8px_30px_rgb(0,0,0,0.12)]">
+          <h2 className="flex flex-wrap items-baseline justify-center lg:justify-start gap-3 text-4xl md:text-5xl font-black text-textMain tracking-tight leading-none mb-2">
+            <span className="text-secondary font-mono text-2xl md:text-3xl tracking-widest drop-shadow-sm">
               {t("projects.sectionNum")}
             </span>
             <span>{t("projects.titleWord1")}</span>
             <span
               className="text-transparent bg-clip-text drop-shadow-lg"
               style={{
-                backgroundImage:
-                  "linear-gradient(135deg,#38bdf8 0%,#818cf8 100%)",
+                backgroundImage: `linear-gradient(135deg, ${palette.accent} 0%, ${palette.secondary} 100%)`,
               }}
             >
               {t("projects.titleWord2")}
@@ -610,38 +667,46 @@ export const Projects = () => {
           </h2>
 
           <div className="flex items-center gap-3 justify-center lg:justify-start">
-            <div className="h-[2px] w-12 bg-gradient-to-r from-[#38bdf8] to-transparent" />
-            <div className="h-[2px] w-4 bg-[#38bdf8] opacity-40" />
+            <div
+              className="h-[2px] w-12"
+              style={{
+                background: `linear-gradient(to right, ${palette.accent}, transparent)`,
+              }}
+            />
+            <div
+              className="h-[2px] w-4 opacity-40"
+              style={{ backgroundColor: palette.accent }}
+            />
           </div>
 
-          <p className="text-[#64748b] text-base md:text-lg leading-relaxed max-w-sm mx-auto lg:mx-0">
+          <p className="text-textMuted text-base md:text-lg leading-relaxed max-w-sm mx-auto lg:mx-0">
             {t("projects.description")}
           </p>
 
-          <div className="grid grid-cols-2 gap-4 py-6 border-y border-[#0f2044]">
+          <div className="grid grid-cols-2 gap-4 py-6 border-y border-surface-light/60">
             <div className="text-center lg:text-left">
               <p
-                className="text-4xl font-black text-transparent bg-clip-text"
+                className="text-4xl font-black font-mono tabular-nums text-transparent bg-clip-text"
                 style={{
-                  backgroundImage: "linear-gradient(135deg,#38bdf8,#818cf8)",
+                  backgroundImage: `linear-gradient(135deg, ${palette.accent}, ${palette.secondary})`,
                 }}
               >
                 {totalProjectsCount}
               </p>
-              <p className="text-xs text-[#475569] font-mono uppercase tracking-wider mt-1">
+              <p className="text-xs text-textMuted font-mono uppercase tracking-wider mt-1">
                 {t("projects.total")}
               </p>
             </div>
             <div className="text-center lg:text-left">
               <p
-                className="text-4xl font-black text-transparent bg-clip-text"
+                className="text-4xl font-black font-mono tabular-nums text-transparent bg-clip-text"
                 style={{
-                  backgroundImage: "linear-gradient(135deg,#38bdf8,#818cf8)",
+                  backgroundImage: `linear-gradient(135deg, ${palette.accent}, ${palette.secondary})`,
                 }}
               >
                 {totalHostedCount}
               </p>
-              <p className="text-xs text-[#475569] font-mono uppercase tracking-wider mt-1">
+              <p className="text-xs text-textMuted font-mono uppercase tracking-wider mt-1">
                 {t("projects.hosted")}
               </p>
             </div>

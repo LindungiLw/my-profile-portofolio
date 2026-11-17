@@ -1,12 +1,9 @@
 // components/Hero.tsx
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 
-// ==========================================
-// KOTAK SELEKSI (Hanya bisa di-drag di layar besar)
-// ==========================================
 const BoundingBox = ({
   children,
   className = "",
@@ -41,8 +38,12 @@ const BoundingBox = ({
   const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
     if (!enableDrag || window.innerWidth < 768) return;
     setIsDragging(false);
-    e.currentTarget.releasePointerCapture(e.pointerId);
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
   };
+
+  const hasOffset = dragOffset.x !== 0 || dragOffset.y !== 0;
 
   return (
     <div
@@ -50,65 +51,73 @@ const BoundingBox = ({
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
-      // 👇 MENGGUNAKAN VARIABEL TEMA: border-textMuted, bg-surface
-      className={`relative w-fit h-fit border-[1px] border-textMuted border-dashed group select-none ${
+      className={`relative w-fit h-fit border border-textMuted border-dashed group select-none ${
         enableDrag
           ? isDragging
-            ? "cursor-grabbing z-50 bg-surface/80 shadow-2xl md:scale-105"
-            : "md:cursor-grab hover:bg-surface/50"
+            ? "cursor-grabbing z-50 bg-surface/80 shadow-2xl md:scale-105 md:touch-none"
+            : "md:cursor-grab md:touch-none hover:bg-surface/50"
           : ""
       } ${className}`}
       style={
-        enableDrag && typeof window !== "undefined" && window.innerWidth >= 768
+        enableDrag && hasOffset
           ? {
               transform: `translate(${dragOffset.x}px, ${dragOffset.y}px)`,
-              touchAction: "none",
               transition: isDragging
                 ? "none"
                 : "transform 0.1s ease-out, background-color 0.3s",
             }
-          : {}
+          : undefined
       }
     >
       {children}
-      {/* 👇 MENGGUNAKAN VARIABEL TEMA: bg-main, border-textMuted */}
-      <div className="hidden md:block absolute -top-1 -left-1 w-2 h-2 bg-main border border-textMuted"></div>
-      <div className="hidden md:block absolute -top-1 -right-1 w-2 h-2 bg-main border border-textMuted"></div>
-      <div className="hidden md:block absolute -bottom-1 -left-1 w-2 h-2 bg-main border border-textMuted"></div>
-      <div className="hidden md:block absolute -bottom-1 -right-1 w-2 h-2 bg-main border border-textMuted"></div>
+      <div className="hidden md:block absolute -top-1 -left-1 w-2 h-2 bg-main border border-textMuted" />
+      <div className="hidden md:block absolute -top-1 -right-1 w-2 h-2 bg-main border border-textMuted" />
+      <div className="hidden md:block absolute -bottom-1 -left-1 w-2 h-2 bg-main border border-textMuted" />
+      <div className="hidden md:block absolute -bottom-1 -right-1 w-2 h-2 bg-main border border-textMuted" />
     </div>
   );
 };
 
+const GLITCH_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ01@#$%";
+
 export const Hero = () => {
   const [displayText, setDisplayText] = useState("Lindungi");
-  const intervalRef = useRef<any>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { t } = useLanguage();
+
+  useEffect(() => {
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, []);
 
   const triggerGlitch = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     const originalText = "Lindungi";
-    const letters = "Putri Helen Renata";
     let iteration = 0;
 
     intervalRef.current = setInterval(() => {
-      setDisplayText((prev) =>
+      setDisplayText(
         originalText
           .split("")
-          .map((letter, i) => {
+          .map((_, i) => {
             if (i < iteration) return originalText[i];
-            return letters[Math.floor(Math.random() * letters.length)];
+            return GLITCH_CHARS[
+              Math.floor(Math.random() * GLITCH_CHARS.length)
+            ];
           })
           .join(""),
       );
-      if (iteration >= originalText.length) clearInterval(intervalRef.current);
+      if (iteration >= originalText.length && intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
       iteration += 1 / 2;
     }, 40);
   };
 
   return (
-    <section className="flex min-h-[90vh] md:min-h-screen items-center justify-center relative w-full max-w-7xl mx-auto px-4 md:px-6 overflow-x-hidden pt-20 md:pt-0">
-      {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-textMuted, text-textMain */}
+    <section className="flex min-h-[90vh] md:min-h-screen items-center justify-center relative w-full max-w-7xl mx-auto px-4 md:px-6 overflow-x-hidden pt-20 pb-24 md:py-0">
       <div className="hidden sm:flex absolute left-6 md:left-12 bottom-20 gap-8 text-textMuted font-bold text-lg md:text-xl leading-snug tracking-tighter mix-blend-screen opacity-80 pointer-events-none z-10 transition-colors duration-500">
         <div>
           <p>CSS</p>
@@ -127,8 +136,11 @@ export const Hero = () => {
         </div>
       </div>
 
-      <div className="absolute top-24 left-4 md:top-32 md:left-32 flex gap-2 md:gap-3 pointer-events-none z-10 opacity-60 md:opacity-100 scale-75 md:scale-100">
-        <div className="w-12 h-12 bg-[#1E1E1E] rounded-xl flex items-center justify-center border border-[#333]">
+      <div
+        aria-hidden="true"
+        className="absolute top-24 left-4 md:top-32 md:left-32 flex gap-2 md:gap-3 pointer-events-none z-10 opacity-60 md:opacity-100 scale-75 md:scale-100"
+      >
+        <div className="w-12 h-12 bg-surface rounded-xl flex items-center justify-center border border-surface-light">
           <svg
             className="w-6 h-6"
             viewBox="0 0 38 57"
@@ -153,9 +165,9 @@ export const Hero = () => {
             />
           </svg>
         </div>
-        <div className="w-12 h-12 bg-[#1E1E1E] rounded-xl flex items-center justify-center border border-[#333]">
+        <div className="w-12 h-12 bg-surface rounded-xl flex items-center justify-center border border-surface-light">
           <svg
-            className="w-8 h-8 text-[#61DAFB]"
+            className="w-8 h-8 text-primary"
             viewBox="0 0 24 24"
             fill="currentColor"
           >
@@ -165,7 +177,6 @@ export const Hero = () => {
         </div>
       </div>
 
-      {/* 👇 MENGGUNAKAN VARIABEL TEMA: bg-secondary, text-main */}
       <div className="absolute top-24 right-4 md:top-32 md:right-32 bg-secondary text-main font-bold text-lg md:text-4xl px-3 py-1 transform rotate-3 shadow-[0_4px_20px_var(--color-secondary)] pointer-events-none z-10 transition-colors duration-500">
         #2026
       </div>
@@ -176,28 +187,25 @@ export const Hero = () => {
             enableDrag={true}
             className="px-3 py-1.5 cursor-crosshair border-none md:border-solid"
           >
-            {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-textMain */}
             <span className="block text-4xl sm:text-6xl md:text-8xl font-black text-textMain tracking-tighter lowercase pointer-events-none transition-colors duration-500">
               rahma
             </span>
           </BoundingBox>
         </div>
 
-        {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-secondary */}
-        <div
+        <h1
           onMouseEnter={triggerGlitch}
           onClick={triggerGlitch}
-          className="z-40 font-['Dancing_Script',_cursive] text-[65px] sm:text-[90px] md:text-[180px] lg:text-[220px] text-secondary leading-none transform -rotate-3 md:-rotate-6 drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] md:cursor-crosshair select-none my-[-10px] md:my-0 md:absolute transition-colors duration-500"
+          className="z-40 font-script text-[65px] sm:text-[90px] md:text-[180px] lg:text-[220px] text-secondary leading-none transform -rotate-3 md:-rotate-6 drop-shadow-[0_10px_10px_rgba(0,0,0,0.5)] md:cursor-crosshair select-none my-[-10px] md:my-0 md:absolute transition-colors duration-500"
         >
           {displayText}
-        </div>
+        </h1>
 
         <div className="md:absolute right-0 lg:right-20 md:translate-y-24 z-30 mt-2 md:mt-0">
           <BoundingBox
             enableDrag={true}
             className="px-3 py-1.5 cursor-crosshair border-none md:border-solid"
           >
-            {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-textMain */}
             <span className="block text-4xl sm:text-6xl md:text-8xl font-black text-textMain tracking-tighter lowercase pointer-events-none transition-colors duration-500">
               laowo
             </span>
@@ -205,17 +213,15 @@ export const Hero = () => {
         </div>
 
         <div className="mt-12 md:mt-0 md:absolute md:bottom-[-10px] z-50">
-          {/* 👇 MENGGUNAKAN VARIABEL TEMA: bg-main/90, border-textMuted/30 */}
           <BoundingBox
             enableDrag={true}
-            className="px-4 py-2 md:rotate-3 bg-main/90 backdrop-blur-sm border-[1px] border-textMuted/30 rounded-sm shadow-xl cursor-crosshair transition-colors duration-500"
+            className="px-4 py-2 md:rotate-3 bg-main/90 backdrop-blur-sm border border-textMuted/30 rounded-sm shadow-xl cursor-crosshair transition-colors duration-500"
           >
             <div className="text-center pointer-events-none">
-              {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-secondary */}
               <span className="block text-secondary font-bold text-lg md:text-xl leading-none transition-colors duration-500">
                 {t("hero.role1")}
               </span>
-              <span className="block font-['Dancing_Script',_cursive] text-white text-2xl md:text-3xl leading-none -mt-1">
+              <span className="block font-script text-textMain text-2xl md:text-3xl leading-none -mt-1">
                 {t("hero.role2")}
               </span>
             </div>
@@ -223,13 +229,11 @@ export const Hero = () => {
         </div>
       </div>
 
-      <div className="absolute right-4 md:right-12 bottom-8 md:bottom-12 text-right pointer-events-none z-10">
-        {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-textMain */}
-        <p className="font-['Dancing_Script',_cursive] text-xl md:text-3xl text-textMain mb-1 md:mb-2 opacity-90 transition-colors duration-500">
+      <div className="absolute right-4 md:right-12 bottom-20 sm:bottom-12 text-right pointer-events-none z-10">
+        <p className="font-script text-xl md:text-3xl text-textMain mb-1 md:mb-2 opacity-90 transition-colors duration-500">
           {t("hero.subtitle")}
         </p>
-        {/* 👇 MENGGUNAKAN VARIABEL TEMA: text-textMuted */}
-        <p className="text-[8px] md:text-[10px] font-bold text-textMuted tracking-widest uppercase transition-colors duration-500">
+        <p className="text-[10px] font-bold text-textMuted tracking-widest uppercase transition-colors duration-500">
           {t("hero.studentStatus")}
         </p>
       </div>
