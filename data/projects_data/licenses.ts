@@ -1,4 +1,6 @@
-export const licensesProjects = [
+import type { Project } from "../projects";
+
+export const licensesProjects: Project[] = [
   {
     slug: "certification-healtech2025-himatif",
     overline: "Certification",

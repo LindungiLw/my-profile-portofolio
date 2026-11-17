@@ -27,14 +27,15 @@ export const dictionary = {
         " and web/mobile app development. My main focus is creating digital experiences that not only function well but are also ",
       focus3: "simple, aesthetic, and highly comfortable",
       focus4: " to use by the ",
-      user: "*user*.",
+      user: "user.",
+      mouseTooltip: "Send 01 data packet!",
 
-      // Bagian Kartu 3D
+      // 3D Card
       hoverBio: "Click to see biodata",
       hoverPhoto: "Click to see photo",
       cardTitle: "My Biodata",
       locLabel: "Loc:",
-      locValue: '"Indonesia"',
+      locValue: "Indonesia",
       creativity: "Creativity",
       logic: "Logic",
       hello: "Hello World!",
@@ -48,8 +49,9 @@ export const dictionary = {
         "Building intuitive interfaces and high-performance applications with precision. Here is a collection of my best work.",
       total: "Total Projects",
       hosted: "Live Hosted",
+      dragHint: "[ Drag to Rotate ]",
 
-      // Teks di dalam layar HP 3D
+      // 3D Phone Screen
       phoneProfile: "PORTFOLIO PROFILE",
       phoneTotal: "TOTAL PROJECTS",
       phoneExplore: "EXPLORE PROJECT →",
@@ -59,7 +61,6 @@ export const dictionary = {
       sectionNum: "03.",
       title: "Experience",
 
-      // Pekerjaan 1
       job1_role: "Assistant Library",
       job1_date: "Ongoing (Present)",
       job1_desc1:
@@ -68,13 +69,11 @@ export const dictionary = {
       job1_desc3:
         "Successfully deployed and managed the hosting for the library's website to ensure reliable online access.",
 
-      // Pekerjaan 2
       job2_role: "Graphic Design",
       job2_date: "3 Months Contract",
       job2_desc1: "Consistently met weekly targets of 7+ designs.",
       job2_desc2: "Managed and organized digital archives in Google Drive.",
 
-      // Pekerjaan 3
       job3_role: "IT Design Sprint",
       job3_date: "2 Weeks Sprint",
       job3_desc1:
@@ -98,9 +97,14 @@ export const dictionary = {
       btnSubmit: "SUBMIT REVIEW",
       waiting: "WAITING FOR REVIEWS...",
       alertLogin: "Please log in with Google first!",
+      alertEmpty: "Please write a message before submitting.",
       alertSuccess1: "Thank you! Your ",
       alertSuccess2: "-star rating has been saved.",
       alertFail: "Failed to send comment. Please check your connection.",
+      unavailable: "Review service is currently unavailable.",
+      anonymous: "Anonymous User",
+      rateStarPrefix: "Rate",
+      rateStarSuffix: "stars",
     },
 
     overview: {
@@ -121,6 +125,8 @@ export const dictionary = {
       githubStatus: "GitHub Live Status",
       repos: "Repositories",
       stars: "Stars",
+      exploreGithub: "Explore GitHub Profile →",
+      githubError: "Unable to load live GitHub statistics right now.",
     },
 
     dashboard: {
@@ -131,6 +137,27 @@ export const dictionary = {
       web: "Web",
       mobile: "Mobile",
       licenses: "Licenses",
+    },
+
+    categoryPage: {
+      projectsSuffix: "Projects",
+      subtitlePrefix: "Explore the archive of works in the ",
+      subtitleSuffix: " category.",
+      emptyState: "New projects are currently in the works...",
+    },
+
+    caseStudy: {
+      back: "Back",
+      sourceCode: "Source Code",
+      liveSite: "Live Site",
+      viewFigma: "View in Figma",
+      interactivePrototype: "Interactive Prototype",
+      livePreview: "Live Preview",
+      overview: "Overview",
+      technologies: "Technologies",
+      toolsAndTech: "Tools & Technologies",
+      openFullDoc: "Open Full Document",
+      certifications: "Certifications",
     },
   },
   id: {
@@ -160,14 +187,15 @@ export const dictionary = {
         " serta pengembangan aplikasi web dan mobile. Fokus utama saya adalah menciptakan pengalaman digital yang tidak hanya berfungsi dengan baik, tetapi juga ",
       focus3: "sederhana, estetik, dan sangat nyaman",
       focus4: " digunakan oleh ",
-      user: "*pengguna*.",
+      user: "pengguna.",
+      mouseTooltip: "Kirim paket data 01!",
 
-      // Bagian Kartu 3D
+      // Kartu 3D
       hoverBio: "Klik untuk lihat biodata",
       hoverPhoto: "Klik untuk lihat foto",
       cardTitle: "Biodata Saya",
       locLabel: "Lokasi:",
-      locValue: '"Indonesia"',
+      locValue: "Indonesia",
       creativity: "Kreativitas",
       logic: "Logika",
       hello: "Halo Dunia!",
@@ -181,8 +209,9 @@ export const dictionary = {
         "Membangun antarmuka intuitif dan aplikasi berkinerja tinggi dengan presisi. Berikut adalah kumpulan karya terbaik saya.",
       total: "Total Proyek",
       hosted: "Hosting Aktif",
+      dragHint: "[ Geser untuk Putar ]",
 
-      // Teks di dalam layar HP 3D
+      // Layar HP 3D
       phoneProfile: "PROFIL PORTOFOLIO",
       phoneTotal: "TOTAL PROYEK",
       phoneExplore: "JELAJAHI PROYEK →",
@@ -191,7 +220,6 @@ export const dictionary = {
       sectionNum: "03.",
       title: "Pengalaman",
 
-      // Pekerjaan 1
       job1_role: "Asisten Perpustakaan",
       job1_date: "Sedang Berlangsung",
       job1_desc1:
@@ -200,13 +228,11 @@ export const dictionary = {
       job1_desc3:
         "Berhasil melakukan deployment dan mengelola hosting untuk website perpustakaan untuk memastikan akses online yang andal.",
 
-      // Pekerjaan 2
       job2_role: "Desain Grafis",
       job2_date: "Kontrak 3 Bulan",
       job2_desc1: "Secara konsisten memenuhi target mingguan 7+ desain.",
       job2_desc2: "Mengelola dan mengatur arsip digital di Google Drive.",
 
-      // Pekerjaan 3
       job3_role: "IT Design Sprint",
       job3_date: "Sprint 2 Minggu",
       job3_desc1:
@@ -230,9 +256,14 @@ export const dictionary = {
       btnSubmit: "KIRIM ULASAN",
       waiting: "MENUNGGU ULASAN...",
       alertLogin: "Silakan login dengan Google terlebih dahulu!",
+      alertEmpty: "Silakan tulis pesan sebelum mengirim ulasan.",
       alertSuccess1: "Terima kasih! Rating bintang ",
       alertSuccess2: " kamu sudah tersimpan.",
-      alertFail: "Gagal kirim komentar. Cek koneksi.",
+      alertFail: "Gagal mengirim komentar. Periksa koneksi Anda.",
+      unavailable: "Layanan ulasan sedang tidak tersedia.",
+      anonymous: "Pengguna Anonim",
+      rateStarPrefix: "Beri",
+      rateStarSuffix: "bintang",
     },
     overview: {
       title: "Ringkasan Analitik",
@@ -252,6 +283,8 @@ export const dictionary = {
       githubStatus: "Status Live GitHub",
       repos: "Repositori",
       stars: "Bintang",
+      exploreGithub: "Jelajahi Profil GitHub →",
+      githubError: "Gagal memuat statistik GitHub saat ini.",
     },
     dashboard: {
       backHome: "Kembali ke Beranda",
@@ -262,7 +295,26 @@ export const dictionary = {
       mobile: "Mobile",
       licenses: "Lisensi",
     },
+    categoryPage: {
+      projectsSuffix: "Proyek",
+      subtitlePrefix: "Eksplorasi arsip hasil karya untuk kategori ",
+      subtitleSuffix: ".",
+      emptyState: "Proyek sedang dimasak...",
+    },
+    caseStudy: {
+      back: "Kembali",
+      sourceCode: "Kode Sumber",
+      liveSite: "Situs Live",
+      viewFigma: "Lihat di Figma",
+      interactivePrototype: "Prototipe Interaktif",
+      livePreview: "Pratinjau Langsung",
+      overview: "Ringkasan",
+      technologies: "Teknologi",
+      toolsAndTech: "Alat & Teknologi",
+      openFullDoc: "Buka Dokumen Penuh",
+      certifications: "Sertifikasi",
+    },
   },
-};
+} as const;
 
 export type Language = "en" | "id";

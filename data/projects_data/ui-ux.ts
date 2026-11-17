@@ -1,4 +1,6 @@
-export const uiUxProjects = [
+import type { Project } from "../projects";
+
+export const uiUxProjects: Project[] = [
   {
     slug: "emergency-call-web",
     overline: "wireframe",
@@ -6,11 +8,10 @@ export const uiUxProjects = [
     category: "UI/UX",
     image: "/assets/emergencyy.png",
     shortDescription:
-      "Eksplorasi antarmuka untuk aplikasi dompet digital dengan gaya modern minimalis.",
+      "Eksplorasi antarmuka website panggilan darurat yang cepat diakses, jelas, dan nyaman digunakan.",
     techStack: ["Figma", "Prototyping"],
     figma:
       "https://www.figma.com/proto/k9dT7lgTBib5JQ0tSXejzq/Emergency-Call?node-id=54-8",
-    // 👇 Perhatikan bagian akhir link ini, ada tambahan &embed-host=portofolioku dan TIDAK ADA titik tiga
     figmaEmbed:
       "https://embed.figma.com/proto/k9dT7lgTBib5JQ0tSXejzq/Emergency-Call?node-id=61-127&embed-host=portofolioku",
     longDescription:
@@ -27,14 +28,12 @@ export const uiUxProjects = [
     techStack: ["Figma", "Prototyping"],
     figma:
       "https://www.figma.com/design/ocoQe2O2I6Go4nisUiGqZN/SmartHome-UI-UX",
-    // 👇 Perhatikan bagian akhir link ini
     figmaEmbed:
       "https://embed.figma.com/proto/ocoQe2O2I6Go4nisUiGqZN/SmartHome-UI-UX?node-id=287-5082&embed-host=portofolioku",
     longDescription:
       "Desain wireframe aplikasi Smart Home yang berfokus pada kemudahan pengguna dalam mengontrol berbagai perangkat rumah seperti lampu, suhu ruangan, dan keamanan. Tampilan dirancang sederhana, intuitif, dan modern agar pengguna dapat memantau serta mengatur kondisi rumah kapan saja dengan nyaman.",
   },
   {
-    // 👇 Slug sudah diperbaiki agar aman jadi URL
     slug: "sadari-self-checking-diabetes",
     overline: "wireframe",
     title: "Sadari",
@@ -45,16 +44,13 @@ export const uiUxProjects = [
     techStack: ["Figma", "Prototyping"],
     figma:
       "https://www.figma.com/design/UvNbpPmaLBEj8m9C9kzxgH/SADARI_Mobile?node-id=0-1",
-    // 👇 Perhatikan bagian akhir link ini
     figmaEmbed:
       "https://embed.figma.com/proto/UvNbpPmaLBEj8m9C9kzxgH/SADARI_Mobile?node-id=14-79&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=6%3A2&show-proto-sidebar=1&embed-host=portofolioku",
     longDescription:
       "Aplikasi SADARI merupakan sebuah platform yang dirancang untuk mengatasi tantangan utama dalam manajemen diabetes melitus. Dengan fitur-fitur yang memungkinkan pengguna untuk mencatat dan memantau kondisi mereka secara rutin. Aplikasi SADARI ini tidak hanya berfungsi sebagai alat pencatat data, melainkan juga sebagai asisten pribadi yang memberikan umpan balik dan rekomendasi yang disesuaikan. Aplikasi ini berpotensi besar untuk membantu penderita diabetes melitus dalam memitigasi risiko komplikasi dini, meningkatkan kualitas hidup penderita, dan juga berkontribusi pada penurunan angka penderita dan kematian akibat diabetes melitus di Indonesia.",
   },
-
   {
-    // 👇 Slug sudah diperbaiki agar aman jadi URL
-    slug: "student-information-portal",
+    slug: "student-information-portal-uiux",
     overline: "wireframe",
     title: "Student Information Portal",
     category: "UI/UX",
@@ -64,7 +60,6 @@ export const uiUxProjects = [
     techStack: ["Figma", "Prototyping"],
     figma:
       "https://www.figma.com/design/1HUUE2XH8gE14r8T6P2Tau/JIU---Student-Information-Portal?node-id=0-1&p=f&t=qWMaqqJKTWkQ9zg2-0",
-    // 👇 Perhatikan bagian akhir link ini
     figmaEmbed:
       "https://embed.figma.com/proto/1HUUE2XH8gE14r8T6P2Tau/JIU---Student-Information-Portal?node-id=171-4724&p=f&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&embed-host=share",
     longDescription:

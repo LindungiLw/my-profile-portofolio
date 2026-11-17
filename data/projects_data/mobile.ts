@@ -1,4 +1,6 @@
-export const mobileProjects = [
+import type { Project } from "../projects";
+
+export const mobileProjects: Project[] = [
   {
     slug: "vaqula",
     overline: "Mobile Application",
