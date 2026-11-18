@@ -1,111 +1,157 @@
-# My Profile — Portfolio Rahma Lindungi Laowo
+# Portfolio — Rahma Lindungi Laowo
 
-Website portfolio pribadi bertema cyberpunk/terminal, dibangun dengan **Next.js 16 (App Router)**, **React 19**, **TypeScript**, dan **Tailwind CSS v4**.
+Aplikasi web portfolio pribadi yang dibangun menggunakan **Next.js 16 (App Router)**, **React 19**, **TypeScript**, dan **Tailwind CSS v4**. Situs ini menggabungkan halaman profil interaktif berbasis 3D, sistem multi-tema, dukungan dwibahasa (EN/ID), dashboard analitik GitHub, serta halaman studi kasus proyek yang di-prerender secara statis.
 
-Repo: [LindungiLw/my-profile-portofolio](https://github.com/LindungiLw/my-profile-portofolio)
+Repository: [github.com/LindungiLw/my-profile-portofolio](https://github.com/LindungiLw/my-profile-portofolio)
 
-## ✨ Fitur
+---
 
-- **Hero interaktif** — teks dengan efek glitch, elemen *bounding box* yang bisa di-drag di desktop, serta tipografi `Dancing Script` via `next/font/google`.
-- **Kabel data animasi** — jalur SVG yang melintasi section About → Projects → Experience → Contact, dengan paket data `"01"` yang mengalir saat dipicu.
-- **Model 3D interaktif** — *showcase* iPhone 3D menggunakan Three.js (`@react-three/fiber` & `drei`) dengan tombol GitHub, LinkedIn, dan Explore Project yang dapat diklik, serta warna aksen yang mengikuti tema aktif.
-- **Multi-tema menyeluruh** — tiga tema (`default`, `cyberpunk`, `matrix`) berbasis CSS variables & `@theme` Tailwind v4 yang konsisten dari halaman utama hingga dashboard, tersimpan di `localStorage` tanpa memblokir SSR.
-- **Dwibahasa (EN/ID)** — pergantian bahasa di seluruh halaman utama, dashboard, kategori, dan detail proyek melalui dictionary terpusat di `locales/`.
-- **Navigasi & aksesibilitas** — *scroll spy* otomatis berbasis `IntersectionObserver`, dukungan navigasi keyboard pada accordion & flip card, SVG bendera lokal, serta optimasi performa untuk kursor partikel (`prefers-reduced-motion` & perangkat sentuh).
-- **GitHub Analytics riil** — statistik repositori, *stars*, dan kurva kumulatif kontribusi 6 bulan terakhir dari `contributionCalendar.weeks` GitHub GraphQL API (`/api/github`) dengan caching server (`revalidate: 3600`), divisualisasikan dengan Recharts.
-- **Ulasan & rating** — pengunjung login dengan Google (Supabase Auth) untuk mengirim ulasan dan rating ke tabel `comments`, lengkap dengan fallback aman jika environment Supabase belum dikonfigurasi.
-- **Dashboard & Case Study SSG** — halaman kategori dan detail proyek (`/projects/[slug]`) di-prerender secara statis (`generateStaticParams` & `generateMetadata`), menggunakan `next/image` dan layout khusus per kategori (Web, Mobile, UI/UX, Licenses).
+## Ringkasan Arsitektur & Fitur
 
-## 🧰 Tech Stack
+### Halaman Utama & Interaksi
+- **Hero Interaktif**: Tipografi berlapis dengan efek *glitch scramble* saat di-hover/klik dan komponen *bounding box* yang dapat digeser (*drag*) pada layar desktop.
+- **Aliran Data SVG Global**: Jalur kabel SVG yang menghubungkan section About, Projects, Experience, dan Contact dengan animasi paket biner `"01"` ketika tombol pemicu pada section About ditekan.
+- **Showcase iPhone 3D**: Model 3D interaktif menggunakan `three`, `@react-three/fiber`, dan `@react-three/drei` dengan tombol GitHub, LinkedIn, serta tautan menuju dashboard proyek yang aktif diklik dan mengikuti aksen tema.
+- **Navigasi & Kursor Partikel**: *Scroll spy* otomatis menggunakan `IntersectionObserver`, menu responsif dengan atribut ARIA, navigasi keyboard untuk accordion dan kartu profil 3D, serta kanvas partikel biner yang otomatis nonaktif pada perangkat sentuh dan `prefers-reduced-motion`.
 
-| Bagian | Teknologi |
-| --- | --- |
-| Framework | Next.js 16.2.1 (App Router) + React 19 |
-| Bahasa | TypeScript |
-| Styling | Tailwind CSS v4 (token tema via `@theme` di `app/globals.css`) |
-| 3D | `three`, `@react-three/fiber`, `@react-three/drei` |
-| Chart | `recharts` |
-| Backend-as-a-Service | Supabase (Auth Google + tabel `comments`) |
-| Data eksternal | GitHub GraphQL API |
+### Multi-Tema & Lokalisasi
+- **Tiga Tema Terpadu**: `default` (Navy Teal), `cyberpunk`, dan `matrix` yang didefinisikan melalui CSS variables dan token `@theme` Tailwind CSS v4 di `app/globals.css`. Preferensi tema tersimpan di `localStorage` dan diinisialisasi sebelum hydration melalui `ThemeContext` (`useSyncExternalStore`) tanpa memblokir Server-Side Rendering.
+- **Dwibahasa (EN / ID)**: Pengaturan bahasa terpusat di `locales/dictionary.ts` dan dikelola lewat `LanguageContext` untuk seluruh halaman utama, dashboard, daftar kategori, dan halaman detail proyek.
 
-## 📁 Struktur Proyek
+### Dashboard, Studi Kasus & Integrasi Data
+- **GitHub Analytics**: Route handler `/api/github` mengambil jumlah repositori, *stars*, dan data kontribusi riil 6 bulan terakhir dari `contributionCalendar.weeks` GitHub GraphQL API dengan caching server (`revalidate: 3600`), lalu divisualisasikan menggunakan Recharts.
+- **Ulasan Pengunjung**: Integrasi Google OAuth dan tabel `comments` melalui Supabase (`utils/supabase.ts`), lengkap dengan umpan balik status inline serta *graceful fallback* apabila variabel lingkungan Supabase belum dikonfigurasi.
+- **Static Site Generation (SSG)**: Halaman kategori (`/projects/category/[name]`) dan detail proyek (`/projects/[slug]`) menggunakan `generateStaticParams` dan `generateMetadata`, optimasi gambar melalui `next/image`, serta tata letak terpisah per kategori (UI/UX, Web, Mobile, dan Licenses).
+
+---
+
+## Tech Stack
+
+| Kategori | Teknologi | Versi / Keterangan |
+| --- | --- | --- |
+| Framework | Next.js (App Router) | `16.2.1` |
+| UI Library | React & React DOM | `19.2.4` |
+| Bahasa | TypeScript | `^5` (strict mode) |
+| Styling | Tailwind CSS | `^4` (`@tailwindcss/postcss`) |
+| Grafis 3D | Three.js, `@react-three/fiber`, `@react-three/drei` | `^0.183.2`, `^9.5.0`, `^10.7.7` |
+| Visualisasi Data | Recharts | `^3.8.1` |
+| Auth & Database | Supabase (`@supabase/supabase-js`) | `^2.101.1` |
+| Data Eksternal | GitHub GraphQL API | Server-side Route Handler |
+
+---
+
+## Peta Rute Aplikasi
+
+| Rute | Tipe | Deskripsi |
+| --- | --- | --- |
+| `/` | Static | Halaman utama (Hero, About, Projects 3D, Experience, Contact) |
+| `/projects` | Static | Dashboard ringkasan proyek dan analitik GitHub |
+| `/projects/category/[name]` | SSG | Katalog proyek per kategori (`ui-ux`, `web`, `mobile`, `licenses`) |
+| `/projects/[slug]` | SSG | Halaman detail / studi kasus proyek dengan layout sesuai kategori |
+| `/api/github` | Dynamic API | Endpoint statistik repositori dan kontribusi 6 bulan terakhir dari GitHub |
+
+---
+
+## Struktur Direktori
 
 ```text
 app/
-├── page.tsx                                  # Halaman utama (Hero, About, Projects, Experience, Contact)
-├── layout.tsx                                # Root layout, font optimization, metadata, Theme & Language providers
-├── globals.css                               # CSS variables tema, token @theme Tailwind v4, animasi
-├── api/github/route.ts                       # Route handler statistik & kalender kontribusi GitHub (GraphQL)
+├── page.tsx                                  # Halaman utama & jalur kabel SVG global
+├── layout.tsx                                # Root layout, next/font (Geist, Geist Mono, Dancing Script), metadata
+├── globals.css                               # Definisi tema CSS variables, token @theme, dan animasi
+├── api/github/route.ts                       # Route handler GitHub GraphQL API
 └── projects/
     ├── (dashboard)/
-    │   ├── layout.tsx                        # Layout sidebar/navigasi workspace proyek
-    │   ├── page.tsx                          # Ringkasan analitik GitHub & komposisi proyek
+    │   ├── layout.tsx                        # Navigasi sidebar (desktop) & tab horizontal (mobile)
+    │   ├── page.tsx                          # Overview analitik GitHub & komposisi proyek
     │   └── category/[name]/
-    │       ├── page.tsx                      # Server page kategori + generateStaticParams & metadata
-    │       └── CategoryGrid.tsx              # Grid proyek/sertifikat per kategori (next/image + i18n)
+    │       ├── page.tsx                      # Server Component kategori (generateStaticParams & metadata)
+    │       └── CategoryGrid.tsx              # Grid kartu proyek/lisensi dengan next/image & terjemahan
     └── [slug]/
-        ├── page.tsx                          # Server page case study + generateStaticParams & metadata
-        ├── components/BackButton.tsx         # Tombol kembali bersama dengan dukungan i18n
-        └── layouts/                          # Layout khusus: Web, Mobile, UI/UX, Licenses, Standard
-components/                                   # Hero, About, Projects (3D), Experience, Contact, Navigation, Toggles
-context/                                      # ThemeContext & LanguageContext (berbasis useSyncExternalStore)
+        ├── page.tsx                          # Server Component detail proyek (SSG)
+        ├── components/BackButton.tsx         # Komponen navigasi kembali bersama
+        └── layouts/                          # UiUxLayout, WebLayout, MobileLayout, LicensesLayout, StandardLayout
+components/                                   # Komponen UI (Hero, About, Projects, Experience, Contact, Navigation, Toggles)
+context/                                      # ThemeContext & LanguageContext berbasis useSyncExternalStore
 data/
-├── projects.ts                               # Definisi tipe Project & penggabungan seluruh kategori
-└── projects_data/                            # Data proyek terpisah: ui-ux.ts, web.ts, mobile.ts, licenses.ts
-locales/                                      # Dictionary terjemahan EN/ID
-utils/                                        # Inisialisasi aman Supabase client
-public/                                       # Aset gambar, thumbnail proyek, dan PDF lisensi
-next.config.ts                                # Konfigurasi Next.js (termasuk remotePatterns avatar Google)
+├── projects.ts                               # Interface Project, ProjectCategory, dan agregasi seluruh proyek
+└── projects_data/                            # Data terpisah per kategori (ui-ux.ts, web.ts, mobile.ts, licenses.ts)
+locales/
+└── dictionary.ts                             # Kamus terjemahan EN & ID
+utils/
+└── supabase.ts                               # Inisialisasi aman client Supabase
+public/                                       # Aset gambar profil, thumbnail proyek, dan PDF sertifikat
+next.config.ts                                # Konfigurasi Next.js (remotePatterns avatar Google)
 ```
 
-## 🚀 Menjalankan Secara Lokal
+---
 
-1. **Clone dan install dependency**
+## Menjalankan Secara Lokal
 
-   ```bash
-   git clone https://github.com/LindungiLw/my-profile-portofolio.git
-   cd my-profile-portofolio
-   npm install
-   ```
+### 1. Prasyarat
+- Node.js versi 20 atau lebih baru
+- npm (bawaan Node.js)
 
-2. **Siapkan environment variable** — buat file `.env.local` di root proyek:
+### 2. Instalasi
+```bash
+git clone https://github.com/LindungiLw/my-profile-portofolio.git
+cd my-profile-portofolio
+npm install
+```
 
-   ```bash
-   # Supabase (Settings → API di dashboard Supabase)
-   NEXT_PUBLIC_SUPABASE_URL=...
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=...
+### 3. Konfigurasi Environment Variable
+Buat file `.env.local` pada root proyek dan isi variabel berikut:
 
-   # GitHub analytics (token dengan scope read:user, hanya dipakai server-side)
-   GITHUB_TOKEN=...
-   GITHUB_USERNAME=...
-   ```
+| Variabel | Sifat | Keterangan |
+| --- | --- | --- |
+| `NEXT_PUBLIC_SUPABASE_URL` | Publik (Client) | URL proyek Supabase (Settings → API) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Publik (Client) | Anonymous key Supabase (Settings → API) |
+| `GITHUB_TOKEN` | Rahasia (Server-only) | Personal Access Token GitHub dengan scope `read:user` |
+| `GITHUB_USERNAME` | Rahasia (Server-only) | Username GitHub yang statistiknya akan ditampilkan |
 
-   > `.env.local` sudah masuk `.gitignore` — jangan pernah di-commit. Fitur ulasan dan statistik GitHub akan menampilkan fallback aman apabila variabel lingkungan belum diisi.
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+GITHUB_TOKEN=ghp_your_token
+GITHUB_USERNAME=LindungiLw
+```
 
-3. **Jalankan development server**
+> File `.env.local` sudah dikecualikan di `.gitignore`. Jika variabel di atas belum tersedia saat pengembangan lokal, aplikasi tetap dapat dijalankan dan akan menampilkan pesan fallback yang aman pada bagian ulasan maupun analitik GitHub.
 
-   ```bash
-   npm run dev
-   ```
+### 4. Jalankan Development Server
+```bash
+npm run dev
+```
 
-   Buka [http://localhost:3000](http://localhost:3000) di browser.
+Buka [http://localhost:3000](http://localhost:3000) pada browser.
 
-## 📝 Menambah atau Mengubah Data Proyek
+---
 
-- Tambah atau edit item pada file kategori yang sesuai di `data/projects_data/` (`ui-ux.ts`, `web.ts`, `mobile.ts`, `licenses.ts`).
-- Pastikan setiap `slug` **unik** lintas semua file kategori, dan isi `github` / `external` dengan URL valid (atau `"#"` jika belum dipublikasikan).
-- Simpan gambar/PDF aset di `public/assets/` lalu referensikan path-nya diawali `/assets/...`.
+## Pengelolaan Konten Proyek
 
-## 📜 Scripts & Pengecekan Kualitas
+1. Tambahkan atau ubah entri pada file kategori yang sesuai di `data/projects_data/` (`ui-ux.ts`, `web.ts`, `mobile.ts`, atau `licenses.ts`).
+2. Pastikan nilai `slug` bersifat unik di seluruh file kategori karena digunakan sebagai parameter statis `/projects/[slug]`.
+3. Simpan aset gambar atau PDF di `public/assets/`, lalu referensikan menggunakan path relatif dari root publik (misalnya `/assets/nama-file.png`).
+4. Gunakan `"#"` untuk field `github` atau `external` apabila tautan repositori maupun situs live belum tersedia.
 
-| Perintah | Fungsi |
+---
+
+## Perintah & Pengecekan Kualitas
+
+| Perintah | Kegunaan |
 | --- | --- |
-| `npm run dev` | Menjalankan development server |
-| `npm run build` | Build produksi Next.js |
+| `npm run dev` | Menjalankan server pengembangan lokal |
+| `npm run build` | Membangun bundle produksi Next.js dan halaman SSG |
 | `npm run start` | Menjalankan hasil build produksi |
-| `npm run lint` | Pengecekan ESLint |
-| `npx tsc --noEmit` | Pengecekan tipe TypeScript |
+| `npm run lint` | Menjalankan pemeriksaan ESLint |
+| `npx tsc --noEmit` | Memeriksa validitas tipe TypeScript tanpa menghasilkan file output |
 
-## ☁️ Deploy
+---
 
-Cara termudah adalah melalui [Vercel](https://vercel.com/new): import repo, isi keempat environment variable di atas pada pengaturan project, lalu deploy.
+## Deployment
+
+Proyek ini siap di-deploy melalui [Vercel](https://vercel.com/new):
+1. Import repository GitHub ke dashboard Vercel.
+2. Tambahkan keempat environment variable (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `GITHUB_TOKEN`, `GITHUB_USERNAME`) pada menu **Settings → Environment Variables**.
+3. Pastikan URL callback autentikasi Google di dashboard Supabase sudah mencakup domain produksi Vercel.
+4. Jalankan proses deploy.
